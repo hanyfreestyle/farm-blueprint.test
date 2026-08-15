@@ -217,10 +217,38 @@ a {
 .main-section-subsections {
     display: grid;
     gap: 8px;
+    padding-top: 2px;
+    border-top: 1px solid #eef1f2;
 }
 
 .main-section-actions {
     margin-top: 14px;
+}
+
+.main-section-subsection-name-wrap {
+    min-width: 0;
+}
+
+.main-section-subsection-name,
+.main-section-subsection-link {
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.main-section-subsection-link {
+    color: inherit;
+    text-decoration: none;
+}
+
+.main-section-subsection-link:hover,
+.main-section-subsection-link:focus {
+    color: var(--questionnaire-green);
+}
+
+.main-section-subsection-count {
+    color: var(--questionnaire-muted);
+    font-size: 12px;
+    white-space: nowrap;
 }
 
 .btn-questionnaire-primary {

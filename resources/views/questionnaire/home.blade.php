@@ -43,7 +43,10 @@
 
             <section class="main-sections-grid">
                 @foreach ($mainSections as $mainSection)
-                    @php($summary = $mainSection->progress_summary)
+                    @php
+                        $summary = $mainSection->progress_summary;
+                    @endphp
+
                     <article class="main-section-card">
                         <div class="main-section-card-head">
                             <div>
@@ -71,6 +74,35 @@
                             @if ($summary['needs_review'])
                                 <span class="review-inline"><i class="fa-solid fa-triangle-exclamation"></i> يحتاج مراجعة</span>
                             @endif
+                        </div>
+
+                        <div class="main-section-subsections">
+                            @foreach ($mainSection->children as $subsection)
+                                @php
+                                    $subsectionQuestionCount = (int) ($subsection->question_count ?? 0);
+                                    $subsectionAnsweredCount = (int) ($subsection->answered_count ?? 0);
+                                @endphp
+
+                                <div class="main-section-subsection-line">
+                                    <div class="main-section-subsection-name-wrap">
+                                        @if ($subsectionQuestionCount > 0)
+                                            <a class="main-section-subsection-link" href="{{ route('study.subsection', [$mainSection, $subsection]) }}">
+                                                {{ $subsection->name }}
+                                            </a>
+                                        @else
+                                            <span class="main-section-subsection-name">{{ $subsection->name }}</span>
+                                        @endif
+                                    </div>
+
+                                    <div class="main-section-subsection-count">
+                                        @if ($subsectionQuestionCount > 0)
+                                            <span>{{ $subsectionAnsweredCount }} / {{ $subsectionQuestionCount }} سؤال</span>
+                                        @else
+                                            <span>0 سؤال</span>
+                                        @endif
+                                    </div>
+                                </div>
+                            @endforeach
                         </div>
 
                         <div class="progress questionnaire-progress" role="progressbar" aria-valuenow="{{ $summary['percentage'] ?? 0 }}" aria-valuemin="0" aria-valuemax="100">
