@@ -1108,6 +1108,10 @@ Phase 3A note:
 
 This frontend delivery was completed as the Farm Data Frontend Pilot using the existing seeded Pilot records.
 
+Phase 3A-R1 note:
+
+This UX revision updates the respondent flow to Arabic-only navigation, config-driven zero-group filtering, Main Section overview pages, and a one-question stepper while preserving the same one-answer-per-question persistence model.
+
 ---
 
 ## Phase 4 — Technical Specification Generator
@@ -1517,6 +1521,73 @@ Format:
 
 - Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
 
+## 2026-08-15 - Phase 3A-R1
+
+### Planned
+
+- Revise respondent navigation and presentation without changing questionnaire data or persistence architecture.
+- Remove respondent language switching and simplify public respondent routes to Arabic-only paths.
+- Replace the single-page Subsection experience with a one-question stepper flow while preserving one Answer per Question.
+
+### Implemented
+
+- Removed respondent language switching from the questionnaire frontend and fixed the respondent shell to Arabic RTL.
+- Added `config/questionnaire.php` with `show_zero_groups` defaulting to `false`.
+- Updated respondent routes to use Arabic-only public paths for Home, Main Section, Subsection, Question steps, completion, and answer persistence.
+- Added Main Section overview pages that list only visible Subsections and do not render Questions directly.
+- Replaced the old all-questions Subsection page with a one-question stepper flow, including Previous navigation, Save & Continue behavior, and a completion state.
+- Kept lightweight auto-save for the current Question without automatic navigation.
+- Updated frontend tests to cover Arabic-only behavior, zero-group filtering, Main Section/Subsection navigation, stepper flow, required validation, conditional sequencing, and completion behavior.
+
+### Files Created
+
+- `config/questionnaire.php`
+- `app/Http/Controllers/Questionnaire/QuestionnairePageController.php`
+- `app/Http/Requests/Questionnaire/SubmitQuestionnaireAnswerStepRequest.php`
+- `resources/views/questionnaire/main-section.blade.php`
+- `resources/views/questionnaire/question.blade.php`
+- `resources/views/questionnaire/completion.blade.php`
+- `resources/views/components/questionnaire/question-form.blade.php`
+
+### Files Modified
+
+- `routes/web.php`
+- `app/Http/Controllers/Questionnaire/QuestionnaireAnswerController.php`
+- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
+- `resources/views/layouts/questionnaire.blade.php`
+- `resources/views/questionnaire/home.blade.php`
+- `resources/views/components/questionnaire/sidebar.blade.php`
+- `public/js/questionnaire.js`
+- `public/css/questionnaire.css`
+- `tests/Feature/QuestionnaireFrontendPilotTest.php`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- Questionnaire core data model tests
+- Questionnaire Filament admin support tests
+- Questionnaire frontend Pilot tests updated for 3A-R1
+
+### Findings
+
+- The existing one-answer-per-question model supports step-based navigation cleanly without adding sessions or step tables.
+- Zero-group filtering is safest when derived from real Question counts at runtime and controlled only by config.
+- Conditional Questions fit naturally into the stepper as long as the applicable sequence is recalculated after each saved step.
+
+### Decisions
+
+- Respondent frontend is Arabic-only in this Pilot revision.
+- Zero-question Main Sections and Subsections are hidden from respondent navigation by default through config.
+- Save & Continue is now the primary respondent flow, while auto-save remains secondary protection for the current Question.
+
+### Issues
+
+- The implementation plan keeps the original Phase 3 heading and records this change explicitly as Phase 3A-R1 rather than rewriting earlier approved history.
+
+### Next Step
+
+- Await HUMAN UX review and completion of the 15 Farm Pilot answers.
+
 ## 2026-08-15 - Phase 3A
 
 ### Planned
@@ -1588,7 +1659,7 @@ Format:
 
 Current Phase:
 
-Phase 3A — Farm Data Frontend Pilot
+Phase 3A-R1 — Arabic Navigation & Question Stepper Revision
 
 Status:
 
@@ -1596,4 +1667,4 @@ Completed
 
 Next Action:
 
-Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
+Await HUMAN UX review and completion of the 15 Farm Pilot answers.

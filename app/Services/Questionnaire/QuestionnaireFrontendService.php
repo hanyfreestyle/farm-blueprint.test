@@ -17,7 +17,7 @@ class QuestionnaireFrontendService
     /**
      * @return Collection<int, QuestionnaireSection>
      */
-    public function getMainSectionsTree(): Collection
+    public function getVisibleMainSectionsTree(): Collection
     {
         $mainSections = QuestionnaireSection::query()
             ->mainSections()
@@ -30,81 +30,107 @@ class QuestionnaireFrontendService
                             ->select([
                                 'id',
                                 'section_id',
+                                'title',
+                                'help_text',
                                 'type',
+                                'is_required',
+                                'sort_order',
                                 'depends_on_question_id',
                                 'dependency_operator',
                                 'dependency_value',
                             ])
                             ->with([
-                                'answer:id,question_id,value,notes,needs_review,review_status',
-                            ]),
-                    ]),
+                                'options:id,question_id,label,value,sort_order',
+                                'answer:id,question_id,value,notes,needs_review,review_status,reviewed_at',
+                            ])
+                            ->orderBy('sort_order')
+                            ->orderBy('id'),
+                    ])
+                    ->orderBy('sort_order')
+                    ->orderBy('id'),
             ])
             ->orderBy('sort_order')
             ->orderBy('id')
             ->get();
 
         $mainSections->each(function (QuestionnaireSection $mainSection): void {
-            $mainSection->setAttribute('progress_summary', $this->buildMainSectionProgressSummary($mainSection));
-
             $mainSection->children->each(function (QuestionnaireSection $subsection): void {
                 $subsection->setAttribute('progress_summary', $this->buildSubsectionProgressSummary($subsection));
             });
+
+            $visibleChildren = $this->filterVisibleSubsections($mainSection->children);
+
+            $mainSection->setRelation('children', $visibleChildren);
+            $mainSection->setAttribute('progress_summary', $this->buildMainSectionProgressSummary($mainSection));
+            $mainSection->setAttribute('visible_subsections_count', $visibleChildren->count());
         });
 
-        return $mainSections;
+        return $this->filterVisibleMainSections($mainSections);
     }
 
-    public function getStudySubsection(int $subsectionId): QuestionnaireSection
+    public function getVisibleMainSection(int $mainSectionId): QuestionnaireSection
     {
-        $subsection = QuestionnaireSection::query()
-            ->subsections()
-            ->select(['id', 'parent_id', 'name', 'description', 'sort_order'])
-            ->with([
-                'parent:id,name,description,sort_order',
-                'questions' => fn ($query) => $query
-                    ->select([
-                        'id',
-                        'section_id',
-                        'title',
-                        'help_text',
-                        'type',
-                        'is_required',
-                        'sort_order',
-                        'depends_on_question_id',
-                        'dependency_operator',
-                        'dependency_value',
-                    ])
-                    ->with([
-                        'options:id,question_id,label,value,sort_order',
-                        'answer:id,question_id,value,notes,needs_review,review_status,reviewed_at',
-                        'dependencyQuestion:id,title,type',
-                    ])
-                    ->orderBy('sort_order')
-                    ->orderBy('id'),
-            ])
-            ->findOrFail($subsectionId);
+        $mainSection = $this->getVisibleMainSectionsTree()->firstWhere('id', $mainSectionId);
 
-        $applicableQuestionIds = $this->getApplicableQuestionIds($subsection->questions);
+        abort_unless($mainSection instanceof QuestionnaireSection, 404);
 
-        $subsection->questions->each(function (QuestionnaireQuestion $question) use ($applicableQuestionIds): void {
-            $question->setAttribute('is_applicable', in_array($question->id, $applicableQuestionIds, true));
-            $question->setAttribute('answer_payload', $this->buildAnswerPayload($question));
-        });
-
-        $subsection->setAttribute('progress_summary', $this->buildSubsectionProgressSummary($subsection));
-
-        return $subsection;
+        return $mainSection;
     }
 
-    public function getSubsectionProgressSummary(QuestionnaireSection $subsection): array
+    /**
+     * @return array{
+     *   mainSection: QuestionnaireSection,
+     *   subsection: QuestionnaireSection,
+     *   currentQuestion: ?QuestionnaireQuestion,
+     *   previousQuestion: ?QuestionnaireQuestion,
+     *   nextQuestion: ?QuestionnaireQuestion,
+     *   progressSummary: array<string, mixed>,
+     *   sequencePosition: int,
+     *   applicableCount: int
+     * }
+     */
+    public function getSubsectionStepContext(int $mainSectionId, int $subsectionId, ?int $questionId = null): array
     {
-        return $this->buildSubsectionProgressSummary($subsection);
+        $mainSection = $this->getVisibleMainSection($mainSectionId);
+        $subsection = $mainSection->children->firstWhere('id', $subsectionId);
+
+        abort_unless($subsection instanceof QuestionnaireSection, 404);
+
+        $applicableQuestions = $this->getApplicableQuestions($subsection);
+        $currentQuestion = $questionId === null
+            ? $applicableQuestions->first()
+            : $applicableQuestions->firstWhere('id', $questionId);
+
+        if ($questionId !== null && ! $currentQuestion instanceof QuestionnaireQuestion) {
+            abort(404);
+        }
+
+        $currentIndex = $currentQuestion instanceof QuestionnaireQuestion
+            ? $applicableQuestions->search(fn (QuestionnaireQuestion $question): bool => $question->is($currentQuestion))
+            : false;
+
+        return [
+            'mainSection' => $mainSection,
+            'subsection' => $subsection,
+            'currentQuestion' => $currentQuestion,
+            'previousQuestion' => is_int($currentIndex) && $currentIndex > 0 ? $applicableQuestions->get($currentIndex - 1) : null,
+            'nextQuestion' => is_int($currentIndex) ? $applicableQuestions->get($currentIndex + 1) : null,
+            'progressSummary' => $subsection->progress_summary,
+            'sequencePosition' => is_int($currentIndex) ? $currentIndex + 1 : 0,
+            'applicableCount' => $applicableQuestions->count(),
+        ];
     }
 
-    public function getMainSectionProgressSummary(QuestionnaireSection $mainSection): array
+    public function getNextVisibleSubsection(QuestionnaireSection $mainSection, QuestionnaireSection $currentSubsection): ?QuestionnaireSection
     {
-        return $this->buildMainSectionProgressSummary($mainSection);
+        $visibleSubsections = $mainSection->children->values();
+        $index = $visibleSubsections->search(fn (QuestionnaireSection $subsection): bool => $subsection->is($currentSubsection));
+
+        if (! is_int($index)) {
+            return null;
+        }
+
+        return $visibleSubsections->get($index + 1);
     }
 
     public function saveAnswer(QuestionnaireQuestion $question, mixed $value, ?string $notes = null): QuestionnaireAnswer
@@ -147,43 +173,87 @@ class QuestionnaireFrontendService
         return $this->hasMeaningfulValue($question, $answer->value);
     }
 
-    /**
-     * @param  Collection<int, QuestionnaireQuestion>  $questions
-     * @return array<int>
-     */
-    private function getApplicableQuestionIds(Collection $questions): array
+    public function isValidAnswerForContinuation(QuestionnaireQuestion $question, mixed $value): bool
     {
-        $questions = $questions->sortBy([
-            ['sort_order', 'asc'],
-            ['id', 'asc'],
-        ])->values();
+        if (! $question->is_required) {
+            return true;
+        }
+
+        return $this->hasMeaningfulValue($question, $this->normalizeAnswerValue($question, $value));
+    }
+
+    /**
+     * @return Collection<int, QuestionnaireQuestion>
+     */
+    public function getApplicableQuestions(QuestionnaireSection $subsection): Collection
+    {
+        $questions = $subsection->questions
+            ->sortBy([
+                ['sort_order', 'asc'],
+                ['id', 'asc'],
+            ])
+            ->values();
 
         $answersByQuestionId = $questions
             ->mapWithKeys(fn (QuestionnaireQuestion $question): array => [$question->id => $question->answer])
             ->all();
 
-        $applicableQuestionIds = [];
+        return $questions
+            ->filter(fn (QuestionnaireQuestion $question): bool => $this->isQuestionApplicable($question, $answersByQuestionId))
+            ->values()
+            ->map(function (QuestionnaireQuestion $question): QuestionnaireQuestion {
+                $question->setAttribute('answer_payload', $this->buildAnswerPayload($question));
+                $question->setAttribute('is_applicable', true);
 
-        foreach ($questions as $question) {
-            if ($this->isQuestionApplicable($question, $answersByQuestionId)) {
-                $applicableQuestionIds[] = $question->id;
-            }
+                return $question;
+            });
+    }
+
+    private function shouldShowZeroGroups(): bool
+    {
+        return (bool) config('questionnaire.show_zero_groups', false);
+    }
+
+    /**
+     * @param  Collection<int, QuestionnaireSection>  $mainSections
+     * @return Collection<int, QuestionnaireSection>
+     */
+    private function filterVisibleMainSections(Collection $mainSections): Collection
+    {
+        if ($this->shouldShowZeroGroups()) {
+            return $mainSections->values();
         }
 
-        return $applicableQuestionIds;
+        return $mainSections
+            ->filter(fn (QuestionnaireSection $mainSection): bool => $mainSection->children->isNotEmpty())
+            ->values();
+    }
+
+    /**
+     * @param  Collection<int, QuestionnaireSection>  $subsections
+     * @return Collection<int, QuestionnaireSection>
+     */
+    private function filterVisibleSubsections(Collection $subsections): Collection
+    {
+        if ($this->shouldShowZeroGroups()) {
+            return $subsections->values();
+        }
+
+        return $subsections
+            ->filter(fn (QuestionnaireSection $subsection): bool => $subsection->questions->isNotEmpty())
+            ->values();
     }
 
     private function buildSubsectionProgressSummary(QuestionnaireSection $subsection): array
     {
-        $questions = $subsection->relationLoaded('questions')
-            ? $subsection->questions
-            : $subsection->questions()->with('answer')->get();
-
-        $applicableQuestionIds = $this->getApplicableQuestionIds($questions);
-
-        $applicableQuestions = $questions
-            ->filter(fn (QuestionnaireQuestion $question): bool => in_array($question->id, $applicableQuestionIds, true))
+        $questions = $subsection->questions
+            ->sortBy([
+                ['sort_order', 'asc'],
+                ['id', 'asc'],
+            ])
             ->values();
+
+        $applicableQuestions = $this->getApplicableQuestions($subsection);
 
         $answered = $applicableQuestions
             ->filter(fn (QuestionnaireQuestion $question): bool => $this->hasMeaningfulAnswer($question, $question->answer))
@@ -198,6 +268,7 @@ class QuestionnaireFrontendService
         return [
             'answered' => $answered,
             'total' => $total,
+            'question_count' => $questions->count(),
             'percentage' => $total > 0 ? (int) round(($answered / $total) * 100) : null,
             'status' => $this->resolveProgressStatus($answered, $total),
             'needs_review' => $needsReview,
@@ -207,14 +278,9 @@ class QuestionnaireFrontendService
 
     private function buildMainSectionProgressSummary(QuestionnaireSection $mainSection): array
     {
-        $children = $mainSection->relationLoaded('children')
-            ? $mainSection->children
-            : $mainSection->children()->with(['questions.answer'])->get();
-
-        $summaries = $children->map(function (QuestionnaireSection $subsection): array {
-            return $subsection->getAttribute('progress_summary')
-                ?? $this->buildSubsectionProgressSummary($subsection);
-        });
+        $summaries = $mainSection->children->map(
+            fn (QuestionnaireSection $subsection): array => $subsection->progress_summary ?? $this->buildSubsectionProgressSummary($subsection)
+        );
 
         $answered = $summaries->sum('answered');
         $total = $summaries->sum('total');
@@ -294,9 +360,7 @@ class QuestionnaireFrontendService
      */
     private function normalizeMultiChoiceValue(mixed $value): array
     {
-        $items = Arr::wrap($value);
-
-        return collect($items)
+        return collect(Arr::wrap($value))
             ->map(fn (mixed $item): string => trim((string) $item))
             ->filter(fn (string $item): bool => $item !== '')
             ->values()
@@ -356,7 +420,9 @@ class QuestionnaireFrontendService
     private function matchesContains(mixed $dependencyValue, string $expected): bool
     {
         if (is_array($dependencyValue)) {
-            return collect($dependencyValue)->map(fn (mixed $item): string => (string) $item)->contains($expected);
+            return collect($dependencyValue)
+                ->map(fn (mixed $item): string => (string) $item)
+                ->contains($expected);
         }
 
         return str_contains((string) $dependencyValue, $expected);

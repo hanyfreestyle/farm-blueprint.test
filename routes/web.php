@@ -1,21 +1,13 @@
 <?php
 
 use App\Http\Controllers\Questionnaire\QuestionnaireAnswerController;
-use App\Http\Controllers\Questionnaire\QuestionnaireController;
+use App\Http\Controllers\Questionnaire\QuestionnairePageController;
 use Illuminate\Support\Facades\Route;
-use Mcamara\LaravelLocalization\Facades\LaravelLocalization;
 
-$supportedLocales = implode('|', array_keys(LaravelLocalization::getSupportedLocales()));
-
-Route::redirect('/', '/'.app()->getLocale());
-
-Route::group([
-    'prefix' => '{locale}',
-    'where' => ['locale' => $supportedLocales],
-    'middleware' => ['localize', 'localeSessionRedirect', 'localizationRedirect', 'localeViewPath'],
-], function (): void {
-    Route::get('/', [QuestionnaireController::class, 'home'])->name('home');
-    Route::get('/study/{section}', [QuestionnaireController::class, 'study'])->name('study.show');
-    Route::post('/questionnaire/questions/{question}/answer', [QuestionnaireAnswerController::class, 'store'])
-        ->name('questionnaire.answers.store');
-});
+Route::get('/', [QuestionnairePageController::class, 'home'])->name('home');
+Route::get('/study/{mainSection}', [QuestionnairePageController::class, 'mainSection'])->name('study.main-section');
+Route::get('/study/{mainSection}/{subsection}', [QuestionnairePageController::class, 'subsection'])->name('study.subsection');
+Route::get('/study/{mainSection}/{subsection}/questions/{question}', [QuestionnairePageController::class, 'question'])->name('study.question');
+Route::get('/study/{mainSection}/{subsection}/completed', [QuestionnairePageController::class, 'completion'])->name('study.subsection.complete');
+Route::post('/questionnaire/questions/{question}/answer', [QuestionnaireAnswerController::class, 'store'])->name('questionnaire.answers.store');
+Route::post('/questionnaire/questions/{question}/continue', [QuestionnaireAnswerController::class, 'continue'])->name('questionnaire.answers.continue');

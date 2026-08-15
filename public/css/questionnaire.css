@@ -95,27 +95,6 @@ a {
     padding: 16px 18px 18px;
 }
 
-.locale-switcher {
-    display: flex;
-    gap: 8px;
-    justify-content: flex-start;
-    margin-bottom: 14px;
-}
-
-.locale-switcher a {
-    padding: 6px 10px;
-    border-radius: 999px;
-    border: 1px solid var(--questionnaire-border);
-    text-decoration: none;
-    font-size: 13px;
-}
-
-.locale-switcher a.is-active {
-    background: var(--questionnaire-text);
-    border-color: var(--questionnaire-text);
-    color: #fff;
-}
-
 .page-kicker,
 .overall-progress-title,
 .sidebar-kicker,
@@ -175,6 +154,23 @@ a {
 .sidebar-title {
     font-size: 16px;
     font-weight: 600;
+}
+
+.sidebar-main-link {
+    display: block;
+    text-decoration: none;
+    border-radius: 8px;
+    padding: 8px 10px;
+    border: 1px solid transparent;
+}
+
+.sidebar-main-link:hover {
+    background: #f7f8f8;
+}
+
+.sidebar-main-link.is-active {
+    background: #f7f8f8;
+    border-color: var(--questionnaire-border);
 }
 
 .main-section-description,
@@ -241,6 +237,20 @@ a {
     margin-bottom: 14px;
 }
 
+.light-breadcrumb {
+    display: flex;
+    align-items: center;
+    gap: 7px;
+    flex-wrap: wrap;
+    font-size: 12px;
+    color: var(--questionnaire-muted);
+    margin-bottom: 10px;
+}
+
+.light-breadcrumb a {
+    text-decoration: none;
+}
+
 .study-description {
     margin-top: 10px;
     font-size: 13px;
@@ -260,6 +270,11 @@ a {
 }
 
 .questions-list {
+    display: grid;
+    gap: 14px;
+}
+
+.subsection-cards-grid {
     display: grid;
     gap: 14px;
 }
@@ -295,6 +310,12 @@ a {
 
 .question-help {
     margin: 8px 0 0;
+    font-size: 13px;
+}
+
+.question-error {
+    margin-top: 8px;
+    color: #b42318;
     font-size: 13px;
 }
 
@@ -374,6 +395,31 @@ a {
 .question-notes-label {
     font-size: 13px;
     margin-bottom: 6px;
+}
+
+.question-step-actions,
+.completion-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.btn-questionnaire-secondary {
+    border: 1px solid var(--questionnaire-border);
+    background: #fff;
+    color: var(--questionnaire-text);
+    font-size: 13px;
+    border-radius: 8px;
+    padding: 9px 14px;
+}
+
+.btn-questionnaire-secondary:hover,
+.btn-questionnaire-secondary:focus {
+    background: #f8f9f9;
+    color: var(--questionnaire-text);
 }
 
 .questionnaire-sidebar {
@@ -484,6 +530,11 @@ a {
 
 .main-section-status.completed {
     color: var(--questionnaire-green);
+}
+
+.completion-card {
+    display: grid;
+    gap: 10px;
 }
 
 .markdown-content > *:last-child {

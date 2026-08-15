@@ -44,54 +44,6 @@
 
     const readNotes = (block) => block.querySelector('[data-notes-input]')?.value ?? '';
 
-    const collectAnswers = () => {
-        const answers = {};
-
-        getQuestionBlocks().forEach((block) => {
-            answers[block.dataset.questionId] = readValue(block);
-        });
-
-        return answers;
-    };
-
-    const matchesDependency = (answerValue, operator, expectedValue) => {
-        if (answerValue === undefined || answerValue === null || answerValue === '') {
-            return false;
-        }
-
-        if (operator === 'contains') {
-            if (Array.isArray(answerValue)) {
-                return answerValue.includes(expectedValue);
-            }
-
-            return String(answerValue).includes(expectedValue);
-        }
-
-        if (Array.isArray(answerValue)) {
-            return answerValue.length === 1 && String(answerValue[0]) === expectedValue;
-        }
-
-        return String(answerValue) === expectedValue;
-    };
-
-    const updateVisibility = () => {
-        const answers = collectAnswers();
-
-        document.querySelectorAll('[data-question-visibility]').forEach((wrapper) => {
-            const dependsOnQuestionId = wrapper.dataset.dependsOnQuestionId;
-            const operator = wrapper.dataset.dependencyOperator;
-            const expectedValue = wrapper.dataset.dependencyValue ?? '';
-
-            if (!dependsOnQuestionId || !operator) {
-                wrapper.classList.remove('d-none');
-                return;
-            }
-
-            const shouldShow = matchesDependency(answers[dependsOnQuestionId], operator, expectedValue);
-            wrapper.classList.toggle('d-none', !shouldShow);
-        });
-    };
-
     const saveBlock = async (block) => {
         setIndicatorState('saving');
 
@@ -114,7 +66,6 @@
             }
 
             setIndicatorState('saved');
-            updateVisibility();
         } catch (error) {
             setIndicatorState('error');
         }
@@ -152,8 +103,6 @@
 
         block.querySelectorAll('[data-answer-input]').forEach((input) => {
             input.addEventListener('change', () => {
-                updateVisibility();
-
                 if (['yes_no', 'single_choice', 'select', 'date', 'number'].includes(type)) {
                     saveBlock(block);
                     return;
@@ -185,6 +134,5 @@
         }
     });
 
-    updateVisibility();
     setIndicatorState('saved');
 })();

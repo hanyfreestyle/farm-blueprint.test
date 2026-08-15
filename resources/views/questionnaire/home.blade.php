@@ -12,21 +12,8 @@
     <div class="questionnaire-app">
         <div class="shell shell-home">
             <header class="home-header">
-                <div class="locale-switcher">
-                    @foreach (LaravelLocalization::getSupportedLocales() as $localeCode => $properties)
-                        <a
-                            href="{{ route('home', ['locale' => $localeCode]) }}"
-                            class="{{ app()->getLocale() === $localeCode ? 'is-active' : '' }}"
-                            rel="alternate"
-                            hreflang="{{ $localeCode }}"
-                        >
-                            {{ $properties['native'] }}
-                        </a>
-                    @endforeach
-                </div>
-
                 <div class="page-heading">
-                    <div class="page-kicker">الواجهة الأولى للتجربة</div>
+                    <div class="page-kicker">الواجهة العربية الحالية</div>
                     <h1>دراسة نظام إدارة مزرعة الأرانب</h1>
                     <p>أداة لمراجعة التصور التشغيلي مع المختص وتحويل الإجابات لاحقًا إلى مواصفات تقنية واضحة.</p>
                 </div>
@@ -48,7 +35,6 @@
             <section class="main-sections-grid">
                 @foreach ($mainSections as $mainSection)
                     @php($summary = $mainSection->progress_summary)
-                    @php($firstAvailableSubsection = $mainSection->children->first(fn ($child) => $child->progress_summary['has_questions']))
                     <article class="main-section-card">
                         <div class="main-section-card-head">
                             <div>
@@ -71,12 +57,8 @@
                         </div>
 
                         <div class="main-section-progress-meta">
-                            @if ($summary['total'] > 0)
-                                <span>{{ $summary['answered'] }} / {{ $summary['total'] }} سؤال</span>
-                                <span>{{ $summary['percentage'] }}%</span>
-                            @else
-                                <span>0 سؤال</span>
-                            @endif
+                            <span>{{ $summary['answered'] }} / {{ $summary['total'] }} سؤال</span>
+                            <span>{{ $summary['percentage'] ?? 0 }}%</span>
                             @if ($summary['needs_review'])
                                 <span class="review-inline"><i class="fa-solid fa-triangle-exclamation"></i> يحتاج مراجعة</span>
                             @endif
@@ -86,28 +68,8 @@
                             <div class="progress-bar" style="width: {{ $summary['percentage'] ?? 0 }}%"></div>
                         </div>
 
-                        <div class="main-section-subsections">
-                            @foreach ($mainSection->children as $subsection)
-                                @php($subSummary = $subsection->progress_summary)
-                                <div class="main-section-subsection-line">
-                                    <span>{{ $subsection->name }}</span>
-                                    <span>
-                                        @if ($subSummary['has_questions'])
-                                            {{ $subSummary['answered'] }}/{{ $subSummary['total'] }}
-                                        @else
-                                            0 سؤال
-                                        @endif
-                                    </span>
-                                </div>
-                            @endforeach
-                        </div>
-
                         <div class="main-section-actions">
-                            @if ($firstAvailableSubsection)
-                                <a class="btn btn-questionnaire-primary" href="{{ route('study.show', ['locale' => app()->getLocale(), 'section' => $firstAvailableSubsection]) }}">متابعة الدراسة</a>
-                            @else
-                                <span class="not-ready-label">لا توجد أسئلة جاهزة بعد</span>
-                            @endif
+                            <a class="btn btn-questionnaire-primary" href="{{ route('study.main-section', $mainSection) }}">متابعة الدراسة</a>
                         </div>
                     </article>
                 @endforeach

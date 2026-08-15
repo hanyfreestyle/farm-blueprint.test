@@ -1,5 +1,6 @@
 @props([
     'mainSections',
+    'currentMainSectionId' => null,
     'currentSubsectionId' => null,
 ])
 
@@ -13,55 +14,49 @@
         @foreach ($mainSections as $mainSection)
             @php($summary = $mainSection->progress_summary)
             <section class="sidebar-main-section">
-                <div class="sidebar-main-head">
-                    <div class="sidebar-main-name-wrap">
-                        <span class="sidebar-main-name">{{ $mainSection->name }}</span>
-                        @if ($summary['needs_review'])
-                            <span class="sidebar-review-chip">مراجعة</span>
-                        @endif
-                    </div>
-                    <div class="sidebar-main-meta">
-                        @if ($summary['total'] > 0)
+                <a
+                    href="{{ route('study.main-section', $mainSection) }}"
+                    class="sidebar-main-link {{ $currentMainSectionId === $mainSection->id ? 'is-active' : '' }}"
+                >
+                    <div class="sidebar-main-head">
+                        <div class="sidebar-main-name-wrap">
+                            <span class="sidebar-main-name">{{ $mainSection->name }}</span>
+                            @if ($summary['needs_review'])
+                                <span class="sidebar-review-chip">مراجعة</span>
+                            @endif
+                        </div>
+                        <div class="sidebar-main-meta">
                             <span>{{ $summary['answered'] }}/{{ $summary['total'] }} سؤال</span>
-                            <span>{{ $summary['percentage'] }}%</span>
-                        @else
-                            <span>0 سؤال</span>
-                        @endif
+                            @if ($summary['percentage'] !== null)
+                                <span>{{ $summary['percentage'] }}%</span>
+                            @endif
+                        </div>
                     </div>
-                </div>
+                </a>
 
                 <div class="sidebar-subsections">
                     @foreach ($mainSection->children as $subsection)
                         @php($subSummary = $subsection->progress_summary)
-                        @php($isActive = $currentSubsectionId === $subsection->id)
-                        @php($isEmpty = ! $subSummary['has_questions'])
-                        @if ($isEmpty)
-                            <div class="sidebar-subsection is-disabled" aria-disabled="true">
-                                <div class="sidebar-subsection-main">
-                                    <span class="sidebar-status-dot {{ $subSummary['status'] }}"></span>
-                                    <span class="sidebar-subsection-name">{{ $subsection->name }}</span>
-                                </div>
-                                <div class="sidebar-subsection-meta">0 سؤال</div>
+                        <a
+                            href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection]) }}"
+                            class="sidebar-subsection {{ $currentSubsectionId === $subsection->id ? 'is-active' : '' }}"
+                        >
+                            <div class="sidebar-subsection-main">
+                                <span class="sidebar-status-dot {{ $subSummary['status'] }}"></span>
+                                <span class="sidebar-subsection-name">{{ $subsection->name }}</span>
+                                @if ($subSummary['needs_review'])
+                                    <span class="sidebar-subsection-warning">
+                                        <i class="fa-solid fa-triangle-exclamation"></i>
+                                    </span>
+                                @endif
                             </div>
-                        @else
-                            <a href="{{ route('study.show', ['locale' => app()->getLocale(), 'section' => $subsection]) }}" class="sidebar-subsection {{ $isActive ? 'is-active' : '' }}">
-                                <div class="sidebar-subsection-main">
-                                    <span class="sidebar-status-dot {{ $subSummary['status'] }}"></span>
-                                    <span class="sidebar-subsection-name">{{ $subsection->name }}</span>
-                                    @if ($subSummary['needs_review'])
-                                        <span class="sidebar-subsection-warning">
-                                            <i class="fa-solid fa-triangle-exclamation"></i>
-                                        </span>
-                                    @endif
-                                </div>
-                                <div class="sidebar-subsection-meta">
-                                    <span>{{ $subSummary['answered'] }}/{{ $subSummary['total'] }} سؤال</span>
-                                    @if ($subSummary['percentage'] !== null)
-                                        <span>{{ $subSummary['percentage'] }}%</span>
-                                    @endif
-                                </div>
-                            </a>
-                        @endif
+                            <div class="sidebar-subsection-meta">
+                                <span>{{ $subSummary['answered'] }}/{{ $subSummary['total'] }} سؤال</span>
+                                @if ($subSummary['percentage'] !== null)
+                                    <span>{{ $subSummary['percentage'] }}%</span>
+                                @endif
+                            </div>
+                        </a>
                     @endforeach
                 </div>
             </section>
