@@ -1747,6 +1747,47 @@ Format:
 
 - Await manual Home-page review.
 
+## 2026-08-15 - Phase 3A-R4
+
+### Planned
+
+- Fix the hierarchy/visibility bug by separating Subsection collection, question counting, and visibility rules at the service layer only.
+
+### Implemented
+
+- Added one service-level path that first builds direct-child Subsection statistics, then applies visibility separately.
+- Changed Main Section visibility to depend on aggregated child question counts instead of the already-filtered child collection.
+- Added explicit Subsection-level attributes for `question_count`, `answered_count`, `progress_percentage`, `needs_review`, and `is_visible`.
+
+### Files Created
+
+- None.
+
+### Files Modified
+
+- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- No automated test run was performed for this service-only hierarchy fix.
+
+### Findings
+
+- The previous service mixed collection filtering with visibility decisions, which made Main Section visibility depend on the post-filtered child collection instead of real child-question totals.
+
+### Decisions
+
+- Main Section and Subsection visibility now depend on actual `question_count` statistics, while progress remains a separate calculation.
+
+### Issues
+
+- None.
+
+### Next Step
+
+- Await manual verification of the current Pilot hierarchy.
+
 ---
 
 # 41. Current Phase

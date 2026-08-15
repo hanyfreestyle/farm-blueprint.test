@@ -56,13 +56,10 @@ class QuestionnaireFrontendService
         $mainSections->each(function (QuestionnaireSection $mainSection): void {
             $allChildren = $mainSection->children->values();
 
-            $allChildren->each(function (QuestionnaireSection $subsection): void {
-                $subsection->setAttribute('progress_summary', $this->buildSubsectionProgressSummary($subsection));
-            });
+            $subsectionsWithStats = $this->buildMainSectionSubsections($allChildren);
+            $visibleChildren = $this->filterVisibleSubsections($subsectionsWithStats);
 
-            $visibleChildren = $this->filterVisibleSubsections($allChildren);
-
-            $mainSection->setAttribute('progress_summary', $this->buildMainSectionProgressSummary($allChildren));
+            $mainSection->setAttribute('progress_summary', $this->buildMainSectionProgressSummary($subsectionsWithStats));
             $mainSection->setRelation('children', $visibleChildren);
             $mainSection->setAttribute('visible_subsections_count', $visibleChildren->count());
         });
@@ -232,7 +229,7 @@ class QuestionnaireFrontendService
         }
 
         return $mainSections
-            ->filter(fn (QuestionnaireSection $mainSection): bool => $mainSection->children->isNotEmpty())
+            ->filter(fn (QuestionnaireSection $mainSection): bool => (($mainSection->progress_summary['question_count'] ?? 0) > 0))
             ->values();
     }
 
@@ -243,11 +240,40 @@ class QuestionnaireFrontendService
     private function filterVisibleSubsections(Collection $subsections): Collection
     {
         if ($this->shouldShowZeroSubsections()) {
-            return $subsections->values();
+            return $subsections
+                ->each(fn (QuestionnaireSection $subsection): QuestionnaireSection => $subsection->setAttribute('is_visible', true))
+                ->values();
         }
 
         return $subsections
-            ->filter(fn (QuestionnaireSection $subsection): bool => $subsection->questions->isNotEmpty())
+            ->map(function (QuestionnaireSection $subsection): QuestionnaireSection {
+                $subsection->setAttribute('is_visible', (($subsection->progress_summary['question_count'] ?? 0) > 0));
+
+                return $subsection;
+            })
+            ->filter(fn (QuestionnaireSection $subsection): bool => $subsection->is_visible === true)
+            ->values();
+    }
+
+    /**
+     * @param  Collection<int, QuestionnaireSection>  $subsections
+     * @return Collection<int, QuestionnaireSection>
+     */
+    private function buildMainSectionSubsections(Collection $subsections): Collection
+    {
+        return $subsections
+            ->map(function (QuestionnaireSection $subsection): QuestionnaireSection {
+                $progressSummary = $this->buildSubsectionProgressSummary($subsection);
+
+                $subsection->setAttribute('progress_summary', $progressSummary);
+                $subsection->setAttribute('question_count', $progressSummary['question_count']);
+                $subsection->setAttribute('answered_count', $progressSummary['answered']);
+                $subsection->setAttribute('progress_percentage', $progressSummary['percentage']);
+                $subsection->setAttribute('needs_review', $progressSummary['needs_review']);
+                $subsection->setAttribute('is_visible', true);
+
+                return $subsection;
+            })
             ->values();
     }
 
@@ -307,6 +333,7 @@ class QuestionnaireFrontendService
         return [
             'answered' => $answered,
             'total' => $total,
+            'question_count' => $total,
             'percentage' => $total > 0 ? (int) round(($answered / $total) * 100) : null,
             'status' => $status,
             'needs_review' => $needsReview,
