@@ -1,0 +1,47 @@
+<?php
+
+return [
+    'navigation_label' => 'Users',
+    'model_label' => 'User',
+    'plural_model_label' => 'Users',
+    'navigation_group' => 'Permissions & Users',
+    'sections' => [
+        'details' => 'User details',
+        'profile' => 'Profile',
+        'security' => 'Security',
+        'roles' => 'Roles & permissions',
+        'author' => 'Author profile',
+    ],
+    'fields' => [
+        'name' => 'Name',
+        'email' => 'Email address',
+        'phone' => 'Phone number',
+        'phone_country' => 'Country',
+        'avatar_url' => 'Avatar',
+        'social' => 'Social links',
+        'social_platform' => 'Platform',
+        'social_url' => 'URL',
+        'password' => 'Password',
+        'password_confirmation' => 'Confirm password',
+        'is_primary_user' => 'Primary user',
+        'email_verified_at' => 'Email verified at',
+        'created_at' => 'Created at',
+        'updated_at' => 'Updated at',
+        'roles' => 'Roles',
+        'slug' => 'Slug',
+        'author_name' => 'Author name',
+        'job_title' => 'Job title',
+        'des' => 'Description',
+        'short_des' => 'Short description',
+        'g_h1' => 'Heading',
+        'g_title' => 'SEO title',
+        'g_des' => 'SEO description',
+    ],
+    'actions' => [
+        'add_social' => 'Add social link',
+    ],
+    'hints' => [
+        'roles' => 'Select the roles that should be assigned to this user.',
+        'primary_user_roles' => 'The primary user always keeps the super_admin role and full permissions.',
+    ],
+];

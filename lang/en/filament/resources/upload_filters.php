@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'navigation_label' => 'Upload filters',
+    'model_label' => 'Upload filter',
+    'plural_model_label' => 'Upload filters',
+    'navigation_group' => 'Settings',
+    'sections' => [
+        'basic' => 'Basic settings',
+        'effects' => 'Effects',
+        'notes' => 'Notes',
+        'sizes' => 'Additional sizes',
+    ],
+    'actions' => [
+        'add_size' => 'Add to image sizes',
+    ],
+    'fields' => [
+        'name' => 'Name',
+        'cat_id' => 'Category key',
+        'type' => 'Resize type',
+        'crop_aspect_ratio' => 'Crop aspect ratio',
+        'width' => 'Width',
+        'height' => 'Height',
+        'quality_val' => 'Quality',
+        'canvas_back' => 'Canvas background',
+        'convert_state' => 'Convert to webp',
+        'state' => 'Active',
+        'greyscale' => 'Greyscale',
+        'flip_state' => 'Flip horizontally',
+        'flip_v' => 'Flip vertically',
+        'blur' => 'Blur',
+        'blur_size' => 'Blur size',
+        'pixelate' => 'Pixelate',
+        'pixelate_size' => 'Pixelate size',
+        'is_notes' => 'Enable notes',
+        'notes' => 'Notes',
+        'note_key' => 'Locale',
+        'note_value' => 'Text',
+        'sizes' => 'Sizes',
+        'text_state' => 'Text enabled',
+        'watermark_state' => 'Watermark enabled',
+    ],
+];

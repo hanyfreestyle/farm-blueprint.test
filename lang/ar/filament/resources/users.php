@@ -1,0 +1,47 @@
+<?php
+
+return [
+    'navigation_label' => 'المستخدمون',
+    'model_label' => 'مستخدم',
+    'plural_model_label' => 'المستخدمون',
+    'navigation_group' => 'الصلاحيات والمستخدمين',
+    'sections' => [
+        'details' => 'بيانات المستخدم',
+        'profile' => 'الملف الشخصي',
+        'security' => 'الحماية',
+        'roles' => 'الأدوار والصلاحيات',
+        'author' => 'بيانات الناشر',
+    ],
+    'fields' => [
+        'name' => 'الاسم',
+        'email' => 'البريد الإلكتروني',
+        'phone' => 'رقم الهاتف',
+        'phone_country' => 'الدولة',
+        'avatar_url' => 'الصورة الشخصية',
+        'social' => 'روابط التواصل',
+        'social_platform' => 'المنصة',
+        'social_url' => 'الرابط',
+        'password' => 'كلمة المرور',
+        'password_confirmation' => 'تأكيد كلمة المرور',
+        'is_primary_user' => 'المستخدم الأساسي',
+        'email_verified_at' => 'تاريخ التحقق من البريد',
+        'created_at' => 'تاريخ الإنشاء',
+        'updated_at' => 'تاريخ التحديث',
+        'roles' => 'الأدوار',
+        'slug' => 'الرابط المختصر',
+        'author_name' => 'اسم الناشر',
+        'job_title' => 'المسمى الوظيفي',
+        'des' => 'الوصف',
+        'short_des' => 'الوصف المختصر',
+        'g_h1' => 'العنوان الرئيسي',
+        'g_title' => 'عنوان SEO',
+        'g_des' => 'وصف SEO',
+    ],
+    'actions' => [
+        'add_social' => 'إضافة رابط تواصل',
+    ],
+    'hints' => [
+        'roles' => 'اختر الأدوار التي سيتم ربطها بالمستخدم.',
+        'primary_user_roles' => 'المستخدم الأساسي يحتفظ تلقائيًا بدور super_admin وأعلى الصلاحيات.',
+    ],
+];

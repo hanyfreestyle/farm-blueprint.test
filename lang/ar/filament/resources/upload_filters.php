@@ -1,0 +1,43 @@
+<?php
+
+return [
+    'navigation_label' => 'فلاتر الرفع',
+    'model_label' => 'فلتر رفع',
+    'plural_model_label' => 'فلاتر الرفع',
+    'navigation_group' => 'الإعدادات',
+    'sections' => [
+        'basic' => 'الإعدادات الأساسية',
+        'effects' => 'المؤثرات',
+        'notes' => 'الملاحظات',
+        'sizes' => 'الأحجام الإضافية',
+    ],
+    'actions' => [
+        'add_size' => 'إضافة إلى مقاسات الصور',
+    ],
+    'fields' => [
+        'name' => 'الاسم',
+        'cat_id' => 'مفتاح التصنيف',
+        'type' => 'نوع المعالجة',
+        'crop_aspect_ratio' => 'نسبة القص',
+        'width' => 'العرض',
+        'height' => 'الارتفاع',
+        'quality_val' => 'الجودة',
+        'canvas_back' => 'لون الخلفية',
+        'convert_state' => 'التحويل إلى webp',
+        'state' => 'نشط',
+        'greyscale' => 'تدرج رمادي',
+        'flip_state' => 'قلب أفقي',
+        'flip_v' => 'قلب رأسي',
+        'blur' => 'تمويه',
+        'blur_size' => 'درجة التمويه',
+        'pixelate' => 'بكسلة',
+        'pixelate_size' => 'درجة البكسلة',
+        'is_notes' => 'تفعيل الملاحظات',
+        'notes' => 'الملاحظات',
+        'note_key' => 'اللغة',
+        'note_value' => 'النص',
+        'sizes' => 'الأحجام',
+        'text_state' => 'تفعيل النص',
+        'watermark_state' => 'تفعيل العلامة المائية',
+    ],
+];
