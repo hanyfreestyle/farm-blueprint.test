@@ -1,58 +1,58 @@
-# Questionnaire Implementation Plan
+﻿# Questionnaire Implementation Plan
 
 ## 1. Project Goal
 
-هذا المشروع عبارة عن تطبيق مخصص لمراجعة وتحليل تصور نظام إدارة مزرعة الأرانب مع مختص Domain Expert.
+Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø¹Ø¨Ø§Ø±Ø© Ø¹Ù† ØªØ·Ø¨ÙŠÙ‚ Ù…Ø®ØµØµ Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© ÙˆØªØ­Ù„ÙŠÙ„ ØªØµÙˆØ± Ù†Ø¸Ø§Ù… Ø¥Ø¯Ø§Ø±Ø© Ù…Ø²Ø±Ø¹Ø© Ø§Ù„Ø£Ø±Ø§Ù†Ø¨ Ù…Ø¹ Ù…Ø®ØªØµ Domain Expert.
 
-الهدف ليس إنشاء Questionnaire Platform عامة.
+Ø§Ù„Ù‡Ø¯Ù Ù„ÙŠØ³ Ø¥Ù†Ø´Ø§Ø¡ Questionnaire Platform Ø¹Ø§Ù…Ø©.
 
-المسار الأساسي للمشروع:
+Ø§Ù„Ù…Ø³Ø§Ø± Ø§Ù„Ø£Ø³Ø§Ø³ÙŠ Ù„Ù„Ù…Ø´Ø±ÙˆØ¹:
 
 Domain Review
-→ Questions
-→ Specialist Answers
-→ Optional Notes
-→ Needs Review
-→ Technical Specification
+â†’ Questions
+â†’ Specialist Answers
+â†’ Optional Notes
+â†’ Needs Review
+â†’ Technical Specification
 
-المختص لا يقوم بتصميم Laravel Database أو Migrations مباشرة.
+Ø§Ù„Ù…Ø®ØªØµ Ù„Ø§ ÙŠÙ‚ÙˆÙ… Ø¨ØªØµÙ…ÙŠÙ… Laravel Database Ø£Ùˆ Migrations Ù…Ø¨Ø§Ø´Ø±Ø©.
 
-المختص يجيب عن أسئلة تشغيلية وفنية تخص الواقع الفعلي للمزرعة.
+Ø§Ù„Ù…Ø®ØªØµ ÙŠØ¬ÙŠØ¨ Ø¹Ù† Ø£Ø³Ø¦Ù„Ø© ØªØ´ØºÙŠÙ„ÙŠØ© ÙˆÙÙ†ÙŠØ© ØªØ®Øµ Ø§Ù„ÙˆØ§Ù‚Ø¹ Ø§Ù„ÙØ¹Ù„ÙŠ Ù„Ù„Ù…Ø²Ø±Ø¹Ø©.
 
-بعد اكتمال الإجابات، يقوم النظام بإنتاج Technical Specification منظم يمكن إعطاؤه لاحقًا لمطور أو AI Developer لبناء النظام الحقيقي.
+Ø¨Ø¹Ø¯ Ø§ÙƒØªÙ…Ø§Ù„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§ØªØŒ ÙŠÙ‚ÙˆÙ… Ø§Ù„Ù†Ø¸Ø§Ù… Ø¨Ø¥Ù†ØªØ§Ø¬ Technical Specification Ù…Ù†Ø¸Ù… ÙŠÙ…ÙƒÙ† Ø¥Ø¹Ø·Ø§Ø¤Ù‡ Ù„Ø§Ø­Ù‚Ù‹Ø§ Ù„Ù…Ø·ÙˆØ± Ø£Ùˆ AI Developer Ù„Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù†Ø¸Ø§Ù… Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠ.
 
 ---
 
 # 2. Core Development Reference
 
-المرجع الأساسي للتعامل مع Laravel Core هو:
+Ø§Ù„Ù…Ø±Ø¬Ø¹ Ø§Ù„Ø£Ø³Ø§Ø³ÙŠ Ù„Ù„ØªØ¹Ø§Ù…Ù„ Ù…Ø¹ Laravel Core Ù‡Ùˆ:
 
 AGENTS.md
 
-الموجود في جذر المشروع.
+Ø§Ù„Ù…ÙˆØ¬ÙˆØ¯ ÙÙŠ Ø¬Ø°Ø± Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
 
-قبل تنفيذ أي Phase يجب:
+Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Ø£ÙŠ Phase ÙŠØ¬Ø¨:
 
-1. قراءة AGENTS.md بالكامل.
-2. الالتزام بإصدارات Laravel / Filament والحزم الموجودة فعليًا.
-3. اتباع conventions الموجودة في المشروع.
-4. استخدام نفس أسلوب بناء Filament Resources المستخدم في الـCore.
-5. عدم افتراض APIs أو namespaces غير موجودة في النسخة المثبتة.
+1. Ù‚Ø±Ø§Ø¡Ø© AGENTS.md Ø¨Ø§Ù„ÙƒØ§Ù…Ù„.
+2. Ø§Ù„Ø§Ù„ØªØ²Ø§Ù… Ø¨Ø¥ØµØ¯Ø§Ø±Ø§Øª Laravel / Filament ÙˆØ§Ù„Ø­Ø²Ù… Ø§Ù„Ù…ÙˆØ¬ÙˆØ¯Ø© ÙØ¹Ù„ÙŠÙ‹Ø§.
+3. Ø§ØªØ¨Ø§Ø¹ conventions Ø§Ù„Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
+4. Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù†ÙØ³ Ø£Ø³Ù„ÙˆØ¨ Ø¨Ù†Ø§Ø¡ Filament Resources Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… ÙÙŠ Ø§Ù„Ù€Core.
+5. Ø¹Ø¯Ù… Ø§ÙØªØ±Ø§Ø¶ APIs Ø£Ùˆ namespaces ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ù†Ø³Ø®Ø© Ø§Ù„Ù…Ø«Ø¨ØªØ©.
 
-هذا الملف:
+Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù:
 
 docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md
 
-خاص فقط بخطة تنفيذ مشروع الاستبيان.
+Ø®Ø§Øµ ÙÙ‚Ø· Ø¨Ø®Ø·Ø© ØªÙ†ÙÙŠØ° Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø§Ø³ØªØ¨ÙŠØ§Ù†.
 
 AGENTS.md
-خاص بقواعد الـCore والمشروع ككل.
+Ø®Ø§Øµ Ø¨Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ù€Core ÙˆØ§Ù„Ù…Ø´Ø±ÙˆØ¹ ÙƒÙƒÙ„.
 
 ---
 
 # 3. Explicit Non-Goals
 
-هذا المشروع ليس:
+Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ù„ÙŠØ³:
 
 - Generic Questionnaire Builder
 - Survey SaaS
@@ -66,51 +66,51 @@ AGENTS.md
 - Rules DSL
 - Generic Workflow Builder
 
-لا يتم إضافة أي abstraction عامة إلا إذا ظهرت لها حاجة فعلية في المشروع الحالي وتم اعتمادها صراحة.
+Ù„Ø§ ÙŠØªÙ… Ø¥Ø¶Ø§ÙØ© Ø£ÙŠ abstraction Ø¹Ø§Ù…Ø© Ø¥Ù„Ø§ Ø¥Ø°Ø§ Ø¸Ù‡Ø±Øª Ù„Ù‡Ø§ Ø­Ø§Ø¬Ø© ÙØ¹Ù„ÙŠØ© ÙÙŠ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø­Ø§Ù„ÙŠ ÙˆØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯Ù‡Ø§ ØµØ±Ø§Ø­Ø©.
 
 ---
 
 # 4. Simplified Architecture
 
-البنية الأساسية:
+Ø§Ù„Ø¨Ù†ÙŠØ© Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©:
 
 Section
-→ Subsection
-→ Questions
-→ Question Options
-→ Answers
-→ Technical Report
+â†’ Subsection
+â†’ Questions
+â†’ Question Options
+â†’ Answers
+â†’ Technical Report
 
-لدينا استبيان واحد فقط.
+Ù„Ø¯ÙŠÙ†Ø§ Ø§Ø³ØªØ¨ÙŠØ§Ù† ÙˆØ§Ø­Ø¯ ÙÙ‚Ø·.
 
-لا توجد Questionnaire Sessions.
+Ù„Ø§ ØªÙˆØ¬Ø¯ Questionnaire Sessions.
 
-كل Question لها Answer حالية واحدة فقط.
+ÙƒÙ„ Question Ù„Ù‡Ø§ Answer Ø­Ø§Ù„ÙŠØ© ÙˆØ§Ø­Ø¯Ø© ÙÙ‚Ø·.
 
-عند تعديل الإجابة يتم تحديث نفس Answer.
+Ø¹Ù†Ø¯ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© ÙŠØªÙ… ØªØ­Ø¯ÙŠØ« Ù†ÙØ³ Answer.
 
-هيكل الأقسام المعتمد الآن:
+Ù‡ÙŠÙƒÙ„ Ø§Ù„Ø£Ù‚Ø³Ø§Ù… Ø§Ù„Ù…Ø¹ØªÙ…Ø¯ Ø§Ù„Ø¢Ù†:
 
 Main Section
-→ Subsection
-→ Questions
+â†’ Subsection
+â†’ Questions
 
-ولا يتم اعتماد شجرة عميقة عامة في هذا المشروع.
+ÙˆÙ„Ø§ ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯ Ø´Ø¬Ø±Ø© Ø¹Ù…ÙŠÙ‚Ø© Ø¹Ø§Ù…Ø© ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
 
 ---
 
 # 5. Sections
 
-الأقسام هي المراحل الرئيسية للدراسة.
+Ø§Ù„Ø£Ù‚Ø³Ø§Ù… Ù‡ÙŠ Ø§Ù„Ù…Ø±Ø§Ø­Ù„ Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ø¯Ø±Ø§Ø³Ø©.
 
-وهي المصدر الذي يتم منه بناء القائمة الجانبية في واجهة المستخدم.
+ÙˆÙ‡ÙŠ Ø§Ù„Ù…ØµØ¯Ø± Ø§Ù„Ø°ÙŠ ÙŠØªÙ… Ù…Ù†Ù‡ Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø¬Ø§Ù†Ø¨ÙŠØ© ÙÙŠ ÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù….
 
-يتم استخدام جدول واحد ذاتي الربط لدعم مستويين منطقيين فقط:
+ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¬Ø¯ÙˆÙ„ ÙˆØ§Ø­Ø¯ Ø°Ø§ØªÙŠ Ø§Ù„Ø±Ø¨Ø· Ù„Ø¯Ø¹Ù… Ù…Ø³ØªÙˆÙŠÙŠÙ† Ù…Ù†Ø·Ù‚ÙŠÙŠÙ† ÙÙ‚Ø·:
 
 - Main Section
 - Subsection
 
-الحقول المبدئية:
+Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
 
 - id
 - parent_id nullable
@@ -121,50 +121,50 @@ Main Section
 
 description:
 
-يحتوي على Markdown.
+ÙŠØ­ØªÙˆÙŠ Ø¹Ù„Ù‰ Markdown.
 
-الترتيب:
+Ø§Ù„ØªØ±ØªÙŠØ¨:
 
 sort_order
 
-يحدد ترتيب القسم في:
+ÙŠØ­Ø¯Ø¯ ØªØ±ØªÙŠØ¨ Ø§Ù„Ù‚Ø³Ù… ÙÙŠ:
 
 - Filament
 - Frontend Sidebar
 - Technical Report
 
-معنى parent_id:
+Ù…Ø¹Ù†Ù‰ parent_id:
 
 parent_id = null
-→ Main Section
+â†’ Main Section
 
 parent_id != null
-→ Subsection
+â†’ Subsection
 
-العلاقات:
+Ø§Ù„Ø¹Ù„Ø§Ù‚Ø§Øª:
 
 - Section belongsTo Parent
 - Section hasMany Children
 - Section hasMany Questions
 
-قاعدة البنية:
+Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨Ù†ÙŠØ©:
 
-- يدعم المشروع مستويين منطقيين فقط للأقسام
-- الأسئلة تنتمي عادة إلى Subsections
-- لا يتم بناء deep tree عام
+- ÙŠØ¯Ø¹Ù… Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ù…Ø³ØªÙˆÙŠÙŠÙ† Ù…Ù†Ø·Ù‚ÙŠÙŠÙ† ÙÙ‚Ø· Ù„Ù„Ø£Ù‚Ø³Ø§Ù…
+- Ø§Ù„Ø£Ø³Ø¦Ù„Ø© ØªÙ†ØªÙ…ÙŠ Ø¹Ø§Ø¯Ø© Ø¥Ù„Ù‰ Subsections
+- Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡ deep tree Ø¹Ø§Ù…
 
-سلوك الحذف الآمن:
+Ø³Ù„ÙˆÙƒ Ø§Ù„Ø­Ø°Ù Ø§Ù„Ø¢Ù…Ù†:
 
-- حذف Main Section مع وجود Subsections تحته يجب أن يكون مرفوضاً
-- حذف أي Section ما دام مرتبطاً به Questions يجب أن يكون مرفوضاً
+- Ø­Ø°Ù Main Section Ù…Ø¹ ÙˆØ¬ÙˆØ¯ Subsections ØªØ­ØªÙ‡ ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ù…Ø±ÙÙˆØ¶Ø§Ù‹
+- Ø­Ø°Ù Ø£ÙŠ Section Ù…Ø§ Ø¯Ø§Ù… Ù…Ø±ØªØ¨Ø·Ø§Ù‹ Ø¨Ù‡ Questions ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ù…Ø±ÙÙˆØ¶Ø§Ù‹
 
 ---
 
 # 6. Questions
 
-كل Question تتبع Section واحدة.
+ÙƒÙ„ Question ØªØªØ¨Ø¹ Section ÙˆØ§Ø­Ø¯Ø©.
 
-الحقول المبدئية:
+Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
 
 - id
 - section_id
@@ -180,17 +180,17 @@ parent_id != null
 - target_entity nullable
 - timestamps
 
-لا يتم اعتماد الحقول النهائية قبل تنفيذ Phase 1 ومراجعة المشروع فعليًا.
+Ù„Ø§ ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠØ© Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Phase 1 ÙˆÙ…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ ÙØ¹Ù„ÙŠÙ‹Ø§.
 
 ---
 
 # 7. Question Types
 
-يتم استخدام PHP Backed Enum باسم مناسب مثل:
+ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… PHP Backed Enum Ø¨Ø§Ø³Ù… Ù…Ù†Ø§Ø³Ø¨ Ù…Ø«Ù„:
 
 QuestionType
 
-القيم:
+Ø§Ù„Ù‚ÙŠÙ…:
 
 text
 textarea
@@ -201,43 +201,43 @@ single_choice
 multi_choice
 select
 
-معانيها:
+Ù…Ø¹Ø§Ù†ÙŠÙ‡Ø§:
 
 text
-= نص قصير
+= Ù†Øµ Ù‚ØµÙŠØ±
 
 textarea
-= نص طويل
+= Ù†Øµ Ø·ÙˆÙŠÙ„
 
 number
-= رقم
+= Ø±Ù‚Ù…
 
 date
-= تاريخ
+= ØªØ§Ø±ÙŠØ®
 
 yes_no
-= نعم / لا
+= Ù†Ø¹Ù… / Ù„Ø§
 
 single_choice
-= اختيار واحد
+= Ø§Ø®ØªÙŠØ§Ø± ÙˆØ§Ø­Ø¯
 
 multi_choice
-= أكثر من اختيار
+= Ø£ÙƒØ«Ø± Ù…Ù† Ø§Ø®ØªÙŠØ§Ø±
 
 select
-= قائمة منسدلة
+= Ù‚Ø§Ø¦Ù…Ø© Ù…Ù†Ø³Ø¯Ù„Ø©
 
 ---
 
 # 8. Question Options
 
-تستخدم فقط مع:
+ØªØ³ØªØ®Ø¯Ù… ÙÙ‚Ø· Ù…Ø¹:
 
 single_choice
 multi_choice
 select
 
-الحقول المبدئية:
+Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
 
 - id
 - question_id
@@ -246,9 +246,9 @@ select
 - sort_order
 - timestamps
 
-في Filament يتم إدارتها بواسطة Repeater داخل Question Resource.
+ÙÙŠ Filament ÙŠØªÙ… Ø¥Ø¯Ø§Ø±ØªÙ‡Ø§ Ø¨ÙˆØ§Ø³Ø·Ø© Repeater Ø¯Ø§Ø®Ù„ Question Resource.
 
-عند اختيار Question Type لا يحتاج Options:
+Ø¹Ù†Ø¯ Ø§Ø®ØªÙŠØ§Ø± Question Type Ù„Ø§ ÙŠØ­ØªØ§Ø¬ Options:
 
 - text
 - textarea
@@ -256,25 +256,25 @@ select
 - date
 - yes_no
 
-لا يظهر Repeater.
+Ù„Ø§ ÙŠØ¸Ù‡Ø± Repeater.
 
-عند اختيار:
+Ø¹Ù†Ø¯ Ø§Ø®ØªÙŠØ§Ø±:
 
 - single_choice
 - multi_choice
 - select
 
-يظهر Repeater تلقائيًا.
+ÙŠØ¸Ù‡Ø± Repeater ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§.
 
 ---
 
 # 9. Simple Conditional Questions
 
-النظام يدعم شرط ظهور بسيط فقط.
+Ø§Ù„Ù†Ø¸Ø§Ù… ÙŠØ¯Ø¹Ù… Ø´Ø±Ø· Ø¸Ù‡ÙˆØ± Ø¨Ø³ÙŠØ· ÙÙ‚Ø·.
 
-السؤال الحالي يمكن أن يعتمد على إجابة سؤال سابق.
+Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø­Ø§Ù„ÙŠ ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ Ø¥Ø¬Ø§Ø¨Ø© Ø³Ø¤Ø§Ù„ Ø³Ø§Ø¨Ù‚.
 
-المنطق:
+Ø§Ù„Ù…Ù†Ø·Ù‚:
 
 Parent Question
 +
@@ -282,45 +282,45 @@ Operator
 +
 Expected Value
 
-الـOperators المطلوبة مبدئيًا:
+Ø§Ù„Ù€Operators Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ù…Ø¨Ø¯Ø¦ÙŠÙ‹Ø§:
 
 equals
 contains
 
-مثال:
+Ù…Ø«Ø§Ù„:
 
 Question A:
-هل التصور مناسب؟
+Ù‡Ù„ Ø§Ù„ØªØµÙˆØ± Ù…Ù†Ø§Ø³Ø¨ØŸ
 
 Answer:
 needs_changes
 
 Question B:
-ما التعديل المطلوب؟
+Ù…Ø§ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨ØŸ
 
-Question B يظهر عندما:
+Question B ÙŠØ¸Ù‡Ø± Ø¹Ù†Ø¯Ù…Ø§:
 
 Question A
 equals
 needs_changes
 
-لا يتم بناء:
+Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡:
 
 - DSL
 - Nested Rule Engine
 - Complex Boolean Expressions
 
-في هذه المرحلة.
+ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø©.
 
 ---
 
 # 10. Answers
 
-لدينا نتيجة واحدة فقط للاستبيان.
+Ù„Ø¯ÙŠÙ†Ø§ Ù†ØªÙŠØ¬Ø© ÙˆØ§Ø­Ø¯Ø© ÙÙ‚Ø· Ù„Ù„Ø§Ø³ØªØ¨ÙŠØ§Ù†.
 
-كل Question لها Answer واحدة كحد أقصى.
+ÙƒÙ„ Question Ù„Ù‡Ø§ Answer ÙˆØ§Ø­Ø¯Ø© ÙƒØ­Ø¯ Ø£Ù‚ØµÙ‰.
 
-الحقول المبدئية:
+Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
 
 - id
 - question_id
@@ -331,23 +331,23 @@ needs_changes
 - reviewed_at nullable
 - timestamps
 
-يجب وجود Unique Constraint على:
+ÙŠØ¬Ø¨ ÙˆØ¬ÙˆØ¯ Unique Constraint Ø¹Ù„Ù‰:
 
 question_id
 
-بحيث لا يتم إنشاء عدة Answers لنفس السؤال.
+Ø¨Ø­ÙŠØ« Ù„Ø§ ÙŠØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ø¯Ø© Answers Ù„Ù†ÙØ³ Ø§Ù„Ø³Ø¤Ø§Ù„.
 
-عند تعديل الإجابة يتم استخدام:
+Ø¹Ù†Ø¯ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù…:
 
 updateOrCreate
 
-أو المنطق المكافئ.
+Ø£Ùˆ Ø§Ù„Ù…Ù†Ø·Ù‚ Ø§Ù„Ù…ÙƒØ§ÙØ¦.
 
 ---
 
 # 11. Answer Storage
 
-القيم الفردية مثل:
+Ø§Ù„Ù‚ÙŠÙ… Ø§Ù„ÙØ±Ø¯ÙŠØ© Ù…Ø«Ù„:
 
 text
 textarea
@@ -357,115 +357,115 @@ yes_no
 single_choice
 select
 
-يتم تخزين قيمة واحدة.
+ÙŠØªÙ… ØªØ®Ø²ÙŠÙ† Ù‚ÙŠÙ…Ø© ÙˆØ§Ø­Ø¯Ø©.
 
 multi_choice:
 
-يتم تخزين Array باستخدام JSON/Cast مناسب.
+ÙŠØªÙ… ØªØ®Ø²ÙŠÙ† Array Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… JSON/Cast Ù…Ù†Ø§Ø³Ø¨.
 
-التفاصيل النهائية يتم اعتمادها في Phase 1.
+Ø§Ù„ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠØ© ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯Ù‡Ø§ ÙÙŠ Phase 1.
 
 ---
 
 # 12. Notes
 
-كل سؤال في Frontend يحتوي على:
+ÙƒÙ„ Ø³Ø¤Ø§Ù„ ÙÙŠ Frontend ÙŠØ­ØªÙˆÙŠ Ø¹Ù„Ù‰:
 
-ملاحظات اختيارية
+Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ø®ØªÙŠØ§Ø±ÙŠØ©
 
-المختص يستطيع كتابة أي ملاحظة إضافية تخص السؤال.
+Ø§Ù„Ù…Ø®ØªØµ ÙŠØ³ØªØ·ÙŠØ¹ ÙƒØªØ§Ø¨Ø© Ø£ÙŠ Ù…Ù„Ø§Ø­Ø¸Ø© Ø¥Ø¶Ø§ÙÙŠØ© ØªØ®Øµ Ø§Ù„Ø³Ø¤Ø§Ù„.
 
-مثال:
+Ù…Ø«Ø§Ù„:
 
-السؤال:
-ما الحقول المطلوبة لبيانات المزرعة؟
+Ø§Ù„Ø³Ø¤Ø§Ù„:
+Ù…Ø§ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø²Ø±Ø¹Ø©ØŸ
 
-المختص يختار:
+Ø§Ù„Ù…Ø®ØªØµ ÙŠØ®ØªØ§Ø±:
 
-- الاسم
-- الهاتف
-- الحالة
+- Ø§Ù„Ø§Ø³Ù…
+- Ø§Ù„Ù‡Ø§ØªÙ
+- Ø§Ù„Ø­Ø§Ù„Ø©
 
-ثم يكتب في Notes:
+Ø«Ù… ÙŠÙƒØªØ¨ ÙÙŠ Notes:
 
-"نحتاج أيضًا رقم السجل التجاري."
+"Ù†Ø­ØªØ§Ø¬ Ø£ÙŠØ¶Ù‹Ø§ Ø±Ù‚Ù… Ø§Ù„Ø³Ø¬Ù„ Ø§Ù„ØªØ¬Ø§Ø±ÙŠ."
 
 ---
 
 # 13. Needs Review
 
-إذا كانت:
+Ø¥Ø°Ø§ ÙƒØ§Ù†Øª:
 
 notes
 
-غير فارغة:
+ØºÙŠØ± ÙØ§Ø±ØºØ©:
 
 needs_review = true
 
-تلقائيًا.
+ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§.
 
-لا يحدد المستخدم needs_review بنفسه.
+Ù„Ø§ ÙŠØ­Ø¯Ø¯ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… needs_review Ø¨Ù†ÙØ³Ù‡.
 
-المسار:
+Ø§Ù„Ù…Ø³Ø§Ø±:
 
 Specialist writes note
-→ Answer becomes Needs Review
-→ Admin reviews note
-→ Admin may update existing Question
+â†’ Answer becomes Needs Review
+â†’ Admin reviews note
+â†’ Admin may update existing Question
 or
-→ Add new Question
+â†’ Add new Question
 or
-→ Add new Option
-→ Mark note Reviewed
+â†’ Add new Option
+â†’ Mark note Reviewed
 
 ---
 
 # 14. Review Status
 
-استخدم Enum بسيط إذا كان مناسبًا:
+Ø§Ø³ØªØ®Ø¯Ù… Enum Ø¨Ø³ÙŠØ· Ø¥Ø°Ø§ ÙƒØ§Ù† Ù…Ù†Ø§Ø³Ø¨Ù‹Ø§:
 
 pending
 reviewed
 
-لا يتم بناء Workflow أكبر من ذلك.
+Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡ Workflow Ø£ÙƒØ¨Ø± Ù…Ù† Ø°Ù„Ùƒ.
 
-المطلوب فقط معرفة:
+Ø§Ù„Ù…Ø·Ù„ÙˆØ¨ ÙÙ‚Ø· Ù…Ø¹Ø±ÙØ©:
 
-هل تمت مراجعة ملاحظة المختص أم لا؟
+Ù‡Ù„ ØªÙ…Øª Ù…Ø±Ø§Ø¬Ø¹Ø© Ù…Ù„Ø§Ø­Ø¸Ø© Ø§Ù„Ù…Ø®ØªØµ Ø£Ù… Ù„Ø§ØŸ
 
 ---
 
 # 15. Business Questions vs Technical Decisions
 
-المختص لا يتم سؤاله بلغة تقنية.
+Ø§Ù„Ù…Ø®ØªØµ Ù„Ø§ ÙŠØªÙ… Ø³Ø¤Ø§Ù„Ù‡ Ø¨Ù„ØºØ© ØªÙ‚Ù†ÙŠØ©.
 
-مثال غير صحيح:
+Ù…Ø«Ø§Ù„ ØºÙŠØ± ØµØ­ÙŠØ­:
 
-"هل تريد Farm Status كـ Enum أم Table؟"
+"Ù‡Ù„ ØªØ±ÙŠØ¯ Farm Status ÙƒÙ€ Enum Ø£Ù… TableØŸ"
 
-السؤال الصحيح:
+Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„ØµØ­ÙŠØ­:
 
-"هل حالات المزرعة قيم ثابتة لا تتغير، أم يجب أن يستطيع مدير النظام إضافة وتعديل الحالات؟"
+"Ù‡Ù„ Ø­Ø§Ù„Ø§Øª Ø§Ù„Ù…Ø²Ø±Ø¹Ø© Ù‚ÙŠÙ… Ø«Ø§Ø¨ØªØ© Ù„Ø§ ØªØªØºÙŠØ±ØŒ Ø£Ù… ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ³ØªØ·ÙŠØ¹ Ù…Ø¯ÙŠØ± Ø§Ù„Ù†Ø¸Ø§Ù… Ø¥Ø¶Ø§ÙØ© ÙˆØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø­Ø§Ù„Ø§ØªØŸ"
 
-إذا اختار:
+Ø¥Ø°Ø§ Ø§Ø®ØªØ§Ø±:
 
-قيم ثابتة
+Ù‚ÙŠÙ… Ø«Ø§Ø¨ØªØ©
 
-يمكن أن ينتج التقرير:
+ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠÙ†ØªØ¬ Ø§Ù„ØªÙ‚Ø±ÙŠØ±:
 
 Recommendation:
 Enum
 
-إذا اختار:
+Ø¥Ø°Ø§ Ø§Ø®ØªØ§Ø±:
 
-يمكن إضافتها وتعديلها
+ÙŠÙ…ÙƒÙ† Ø¥Ø¶Ø§ÙØªÙ‡Ø§ ÙˆØªØ¹Ø¯ÙŠÙ„Ù‡Ø§
 
-يمكن أن ينتج التقرير:
+ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠÙ†ØªØ¬ Ø§Ù„ØªÙ‚Ø±ÙŠØ±:
 
 Recommendation:
 Managed Lookup Table
 
-مثل:
+Ù…Ø«Ù„:
 
 farm_statuses
 
@@ -473,11 +473,11 @@ farm_statuses
 
 # 16. Report Categories
 
-يمكن أن تحتوي Question على:
+ÙŠÙ…ÙƒÙ† Ø£Ù† ØªØ­ØªÙˆÙŠ Question Ø¹Ù„Ù‰:
 
 report_category
 
-الأنواع المبدئية:
+Ø§Ù„Ø£Ù†ÙˆØ§Ø¹ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
 
 field
 lookup
@@ -488,19 +488,19 @@ alert
 report
 general
 
-الهدف هو مساعدة Technical Report Generator.
+Ø§Ù„Ù‡Ø¯Ù Ù‡Ùˆ Ù…Ø³Ø§Ø¹Ø¯Ø© Technical Report Generator.
 
-لا يعتبر هذا Generic Rule Engine.
+Ù„Ø§ ÙŠØ¹ØªØ¨Ø± Ù‡Ø°Ø§ Generic Rule Engine.
 
 ---
 
 # 17. Target Entity
 
-يمكن أن تحتوي Question على:
+ÙŠÙ…ÙƒÙ† Ø£Ù† ØªØ­ØªÙˆÙŠ Question Ø¹Ù„Ù‰:
 
 target_entity
 
-مثال:
+Ù…Ø«Ø§Ù„:
 
 farm
 barn
@@ -510,11 +510,11 @@ rabbit
 mating
 birth
 
-الهدف:
+Ø§Ù„Ù‡Ø¯Ù:
 
-ربط الإجابة بالجزء الذي ستظهر تحته في التقرير التقني.
+Ø±Ø¨Ø· Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© Ø¨Ø§Ù„Ø¬Ø²Ø¡ Ø§Ù„Ø°ÙŠ Ø³ØªØ¸Ù‡Ø± ØªØ­ØªÙ‡ ÙÙŠ Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„ØªÙ‚Ù†ÙŠ.
 
-مثال:
+Ù…Ø«Ø§Ù„:
 
 target_entity:
 farm
@@ -526,17 +526,17 @@ field
 
 # 18. Technical Specification Goal
 
-بعد انتهاء الإجابات، لا نريد تقريرًا من نوع:
+Ø¨Ø¹Ø¯ Ø§Ù†ØªÙ‡Ø§Ø¡ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§ØªØŒ Ù„Ø§ Ù†Ø±ÙŠØ¯ ØªÙ‚Ø±ÙŠØ±Ù‹Ø§ Ù…Ù† Ù†ÙˆØ¹:
 
 Question:
-ما الحقول المطلوبة؟
+Ù…Ø§ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø©ØŸ
 
 Answer:
-الاسم، الهاتف، الحالة.
+Ø§Ù„Ø§Ø³Ù…ØŒ Ø§Ù„Ù‡Ø§ØªÙØŒ Ø§Ù„Ø­Ø§Ù„Ø©.
 
-بل نريد Technical Specification منظم.
+Ø¨Ù„ Ù†Ø±ÙŠØ¯ Technical Specification Ù…Ù†Ø¸Ù….
 
-مثال:
+Ù…Ø«Ø§Ù„:
 
 # Farm
 
@@ -567,7 +567,7 @@ Enum
 
 # 19. Technical Specification Sections
 
-التقرير النهائي يمكن أن يحتوي على:
+Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠØ­ØªÙˆÙŠ Ø¹Ù„Ù‰:
 
 # Entities
 
@@ -589,40 +589,40 @@ Enum
 
 # Needs Review
 
-لا يتم اعتماد شكل التقرير النهائي بالكامل قبل Phase 4.
+Ù„Ø§ ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯ Ø´ÙƒÙ„ Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ Ù‚Ø¨Ù„ Phase 4.
 
 ---
 
 # 20. Needs Review in Technical Report
 
-أي Answer تحتوي:
+Ø£ÙŠ Answer ØªØ­ØªÙˆÙŠ:
 
 needs_review = true
 
-ولا تزال:
+ÙˆÙ„Ø§ ØªØ²Ø§Ù„:
 
 review_status = pending
 
-تظهر في التقرير تحت:
+ØªØ¸Ù‡Ø± ÙÙŠ Ø§Ù„ØªÙ‚Ø±ÙŠØ± ØªØ­Øª:
 
 # Needs Review
 
-مع:
+Ù…Ø¹:
 
 - Section
 - Question
 - Current Answer
 - Specialist Note
 
-ولا يتم تحويل الملاحظة غير المعتمدة تلقائيًا إلى Migration Requirement.
+ÙˆÙ„Ø§ ÙŠØªÙ… ØªØ­ÙˆÙŠÙ„ Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø© ØºÙŠØ± Ø§Ù„Ù…Ø¹ØªÙ…Ø¯Ø© ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§ Ø¥Ù„Ù‰ Migration Requirement.
 
 ---
 
 # 21. Filament Administration Goal
 
-Filament Admin يكون بسيطًا.
+Filament Admin ÙŠÙƒÙˆÙ† Ø¨Ø³ÙŠØ·Ù‹Ø§.
 
-القائمة المطلوبة مبدئيًا:
+Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ù…Ø¨Ø¯Ø¦ÙŠÙ‹Ø§:
 
 Questionnaire
 
@@ -630,15 +630,15 @@ Questionnaire
 - Questions
 - Answers
 
-Question Options لا تحتاج Resource مستقلة بالضرورة.
+Question Options Ù„Ø§ ØªØ­ØªØ§Ø¬ Resource Ù…Ø³ØªÙ‚Ù„Ø© Ø¨Ø§Ù„Ø¶Ø±ÙˆØ±Ø©.
 
-يفضل إدارتها داخل Question Resource باستخدام Repeater.
+ÙŠÙØ¶Ù„ Ø¥Ø¯Ø§Ø±ØªÙ‡Ø§ Ø¯Ø§Ø®Ù„ Question Resource Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… Repeater.
 
 ---
 
 # 22. Section Resource
 
-المطلوب:
+Ø§Ù„Ù…Ø·Ù„ÙˆØ¨:
 
 List
 Create
@@ -651,7 +651,7 @@ Form:
 Name
 
 Description
-Markdown Editor أو textarea مناسب حسب Core conventions.
+Markdown Editor Ø£Ùˆ textarea Ù…Ù†Ø§Ø³Ø¨ Ø­Ø³Ø¨ Core conventions.
 
 Sort Order
 
@@ -659,7 +659,7 @@ Sort Order
 
 # 23. Question Resource
 
-Form مبدئي:
+Form Ù…Ø¨Ø¯Ø¦ÙŠ:
 
 Section
 
@@ -674,43 +674,43 @@ Required
 Sort Order
 
 Options Repeater
-يظهر فقط عند الحاجة.
+ÙŠØ¸Ù‡Ø± ÙÙ‚Ø· Ø¹Ù†Ø¯ Ø§Ù„Ø­Ø§Ø¬Ø©.
 
 Conditional Question Settings
-تظهر فقط عند تفعيل dependency.
+ØªØ¸Ù‡Ø± ÙÙ‚Ø· Ø¹Ù†Ø¯ ØªÙØ¹ÙŠÙ„ dependency.
 
 Report Category
 
 Target Entity
 
-Metadata فقط إذا ظهرت لها حاجة فعلية.
+Metadata ÙÙ‚Ø· Ø¥Ø°Ø§ Ø¸Ù‡Ø±Øª Ù„Ù‡Ø§ Ø­Ø§Ø¬Ø© ÙØ¹Ù„ÙŠØ©.
 
 ---
 
 # 24. Dynamic Question Form
 
-Filament form يجب أن يتغير حسب:
+Filament form ÙŠØ¬Ø¨ Ø£Ù† ÙŠØªØºÙŠØ± Ø­Ø³Ø¨:
 
 QuestionType
 
 TEXT:
-لا Options.
+Ù„Ø§ Options.
 
 TEXTAREA:
-لا Options.
+Ù„Ø§ Options.
 
 NUMBER:
-يمكن لاحقًا إضافة:
+ÙŠÙ…ÙƒÙ† Ù„Ø§Ø­Ù‚Ù‹Ø§ Ø¥Ø¶Ø§ÙØ©:
 min
 max
 step
-إذا ظهرت حاجة فعلية.
+Ø¥Ø°Ø§ Ø¸Ù‡Ø±Øª Ø­Ø§Ø¬Ø© ÙØ¹Ù„ÙŠØ©.
 
 DATE:
-لا Options.
+Ù„Ø§ Options.
 
 YES_NO:
-القيم معروفة داخليًا:
+Ø§Ù„Ù‚ÙŠÙ… Ù…Ø¹Ø±ÙˆÙØ© Ø¯Ø§Ø®Ù„ÙŠÙ‹Ø§:
 yes / no
 
 SINGLE_CHOICE:
@@ -726,9 +726,9 @@ Options Repeater.
 
 # 25. Answers Administration
 
-Filament Answers page تعرض الإجابات مجمعة حسب Section.
+Filament Answers page ØªØ¹Ø±Ø¶ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª Ù…Ø¬Ù…Ø¹Ø© Ø­Ø³Ø¨ Section.
 
-يجب أن يرى Admin:
+ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ±Ù‰ Admin:
 
 Question
 
@@ -742,7 +742,7 @@ Review Status
 
 Edit
 
-لا يتم عرض:
+Ù„Ø§ ÙŠØªÙ… Ø¹Ø±Ø¶:
 
 Raw JSON
 
@@ -750,13 +750,13 @@ Internal Value
 
 IDs
 
-إلا عند الحاجة التقنية.
+Ø¥Ù„Ø§ Ø¹Ù†Ø¯ Ø§Ù„Ø­Ø§Ø¬Ø© Ø§Ù„ØªÙ‚Ù†ÙŠØ©.
 
 ---
 
 # 26. Frontend Goal
 
-واجهة المستخدم يجب أن تكون بسيطة جدًا.
+ÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† Ø¨Ø³ÙŠØ·Ø© Ø¬Ø¯Ù‹Ø§.
 
 Approved stack:
 
@@ -767,7 +767,7 @@ Tajawal
 Blade
 Lightweight JavaScript
 
-لا يتم استخدام Filament UI في واجهة المختص.
+Ù„Ø§ ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… Filament UI ÙÙŠ ÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…Ø®ØªØµ.
 
 ---
 
@@ -779,23 +779,23 @@ Sidebar
 +
 Questions Area
 
-Sidebar يتم توليدها من:
+Sidebar ÙŠØªÙ… ØªÙˆÙ„ÙŠØ¯Ù‡Ø§ Ù…Ù†:
 
 Sections
 
-بالترتيب:
+Ø¨Ø§Ù„ØªØ±ØªÙŠØ¨:
 
 sort_order
 
-يستطيع المستخدم التنقل بحرية بين الأقسام.
+ÙŠØ³ØªØ·ÙŠØ¹ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø§Ù„ØªÙ†Ù‚Ù„ Ø¨Ø­Ø±ÙŠØ© Ø¨ÙŠÙ† Ø§Ù„Ø£Ù‚Ø³Ø§Ù….
 
-لا يوجد Session Flow معقد.
+Ù„Ø§ ÙŠÙˆØ¬Ø¯ Session Flow Ù…Ø¹Ù‚Ø¯.
 
 ---
 
 # 28. Question Rendering
 
-Frontend يقرأ QuestionType ويولد Control مناسب.
+Frontend ÙŠÙ‚Ø±Ø£ QuestionType ÙˆÙŠÙˆÙ„Ø¯ Control Ù…Ù†Ø§Ø³Ø¨.
 
 text:
 input text
@@ -825,16 +825,16 @@ select
 
 # 29. Optional Notes on Every Question
 
-تحت كل سؤال يوجد:
+ØªØ­Øª ÙƒÙ„ Ø³Ø¤Ø§Ù„ ÙŠÙˆØ¬Ø¯:
 
-ملاحظات إضافية
-اختياري
+Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø¥Ø¶Ø§ÙÙŠØ©
+Ø§Ø®ØªÙŠØ§Ø±ÙŠ
 
-Textarea صغيرة.
+Textarea ØµØºÙŠØ±Ø©.
 
-لا تكون بارزة أكثر من الإجابة الأساسية.
+Ù„Ø§ ØªÙƒÙˆÙ† Ø¨Ø§Ø±Ø²Ø© Ø£ÙƒØ«Ø± Ù…Ù† Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©.
 
-إذا كتب المستخدم بها:
+Ø¥Ø°Ø§ ÙƒØªØ¨ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø¨Ù‡Ø§:
 
 needs_review = true
 
@@ -842,48 +842,48 @@ needs_review = true
 
 # 30. Answer Persistence
 
-الإجابات تحفظ فعليًا في Database.
+Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª ØªØ­ÙØ¸ ÙØ¹Ù„ÙŠÙ‹Ø§ ÙÙŠ Database.
 
-لا تعتمد على Browser Session.
+Ù„Ø§ ØªØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ Browser Session.
 
-إذا أغلق المستخدم:
+Ø¥Ø°Ø§ Ø£ØºÙ„Ù‚ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…:
 
 Browser
 Computer
 
-ثم عاد لاحقًا:
+Ø«Ù… Ø¹Ø§Ø¯ Ù„Ø§Ø­Ù‚Ù‹Ø§:
 
-الإجابات تظل محفوظة.
+Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª ØªØ¸Ù„ Ù…Ø­ÙÙˆØ¸Ø©.
 
-لا يوجد QuestionnaireSession Model.
+Ù„Ø§ ÙŠÙˆØ¬Ø¯ QuestionnaireSession Model.
 
-لدينا Answer واحدة لكل Question.
+Ù„Ø¯ÙŠÙ†Ø§ Answer ÙˆØ§Ø­Ø¯Ø© Ù„ÙƒÙ„ Question.
 
 ---
 
 # 31. Technical Report Frontend
 
-Route لاحقًا مثل:
+Route Ù„Ø§Ø­Ù‚Ù‹Ø§ Ù…Ø«Ù„:
 
 /technical-report
 
-تعرض Technical Specification النهائي.
+ØªØ¹Ø±Ø¶ Technical Specification Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ.
 
-تحتوي على:
+ØªØ­ØªÙˆÙŠ Ø¹Ù„Ù‰:
 
 Print
 
-ويستخدم Browser Print:
+ÙˆÙŠØ³ØªØ®Ø¯Ù… Browser Print:
 
 Save as PDF
 
-لا نضيف PDF Package في البداية.
+Ù„Ø§ Ù†Ø¶ÙŠÙ PDF Package ÙÙŠ Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©.
 
 ---
 
 # 32. Repository Encoding Standard
 
-هذه القواعد ثابتة للمشروع.
+Ù‡Ø°Ù‡ Ø§Ù„Ù‚ÙˆØ§Ø¹Ø¯ Ø«Ø§Ø¨ØªØ© Ù„Ù„Ù…Ø´Ø±ÙˆØ¹.
 
 Encoding:
 
@@ -897,49 +897,49 @@ Final Newline:
 
 Yes
 
-يجب الحفاظ على اللغة العربية بشكل صحيح.
+ÙŠØ¬Ø¨ Ø§Ù„Ø­ÙØ§Ø¸ Ø¹Ù„Ù‰ Ø§Ù„Ù„ØºØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø¨Ø´ÙƒÙ„ ØµØ­ÙŠØ­.
 
 ---
 
 # 33. File Editing Rules
 
-قبل تعديل أي ملف:
+Ù‚Ø¨Ù„ ØªØ¹Ø¯ÙŠÙ„ Ø£ÙŠ Ù…Ù„Ù:
 
 Read it first.
 
-استخدم targeted edits.
+Ø§Ø³ØªØ®Ø¯Ù… targeted edits.
 
-لا تعيد كتابة ملف كامل إذا كان تعديل صغير كافيًا.
+Ù„Ø§ ØªØ¹ÙŠØ¯ ÙƒØªØ§Ø¨Ø© Ù…Ù„Ù ÙƒØ§Ù…Ù„ Ø¥Ø°Ø§ ÙƒØ§Ù† ØªØ¹Ø¯ÙŠÙ„ ØµØºÙŠØ± ÙƒØ§ÙÙŠÙ‹Ø§.
 
-إذا فشل Patch:
+Ø¥Ø°Ø§ ÙØ´Ù„ Patch:
 
-- لا تكرر نفس المحاولة
-- افحص المحتوى الحالي
-- افحص encoding
-- افحص line endings
-- ثم عدل
+- Ù„Ø§ ØªÙƒØ±Ø± Ù†ÙØ³ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©
+- Ø§ÙØ­Øµ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø­Ø§Ù„ÙŠ
+- Ø§ÙØ­Øµ encoding
+- Ø§ÙØ­Øµ line endings
+- Ø«Ù… Ø¹Ø¯Ù„
 
-لا تعمل normalization لملفات غير مرتبطة بالمهمة.
+Ù„Ø§ ØªØ¹Ù…Ù„ normalization Ù„Ù…Ù„ÙØ§Øª ØºÙŠØ± Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ø§Ù„Ù…Ù‡Ù…Ø©.
 
-لا تنشئ noisy diffs بدون داعٍ.
+Ù„Ø§ ØªÙ†Ø´Ø¦ noisy diffs Ø¨Ø¯ÙˆÙ† Ø¯Ø§Ø¹Ù.
 
 ---
 
 # 34. Filament Compatibility
 
-يجب قراءة:
+ÙŠØ¬Ø¨ Ù‚Ø±Ø§Ø¡Ø©:
 
 AGENTS.md
 
-قبل تنفيذ أي Filament Resource.
+Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Ø£ÙŠ Filament Resource.
 
-ويجب التحقق من:
+ÙˆÙŠØ¬Ø¨ Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù†:
 
 actual installed Filament version
 
-من المشروع.
+Ù…Ù† Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
 
-لا يتم افتراض namespace أو API من الذاكرة.
+Ù„Ø§ ÙŠØªÙ… Ø§ÙØªØ±Ø§Ø¶ namespace Ø£Ùˆ API Ù…Ù† Ø§Ù„Ø°Ø§ÙƒØ±Ø©.
 
 Existing working resources in the Laravel Core are the preferred implementation reference.
 
@@ -947,25 +947,25 @@ Existing working resources in the Laravel Core are the preferred implementation 
 
 # 35. Testing Rules
 
-لا يتم بناء Browser Screenshot Testing.
+Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡ Browser Screenshot Testing.
 
-المستخدم يقوم بالمراجعة البصرية.
+Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… ÙŠÙ‚ÙˆÙ… Ø¨Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ø¨ØµØ±ÙŠØ©.
 
-Codex مسؤول عن:
+Codex Ù…Ø³Ø¤ÙˆÙ„ Ø¹Ù†:
 
 Automated Tests
 
-للسلوك المهم.
+Ù„Ù„Ø³Ù„ÙˆÙƒ Ø§Ù„Ù…Ù‡Ù….
 
 ---
 
 # 36. Implementation Phases
 
-## Phase 0 — Project Audit & Repository Hygiene
+## Phase 0 â€” Project Audit & Repository Hygiene
 
 Goal:
 
-فهم Laravel Core قبل تنفيذ المشروع الجديد.
+ÙÙ‡Ù… Laravel Core Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø¬Ø¯ÙŠØ¯.
 
 Tasks:
 
@@ -1008,11 +1008,11 @@ Completed
 
 ---
 
-## Phase 1 — Core Data Model
+## Phase 1 â€” Core Data Model
 
 Goal:
 
-إنشاء قاعدة البيانات الأساسية فقط.
+Ø¥Ù†Ø´Ø§Ø¡ Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ© ÙÙ‚Ø·.
 
 Expected scope:
 
@@ -1049,11 +1049,11 @@ Completed
 
 ---
 
-## Phase 2 — Filament Administration
+## Phase 2 â€” Filament Administration
 
 Goal:
 
-إدارة محتوى الاستبيان والإجابات من لوحة التحكم.
+Ø¥Ø¯Ø§Ø±Ø© Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø§Ø³ØªØ¨ÙŠØ§Ù† ÙˆØ§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª Ù…Ù† Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ….
 
 Tasks:
 
@@ -1076,11 +1076,11 @@ Completed
 
 ---
 
-## Phase 3 — Questionnaire Frontend
+## Phase 3 â€” Questionnaire Frontend
 
 Goal:
 
-واجهة بسيطة للمختص مشابهة في بساطتها للنموذج المعتمد.
+ÙˆØ§Ø¬Ù‡Ø© Ø¨Ø³ÙŠØ·Ø© Ù„Ù„Ù…Ø®ØªØµ Ù…Ø´Ø§Ø¨Ù‡Ø© ÙÙŠ Ø¨Ø³Ø§Ø·ØªÙ‡Ø§ Ù„Ù„Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù…Ø¹ØªÙ…Ø¯.
 
 Tasks:
 
@@ -1114,11 +1114,11 @@ This UX revision updates the respondent flow to Arabic-only navigation, config-d
 
 ---
 
-## Phase 4 — Technical Specification Generator
+## Phase 4 â€” Technical Specification Generator
 
 Goal:
 
-تحويل الإجابات إلى Technical Specification واضح.
+ØªØ­ÙˆÙŠÙ„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª Ø¥Ù„Ù‰ Technical Specification ÙˆØ§Ø¶Ø­.
 
 Tasks:
 
@@ -1143,11 +1143,11 @@ Pending
 
 ---
 
-## Phase 5 — Final Review & Polish
+## Phase 5 â€” Final Review & Polish
 
 Goal:
 
-مراجعة التجربة الكاملة.
+Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ø§Ù„ÙƒØ§Ù…Ù„Ø©.
 
 Tasks:
 
@@ -1243,7 +1243,7 @@ Approved
 Questionnaire Sections use a two-level self-referencing hierarchy:
 
 Main Section
-→ Subsection
+â†’ Subsection
 
 Status:
 Approved
@@ -1282,10 +1282,10 @@ The following remain deferred until the relevant Phase:
 Any feature that does not directly support:
 
 Question
-→ Answer
-→ Optional Note
-→ Needs Review
-→ Technical Specification
+â†’ Answer
+â†’ Optional Note
+â†’ Needs Review
+â†’ Technical Specification
 
 must not be added without explicit approval.
 
@@ -1299,7 +1299,7 @@ Do not delete previous execution history.
 
 Format:
 
-## YYYY-MM-DD — Phase X
+## YYYY-MM-DD â€” Phase X
 
 ### Planned
 
@@ -1388,7 +1388,7 @@ Format:
 - Created questionnaire migrations for sections, questions, question options, and answers.
 - Added `QuestionType`, `QuestionDependencyOperator`, and `AnswerReviewStatus` enums.
 - Added questionnaire models with relationships, defaults, casts, and safe domain rules.
-- Implemented automatic `notes` → `needs_review` synchronization and `review_status` → `reviewed_at` synchronization in the answer model.
+- Implemented automatic `notes` â†’ `needs_review` synchronization and `review_status` â†’ `reviewed_at` synchronization in the answer model.
 - Added focused feature tests covering hierarchy, deletion safety, relationships, uniqueness constraints, JSON answer storage, notes review behavior, and reviewed-state timestamps.
 - Updated the implementation plan to reflect the approved main-section / subsection hierarchy and Phase 1 completion.
 
@@ -1586,7 +1586,7 @@ Format:
 
 ### Next Step
 
-- Await HUMAN UX review and completion of the 15 Farm Pilot answers.
+- Await the next approved frontend or report instruction.
 
 ## 2026-08-15 - Phase 3A
 
@@ -1653,13 +1653,62 @@ Format:
 
 - Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
 
+## 2026-08-15 - Phase 3A-R2
+
+### Planned
+
+- Apply a very small Home-page-only revision without changing the question flow, persistence, or report generation.
+- Separate zero Main Section visibility from zero Subsection visibility in config.
+- Add a Home page PDF button as a visual placeholder only.
+
+### Implemented
+
+- Kept the frontend revision limited to Home visibility behavior and Home header actions.
+- Split zero-group visibility into separate Main Section and Subsection config flags.
+- Added a Home page PDF button placeholder with no backend PDF generation behavior.
+
+### Files Created
+
+- None.
+
+### Files Modified
+
+- `config/questionnaire.php`
+- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
+- `resources/views/questionnaire/home.blade.php`
+- `public/css/questionnaire.css`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- No automated test run was required for this small Home/config revision.
+
+### Findings
+
+- Home visibility is clearer when empty Main Sections and empty Subsections are controlled independently.
+- The current Pilot setting keeps both visibility flags enabled: `show_zero_main_sections = true` and `show_zero_subsections = true`.
+- The PDF button is intentionally present as a UI placeholder only; PDF generation is still not implemented in this phase.
+
+### Decisions
+
+- No questionnaire data, question rendering flow, save behavior, conditional behavior, or report routes were changed.
+- Visual verification remains a human review responsibility for this small UI adjustment.
+
+### Issues
+
+- None.
+
+### Next Step
+
+- Await the next approved frontend or report instruction.
+
 ---
 
 # 41. Current Phase
 
 Current Phase:
 
-Phase 3A-R1 — Arabic Navigation & Question Stepper Revision
+Phase 3A-R2 - Home Configuration Revision
 
 Status:
 
@@ -1667,4 +1716,5 @@ Completed
 
 Next Action:
 
-Await HUMAN UX review and completion of the 15 Farm Pilot answers.
+Await the next approved frontend or report instruction.
+

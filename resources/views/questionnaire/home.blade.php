@@ -16,6 +16,12 @@
                     <div class="page-kicker">الواجهة العربية الحالية</div>
                     <h1>دراسة نظام إدارة مزرعة الأرانب</h1>
                     <p>أداة لمراجعة التصور التشغيلي مع المختص وتحويل الإجابات لاحقًا إلى مواصفات تقنية واضحة.</p>
+                    <div class="home-actions">
+                        <a class="btn btn-questionnaire-secondary" href="#">
+                            <i class="fa-solid fa-file-pdf"></i>
+                            <span>طباعة التقرير PDF</span>
+                        </a>
+                    </div>
                 </div>
             </header>
 

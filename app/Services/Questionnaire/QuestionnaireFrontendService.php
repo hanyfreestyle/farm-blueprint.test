@@ -209,9 +209,14 @@ class QuestionnaireFrontendService
             });
     }
 
-    private function shouldShowZeroGroups(): bool
+    private function shouldShowZeroMainSections(): bool
     {
-        return (bool) config('questionnaire.show_zero_groups', false);
+        return (bool) config('questionnaire.show_zero_main_sections', true);
+    }
+
+    private function shouldShowZeroSubsections(): bool
+    {
+        return (bool) config('questionnaire.show_zero_subsections', true);
     }
 
     /**
@@ -220,7 +225,7 @@ class QuestionnaireFrontendService
      */
     private function filterVisibleMainSections(Collection $mainSections): Collection
     {
-        if ($this->shouldShowZeroGroups()) {
+        if ($this->shouldShowZeroMainSections()) {
             return $mainSections->values();
         }
 
@@ -235,7 +240,7 @@ class QuestionnaireFrontendService
      */
     private function filterVisibleSubsections(Collection $subsections): Collection
     {
-        if ($this->shouldShowZeroGroups()) {
+        if ($this->shouldShowZeroSubsections()) {
             return $subsections->values();
         }
 

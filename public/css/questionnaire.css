@@ -110,6 +110,18 @@ a {
     max-width: 760px;
 }
 
+.home-actions {
+    display: flex;
+    justify-content: flex-start;
+    margin-top: 14px;
+}
+
+.home-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+}
+
 .overall-progress-card {
     margin-top: 18px;
 }
