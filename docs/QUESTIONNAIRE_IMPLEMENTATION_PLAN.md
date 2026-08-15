@@ -1084,25 +1084,29 @@ Goal:
 
 Tasks:
 
-- [ ] Questionnaire route
-- [ ] Bootstrap layout
-- [ ] RTL
-- [ ] Tajawal
-- [ ] Font Awesome
-- [ ] Sidebar from Sections
-- [ ] Section description rendering
-- [ ] Question renderer
-- [ ] Answer save/update
-- [ ] Notes save/update
-- [ ] Needs Review auto flag
-- [ ] Simple conditional questions
-- [ ] Restore existing answers
-- [ ] Responsive structure
-- [ ] Automated behavior tests
-- [ ] Update plan
+- [x] Questionnaire route
+- [x] Bootstrap layout
+- [x] RTL
+- [x] Tajawal
+- [x] Font Awesome
+- [x] Sidebar from Sections
+- [x] Section description rendering
+- [x] Question renderer
+- [x] Answer save/update
+- [x] Notes save/update
+- [x] Needs Review auto flag
+- [x] Simple conditional questions
+- [x] Restore existing answers
+- [x] Responsive structure
+- [x] Automated behavior tests
+- [x] Update plan
 
 Status:
-Pending
+Completed
+
+Phase 3A note:
+
+This frontend delivery was completed as the Farm Data Frontend Pilot using the existing seeded Pilot records.
 
 ---
 
@@ -1511,7 +1515,72 @@ Format:
 
 ### Next Step
 
-- Await Human Review before Phase 3 - Questionnaire Frontend.
+- Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
+
+## 2026-08-15 - Phase 3A
+
+### Planned
+
+- Build the first real frontend Pilot for the Farm Data subsection only.
+- Reuse the existing database sections, questions, options, and answers as the source of truth.
+- Keep the UX compact, RTL, and database-persistent without introducing sessions or report generation.
+
+### Implemented
+
+- Added localized frontend routes for Home, Study, and answer save/update.
+- Added a dedicated questionnaire frontend service for tree loading, conditional applicability, answer payload preparation, and derived progress.
+- Added a compact Bootstrap RTL + Tajawal + Font Awesome frontend shell with a Main Section home page, hierarchical Sidebar, and a single-page Subsection study flow.
+- Added lightweight JavaScript auto-save behavior and optional Notes UX while keeping backend Answer model rules authoritative.
+- Added support for all approved QuestionTypes, conditional rendering, existing-answer restore behavior, and derived Main/Subsection progress.
+- Added focused automated tests covering frontend rendering, persistence, conditional visibility, and progress behavior.
+- Updated the implementation plan to record Phase 3A completion and the next gated step.
+
+### Files Created
+
+- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
+- `app/Http/Requests/Questionnaire/SaveQuestionnaireAnswerRequest.php`
+- `app/Http/Controllers/Questionnaire/QuestionnaireController.php`
+- `app/Http/Controllers/Questionnaire/QuestionnaireAnswerController.php`
+- `resources/views/layouts/questionnaire.blade.php`
+- `resources/views/components/questionnaire/sidebar.blade.php`
+- `resources/views/components/questionnaire/question-block.blade.php`
+- `resources/views/questionnaire/home.blade.php`
+- `resources/views/questionnaire/study.blade.php`
+- `public/css/questionnaire.css`
+- `public/js/questionnaire.js`
+- `tests/Feature/QuestionnaireFrontendPilotTest.php`
+
+### Files Modified
+
+- `routes/web.php`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- Questionnaire core data model tests
+- Questionnaire Filament admin support tests
+- Questionnaire frontend Pilot tests
+- Frontend route registration verification
+
+### Findings
+
+- The current one-answer-per-question architecture supports persistent frontend behavior cleanly without sessions.
+- Rendering all Pilot questions for one Subsection on a single page works well with a compact UI and lightweight auto-save.
+- Progress is most reliable when derived from currently applicable questions only, while hidden conditional answers remain preserved.
+
+### Decisions
+
+- Frontend respondent routes now use explicit localized `{locale}` prefixes.
+- Hidden conditional answers are preserved in the database during this Pilot instead of being auto-deleted.
+- Zero-question Subsections render a safe placeholder state instead of failing.
+
+### Issues
+
+- Bootstrap RTL, Tajawal, and Font Awesome are loaded through CDN links in this Pilot frontend shell.
+
+### Next Step
+
+- Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
 
 ---
 
@@ -1519,7 +1588,7 @@ Format:
 
 Current Phase:
 
-Phase 2 — Filament Administration
+Phase 3A — Farm Data Frontend Pilot
 
 Status:
 
@@ -1527,4 +1596,4 @@ Completed
 
 Next Action:
 
-Await Human Review before Phase 3 - Questionnaire Frontend.
+Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
