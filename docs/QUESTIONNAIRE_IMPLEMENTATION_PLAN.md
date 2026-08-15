@@ -1788,6 +1788,50 @@ Format:
 
 - Await manual verification of the current Pilot hierarchy.
 
+## 2026-08-15 - Phase 3A-R5
+
+### Planned
+
+- Restrict the Main Section page content to one Main Section overview with its direct child Subsections only.
+- Convert the Main Section page Subsection area into a compact navigation list without rendering question controls.
+
+### Implemented
+
+- Kept the page bound to the current Main Section only and rendered just its direct visible child Subsections in the main content area.
+- Replaced the oversized per-Subsection card treatment with a compact list showing either `answered / total` for question-bearing Subsections or `0 سؤال` for empty ones.
+- Kept question-bearing Subsections clickable through the existing `study.subsection` route while leaving zero-question Subsections non-clickable.
+
+### Files Created
+
+- None.
+
+### Files Modified
+
+- `resources/views/questionnaire/main-section.blade.php`
+- `public/css/questionnaire.css`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- No automated test run was performed for this Main Section page presentation revision.
+
+### Findings
+
+- The page already received the correct current Main Section and direct child collection from the service; the remaining issue was the presentation shape on the page itself.
+
+### Decisions
+
+- Main Section progress remains based on the existing service aggregation across all direct child Subsections.
+- The compact Main Section page remains an overview/navigation page and does not render Question controls.
+
+### Issues
+
+- None.
+
+### Next Step
+
+- Await manual review of `/study/1`.
+
 ---
 
 # 41. Current Phase

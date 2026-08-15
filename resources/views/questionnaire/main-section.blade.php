@@ -3,7 +3,9 @@
 @section('title', $mainSection->name)
 
 @section('content')
-    @php($summary = $mainSection->progress_summary)
+    @php
+        $summary = $mainSection->progress_summary;
+    @endphp
 
     <div class="questionnaire-app">
         <div class="shell shell-study">
@@ -60,28 +62,37 @@
                     </div>
                 </header>
 
-                <section class="subsection-cards-grid">
+                <section class="study-header-card subsection-overview-list">
                     @foreach ($mainSection->children as $subsection)
-                        @php($subSummary = $subsection->progress_summary)
-                        <article class="main-section-card subsection-card">
-                            <div class="main-section-card-head">
-                                <div class="main-section-title">{{ $subsection->name }}</div>
-                                @if ($subSummary['needs_review'])
-                                    <span class="review-inline"><i class="fa-solid fa-triangle-exclamation"></i> يحتاج مراجعة</span>
-                                @endif
-                            </div>
+                        @php
+                            $subSummary = $subsection->progress_summary;
+                            $subsectionQuestionCount = (int) ($subsection->question_count ?? ($subSummary['question_count'] ?? 0));
+                            $subsectionAnsweredCount = (int) ($subsection->answered_count ?? ($subSummary['answered'] ?? 0));
+                        @endphp
 
-                            <div class="main-section-progress-meta">
-                                <span>{{ $subSummary['answered'] }} / {{ $subSummary['total'] }} سؤال</span>
-                                <span>{{ $subSummary['percentage'] ?? 0 }}%</span>
-                            </div>
+                        <article class="subsection-overview-row">
+                            <div class="subsection-overview-main">
+                                <div class="subsection-overview-title-line">
+                                    @if ($subsectionQuestionCount > 0)
+                                        <a class="subsection-overview-link" href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection]) }}">
+                                            {{ $subsection->name }}
+                                        </a>
+                                    @else
+                                        <span class="subsection-overview-title">{{ $subsection->name }}</span>
+                                    @endif
 
-                            <div class="progress questionnaire-progress" role="progressbar" aria-valuenow="{{ $subSummary['percentage'] ?? 0 }}" aria-valuemin="0" aria-valuemax="100">
-                                <div class="progress-bar" style="width: {{ $subSummary['percentage'] ?? 0 }}%"></div>
-                            </div>
+                                    @if ($subSummary['needs_review'])
+                                        <span class="review-inline"><i class="fa-solid fa-triangle-exclamation"></i> يحتاج مراجعة</span>
+                                    @endif
+                                </div>
 
-                            <div class="main-section-actions">
-                                <a class="btn btn-questionnaire-primary" href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection]) }}">متابعة</a>
+                                <div class="subsection-overview-meta">
+                                    @if ($subsectionQuestionCount > 0)
+                                        <span>{{ $subsectionAnsweredCount }} / {{ $subsectionQuestionCount }} سؤال</span>
+                                    @else
+                                        <span>0 سؤال</span>
+                                    @endif
+                                </div>
                             </div>
                         </article>
                     @endforeach
