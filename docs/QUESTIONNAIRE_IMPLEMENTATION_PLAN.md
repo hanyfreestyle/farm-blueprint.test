@@ -75,6 +75,7 @@ AGENTS.md
 البنية الأساسية:
 
 Section
+→ Subsection
 → Questions
 → Question Options
 → Answers
@@ -88,6 +89,14 @@ Section
 
 عند تعديل الإجابة يتم تحديث نفس Answer.
 
+هيكل الأقسام المعتمد الآن:
+
+Main Section
+→ Subsection
+→ Questions
+
+ولا يتم اعتماد شجرة عميقة عامة في هذا المشروع.
+
 ---
 
 # 5. Sections
@@ -96,9 +105,15 @@ Section
 
 وهي المصدر الذي يتم منه بناء القائمة الجانبية في واجهة المستخدم.
 
+يتم استخدام جدول واحد ذاتي الربط لدعم مستويين منطقيين فقط:
+
+- Main Section
+- Subsection
+
 الحقول المبدئية:
 
 - id
+- parent_id nullable
 - name
 - description
 - sort_order
@@ -117,6 +132,31 @@ sort_order
 - Filament
 - Frontend Sidebar
 - Technical Report
+
+معنى parent_id:
+
+parent_id = null
+→ Main Section
+
+parent_id != null
+→ Subsection
+
+العلاقات:
+
+- Section belongsTo Parent
+- Section hasMany Children
+- Section hasMany Questions
+
+قاعدة البنية:
+
+- يدعم المشروع مستويين منطقيين فقط للأقسام
+- الأسئلة تنتمي عادة إلى Subsections
+- لا يتم بناء deep tree عام
+
+سلوك الحذف الآمن:
+
+- حذف Main Section مع وجود Subsections تحته يجب أن يكون مرفوضاً
+- حذف أي Section ما دام مرتبطاً به Questions يجب أن يكون مرفوضاً
 
 ---
 
@@ -138,7 +178,6 @@ sort_order
 - dependency_value nullable
 - report_category nullable
 - target_entity nullable
-- metadata nullable
 - timestamps
 
 لا يتم اعتماد الحقول النهائية قبل تنفيذ Phase 1 ومراجعة المشروع فعليًا.
@@ -930,26 +969,42 @@ Goal:
 
 Tasks:
 
-- [ ] Read AGENTS.md completely
-- [ ] Verify Laravel version
-- [ ] Verify PHP version
-- [ ] Verify Filament version
-- [ ] Verify database
-- [ ] Verify installed packages
-- [ ] Verify localization conventions
-- [ ] Verify Filament Resource conventions
-- [ ] Verify frontend conventions
-- [ ] Verify UTF-8
-- [ ] Verify BOM
-- [ ] Verify line endings
-- [ ] Review .editorconfig
-- [ ] Review .gitattributes
-- [ ] Verify text hygiene tooling if present
-- [ ] Document findings
-- [ ] Confirm Phase 1 architecture
+- [x] Read AGENTS.md completely
+- [x] Verify Laravel version
+- [x] Verify PHP version
+- [x] Verify Filament version
+- [x] Verify database
+- [x] Verify installed packages
+- [x] Verify localization conventions
+- [x] Verify Filament Resource conventions
+- [x] Verify frontend conventions
+- [x] Verify UTF-8
+- [x] Verify BOM
+- [x] Verify line endings
+- [x] Review .editorconfig
+- [x] Review .gitattributes
+- [x] Verify text hygiene tooling if present
+- [x] Document findings
+- [x] Confirm Phase 1 architecture
+
+Verified Core Findings:
+
+- AGENTS.md matches the current Core stack in the audited areas and did not require correction during Phase 0.
+- PHP CLI version verified: 8.2.12.
+- Laravel version verified: 12.66.0.
+- Filament version verified from composer.lock: 4.12.6.
+- Database configuration supports multiple drivers, with MySQL defined and the default connection remaining environment-driven through `DB_CONNECTION`.
+- The questionnaire plan file is valid UTF-8 without BOM and uses LF line endings; Arabic text rendering issues observed in terminal output are display-side mojibake, not a repository encoding defect.
+- Audited directories `app/`, `resources/`, `lang/`, `database/`, and `docs/` currently contain no UTF-8 BOM files and no CRLF files.
+- `.editorconfig` already enforces `charset = utf-8`, `end_of_line = lf`, and `insert_final_newline = true`.
+- `.gitattributes` already enforces `* text=auto eol=lf`.
+- No dedicated repository-wide text hygiene script or test exists at the moment; Phase 0 did not introduce one because no encoding or line-ending defect was found.
+- Existing Filament resources confirm the current Core conventions: separate Resource / Schemas / Tables / Pages classes, translation-backed labels, session-persisted table state, modal filters with four columns when filters exist, `->iconButton()` record actions, and full-width admin pages.
+- Localization conventions are aligned with AGENTS.md: admin content locales come from `config/core.php`, frontend localized routes come from `mcamara/laravel-localization`, and translatable content uses Spatie Translatable.
+- Frontend baseline currently uses Blade + Vite + Tailwind CSS v4 in the starter project; the questionnaire-specific Bootstrap 5 / RTL / Font Awesome 6 / Tajawal stack remains a future approved direction for questionnaire frontend work rather than an existing Core-wide frontend implementation.
 
 Status:
-Pending
+Completed
 
 ---
 
@@ -975,22 +1030,22 @@ Expected scope:
 
 Tasks:
 
-- [ ] Finalize table structure
-- [ ] Create migrations
-- [ ] Create QuestionType enum
-- [ ] Create AnswerReviewStatus enum if approved
-- [ ] Create models
-- [ ] Add relationships
-- [ ] Add casts
-- [ ] Add constraints
-- [ ] Add indexes
-- [ ] Add database tests
-- [ ] Run migrations
-- [ ] Run tests
-- [ ] Update plan
+- [x] Finalize table structure
+- [x] Create migrations
+- [x] Create QuestionType enum
+- [x] Create AnswerReviewStatus enum if approved
+- [x] Create models
+- [x] Add relationships
+- [x] Add casts
+- [x] Add constraints
+- [x] Add indexes
+- [x] Add database tests
+- [x] Run migrations
+- [x] Run tests
+- [x] Update plan
 
 Status:
-Pending
+Completed
 
 ---
 
@@ -1175,6 +1230,16 @@ Technical report initially uses browser Print instead of PDF library.
 Status:
 Approved
 
+## AD-011
+
+Questionnaire Sections use a two-level self-referencing hierarchy:
+
+Main Section
+→ Subsection
+
+Status:
+Approved
+
 ---
 
 # 38. Deferred Decisions
@@ -1232,18 +1297,137 @@ Format:
 
 ### Next Step
 
+## 2026-08-15 - Phase 0
+
+### Planned
+
+- Audit the current Laravel Core before any questionnaire implementation.
+- Verify AGENTS.md against the actual repository state.
+- Confirm repository text hygiene and file editing safety conditions.
+- Stop after documenting Phase 0 findings and Phase 1 recommendations.
+
+### Implemented
+
+- Read AGENTS.md and the questionnaire implementation plan completely.
+- Verified PHP, Laravel, Filament, Node, npm, database configuration, and key installed package versions from the repository.
+- Inspected current Filament resources, localization helpers, admin panel provider, user model, routes, and frontend package configuration to capture actual project conventions.
+- Audited UTF-8 validity, BOM presence, and LF / CRLF status across `app/`, `resources/`, `lang/`, `database/`, and `docs/`.
+- Reviewed `.editorconfig` and `.gitattributes`.
+- Confirmed Phase 1 should retain the approved simplified questionnaire architecture with no questionnaire session layer.
+
+### Files Created
+
+- None.
+
+### Files Modified
+
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- `php -v`
+- `php artisan --version`
+- Read-only repository inspection of composer metadata, configuration, Filament resources, and localization helpers
+- Read-only UTF-8 / BOM / line-ending audit across the target directories
+
+### Findings
+
+- AGENTS.md is materially aligned with the actual Core and required no factual correction in Phase 0.
+- Verified versions: PHP 8.2.12, Laravel 12.66.0, Filament 4.12.6, Node 22.14.0, npm 10.9.2.
+- MySQL remains part of the intended Core stack and is fully configured, while the active default connection stays environment-driven.
+- Existing resource patterns are suitable as the direct reference for future questionnaire Resources.
+- The repository is already stable on the target text format standard in the audited directories.
+- No existing automated text hygiene tool was found.
+
+### Decisions
+
+- Phase 0 remains documentation and audit only; no questionnaire application code was created.
+- The plan continues to use the approved simplified architecture: one questionnaire, no questionnaire sessions, one current answer per question, optional notes triggering review, and a later technical specification output.
+
+### Issues
+
+- `composer show` and `git status` are blocked in this execution environment by Git safe-directory ownership checks, so package verification relied on `composer.lock`, `composer.json`, and installed project code instead.
+
+### Next Step
+
+- Await approval for Phase 1 - Core Data Model.
+
+## 2026-08-15 - Phase 1
+
+### Planned
+
+- Build the minimal questionnaire domain foundation only.
+- Add the approved two-level section hierarchy using one self-referencing table.
+- Create migrations, enums, models, relationships, casts, constraints, and focused database tests.
+- Stop before any Filament, frontend, or report-generation work.
+
+### Implemented
+
+- Created questionnaire migrations for sections, questions, question options, and answers.
+- Added `QuestionType`, `QuestionDependencyOperator`, and `AnswerReviewStatus` enums.
+- Added questionnaire models with relationships, defaults, casts, and safe domain rules.
+- Implemented automatic `notes` → `needs_review` synchronization and `review_status` → `reviewed_at` synchronization in the answer model.
+- Added focused feature tests covering hierarchy, deletion safety, relationships, uniqueness constraints, JSON answer storage, notes review behavior, and reviewed-state timestamps.
+- Updated the implementation plan to reflect the approved main-section / subsection hierarchy and Phase 1 completion.
+
+### Files Created
+
+- `app/Enums/Questionnaire/QuestionType.php`
+- `app/Enums/Questionnaire/QuestionDependencyOperator.php`
+- `app/Enums/Questionnaire/AnswerReviewStatus.php`
+- `lang/en/enums/questionnaire.php`
+- `lang/ar/enums/questionnaire.php`
+- `tests/Feature/QuestionnaireCoreDataModelTest.php`
+
+### Files Modified
+
+- `database/migrations/2026_08_15_144817_create_questionnaire_sections_table.php`
+- `database/migrations/2026_08_15_144818_create_questionnaire_questions_table.php`
+- `database/migrations/2026_08_15_144819_create_questionnaire_question_options_table.php`
+- `database/migrations/2026_08_15_144820_create_questionnaire_answers_table.php`
+- `app/Models/QuestionnaireSection.php`
+- `app/Models/QuestionnaireQuestion.php`
+- `app/Models/QuestionnaireQuestionOption.php`
+- `app/Models/QuestionnaireAnswer.php`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- Questionnaire core data model feature tests
+- Migration execution against SQLite in-memory configuration
+
+### Findings
+
+- The two-level section hierarchy fits cleanly in a single self-referencing table without needing a tree package.
+- Safe deletion is handled by FK restrictions for parent sections and section-owned questions.
+- A single JSON answer value column can support scalar and array answers while keeping the model API simple.
+
+### Decisions
+
+- `report_category` and `target_entity` remain nullable strings in Phase 1.
+- `metadata` remains deferred and was not added.
+- Dependency parent deletion clears only `depends_on_question_id`; dependent questions remain intact.
+
+### Issues
+
+- None beyond the previously known terminal mojibake display issue for Arabic text in this environment.
+
+### Next Step
+
+- Await approval for Phase 2 - Filament Administration.
+
 ---
 
 # 41. Current Phase
 
 Current Phase:
 
-Phase 0 — Project Audit & Repository Hygiene
+Phase 1 — Core Data Model
 
 Status:
 
-Pending
+Completed
 
 Next Action:
 
-Read AGENTS.md and inspect the existing Laravel Core before any questionnaire implementation.
+Await approval for Phase 2 - Filament Administration.
