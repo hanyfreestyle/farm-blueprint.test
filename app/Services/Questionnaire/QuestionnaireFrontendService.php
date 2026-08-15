@@ -54,14 +54,16 @@ class QuestionnaireFrontendService
             ->get();
 
         $mainSections->each(function (QuestionnaireSection $mainSection): void {
-            $mainSection->children->each(function (QuestionnaireSection $subsection): void {
+            $allChildren = $mainSection->children->values();
+
+            $allChildren->each(function (QuestionnaireSection $subsection): void {
                 $subsection->setAttribute('progress_summary', $this->buildSubsectionProgressSummary($subsection));
             });
 
-            $visibleChildren = $this->filterVisibleSubsections($mainSection->children);
+            $visibleChildren = $this->filterVisibleSubsections($allChildren);
 
+            $mainSection->setAttribute('progress_summary', $this->buildMainSectionProgressSummary($allChildren));
             $mainSection->setRelation('children', $visibleChildren);
-            $mainSection->setAttribute('progress_summary', $this->buildMainSectionProgressSummary($mainSection));
             $mainSection->setAttribute('visible_subsections_count', $visibleChildren->count());
         });
 
@@ -281,19 +283,22 @@ class QuestionnaireFrontendService
         ];
     }
 
-    private function buildMainSectionProgressSummary(QuestionnaireSection $mainSection): array
+    /**
+     * @param  Collection<int, QuestionnaireSection>  $subsections
+     */
+    private function buildMainSectionProgressSummary(Collection $subsections): array
     {
-        $summaries = $mainSection->children->map(
+        $summaries = $subsections->map(
             fn (QuestionnaireSection $subsection): array => $subsection->progress_summary ?? $this->buildSubsectionProgressSummary($subsection)
         );
 
         $answered = $summaries->sum('answered');
-        $total = $summaries->sum('total');
+        $total = $summaries->sum('question_count');
         $needsReview = $summaries->contains(fn (array $summary): bool => $summary['needs_review'] === true);
         $hasStarted = $summaries->contains(fn (array $summary): bool => ($summary['answered'] ?? 0) > 0);
         $allNonEmptyComplete = $summaries
-            ->filter(fn (array $summary): bool => ($summary['total'] ?? 0) > 0)
-            ->every(fn (array $summary): bool => ($summary['answered'] ?? 0) === ($summary['total'] ?? 0));
+            ->filter(fn (array $summary): bool => ($summary['question_count'] ?? 0) > 0)
+            ->every(fn (array $summary): bool => ($summary['answered'] ?? 0) === ($summary['question_count'] ?? 0));
 
         $status = $total === 0
             ? 'empty'

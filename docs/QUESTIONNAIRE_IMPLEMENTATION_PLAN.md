@@ -1702,6 +1702,51 @@ Format:
 
 - Await the next approved frontend or report instruction.
 
+## 2026-08-15 - Phase 3A-R3
+
+### Planned
+
+- Correct Home-page Main Section aggregation without changing any questionnaire flow or persistence behavior.
+- Reposition the Home-page PDF placeholder button inside a cleaner header action area only.
+
+### Implemented
+
+- Fixed Main Section totals so they are aggregated from all child Subsections instead of being distorted by visible-child filtering.
+- Changed Main Section progress totals to use all child-subsection question counts while keeping answered counts based on answered applicable questions.
+- Moved the PDF placeholder button into a dedicated Home header action area with compact RTL-friendly alignment.
+
+### Files Created
+
+- None.
+
+### Files Modified
+
+- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
+- `resources/views/questionnaire/home.blade.php`
+- `public/css/questionnaire.css`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- No automated test run was performed for this Home-page-only correction.
+
+### Findings
+
+- Main Section counting was previously coupled to filtered visible Subsections and to applicable-question totals, which could understate the true child-question total on Home cards.
+
+### Decisions
+
+- `show_zero_main_sections` and `show_zero_subsections` remain visibility-only settings and do not alter Main Section question aggregation.
+- The Home PDF button remains a placeholder with `href="#"` and no PDF behavior.
+
+### Issues
+
+- None.
+
+### Next Step
+
+- Await manual Home-page review.
+
 ---
 
 # 41. Current Phase
