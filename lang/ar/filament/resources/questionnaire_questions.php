@@ -1,0 +1,61 @@
+<?php
+
+return [
+    'navigation_group' => 'الاستبيان',
+    'navigation_label' => 'الأسئلة',
+    'model_label' => 'سؤال',
+    'plural_model_label' => 'الأسئلة',
+    'sections' => [
+        'basic' => 'المعلومات الأساسية',
+        'options' => 'نوع السؤال والخيارات',
+        'dependency' => 'الظهور الشرطي',
+        'report' => 'بيانات التقرير الفني',
+    ],
+    'fields' => [
+        'main_section_id' => 'القسم الرئيسي',
+        'section_id' => 'القسم الفرعي',
+        'title' => 'عنوان السؤال',
+        'help_text' => 'نص مساعد',
+        'type' => 'نوع السؤال',
+        'is_required' => 'إجباري',
+        'sort_order' => 'الترتيب',
+        'option_label' => 'النص الظاهر',
+        'option_value' => 'القيمة الداخلية',
+        'has_dependency' => 'هل يعتمد ظهور هذا السؤال على سؤال آخر؟',
+        'depends_on_question_id' => 'السؤال الأب',
+        'dependency_operator' => 'المعامل',
+        'dependency_value' => 'القيمة المتوقعة',
+        'report_category' => 'تصنيف التقرير',
+        'target_entity' => 'الكيان المستهدف',
+        'has_answer' => 'له إجابة',
+        'needs_review' => 'يحتاج مراجعة',
+    ],
+    'actions' => [
+        'add_option' => 'إضافة خيار',
+    ],
+    'hints' => [
+        'section_id' => 'يجب أن ينتمي السؤال إلى قسم فرعي وليس إلى قسم رئيسي مباشرة.',
+        'options' => 'تُدار الخيارات هنا فقط لأسئلة الاختيار الواحد والاختيار المتعدد والقائمة المنسدلة.',
+        'option_value' => 'تُستخدم هذه القيمة داخلياً في الإجابات والاعتماديات.',
+    ],
+    'messages' => [
+        'options_required' => 'يجب إضافة خيار واحد على الأقل لهذا النوع من الأسئلة.',
+        'options_type_change' => 'لا يمكن تغيير النوع إلى نوع بدون خيارات بينما لا تزال الخيارات الحالية موجودة. احذف الخيارات أولاً.',
+        'subsection_required' => 'يرجى اختيار قسم فرعي قبل حفظ السؤال.',
+        'dependency_question_required' => 'يرجى اختيار السؤال الأب لهذا الشرط.',
+        'self_dependency' => 'لا يمكن أن يعتمد السؤال على نفسه.',
+    ],
+    'report_categories' => [
+        'field' => 'حقل',
+        'lookup' => 'قائمة مرجعية',
+        'relationship' => 'علاقة',
+        'workflow' => 'سير عمل',
+        'rule' => 'قاعدة',
+        'alert' => 'تنبيه',
+        'report' => 'تقرير',
+        'general' => 'عام',
+    ],
+    'values' => [
+        'unspecified' => 'غير محدد',
+    ],
+];

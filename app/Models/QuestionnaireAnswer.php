@@ -50,4 +50,15 @@ class QuestionnaireAnswer extends Model
     {
         return $this->belongsTo(QuestionnaireQuestion::class, 'question_id');
     }
+
+    public function formatValueForDisplay(): string
+    {
+        $question = $this->question;
+
+        if (! $question instanceof QuestionnaireQuestion) {
+            return __('filament/resources/questionnaire_answers.values.empty');
+        }
+
+        return $question->formatAnswerValue($this->value);
+    }
 }

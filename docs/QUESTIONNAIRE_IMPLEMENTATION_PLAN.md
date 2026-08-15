@@ -1057,22 +1057,22 @@ Goal:
 
 Tasks:
 
-- [ ] Section Resource
-- [ ] Question Resource
-- [ ] Dynamic Question Type form
-- [ ] Options Repeater
-- [ ] Conditional Question settings
-- [ ] Report Category
-- [ ] Target Entity
-- [ ] Answers administration
-- [ ] Needs Review indicators
-- [ ] Review action
-- [ ] Filament permissions according to Core
-- [ ] Automated tests
-- [ ] Update plan
+- [x] Section Resource
+- [x] Question Resource
+- [x] Dynamic Question Type form
+- [x] Options Repeater
+- [x] Conditional Question settings
+- [x] Report Category
+- [x] Target Entity
+- [x] Answers administration
+- [x] Needs Review indicators
+- [x] Review action
+- [x] Filament permissions according to Core
+- [x] Automated tests
+- [x] Update plan
 
 Status:
-Pending
+Completed
 
 ---
 
@@ -1236,6 +1236,20 @@ Questionnaire Sections use a two-level self-referencing hierarchy:
 
 Main Section
 → Subsection
+
+Status:
+Approved
+
+## AD-012
+
+Questionnaire Answers may be created from Filament only for Questions that do not already have an Answer.
+
+Status:
+Approved
+
+## AD-013
+
+Changing a Question from an option-based type to a non-option type is blocked while Options still exist, to avoid silent data loss.
 
 Status:
 Approved
@@ -1416,13 +1430,96 @@ Format:
 
 - Await approval for Phase 2 - Filament Administration.
 
+## 2026-08-15 - Phase 2
+
+### Planned
+
+- Verify Phase 1 questionnaire migrations against the actual MySQL development database.
+- Build Filament Administration for sections, questions, and answers only.
+- Keep question options inside the question form through a repeater.
+- Add simple review workflow, translations, and focused tests without starting frontend or report generation.
+
+### Implemented
+
+- Verified the four questionnaire Phase 1 migrations on the local MySQL development database and ran them successfully.
+- Added Filament resources, pages, schemas, and tables for questionnaire sections, questions, and answers.
+- Added section hierarchy admin controls, main-section to subsection selection flow, dynamic question-type behavior, dependency settings, and answer review actions.
+- Added translation files in Arabic and English for all three questionnaire resources.
+- Added questionnaire policies following the existing Shield policy naming convention.
+- Added focused tests for Filament-admin-supporting behavior and readable answer formatting.
+- Updated the implementation plan to mark Phase 2 complete and record the implementation details discovered during execution.
+
+### Files Created
+
+- `app/Filament/Resources/QuestionnaireSections/QuestionnaireSectionResource.php`
+- `app/Filament/Resources/QuestionnaireSections/Schemas/QuestionnaireSectionForm.php`
+- `app/Filament/Resources/QuestionnaireSections/Tables/QuestionnaireSectionsTable.php`
+- `app/Filament/Resources/QuestionnaireSections/Pages/ListQuestionnaireSections.php`
+- `app/Filament/Resources/QuestionnaireSections/Pages/CreateQuestionnaireSection.php`
+- `app/Filament/Resources/QuestionnaireSections/Pages/EditQuestionnaireSection.php`
+- `app/Filament/Resources/QuestionnaireQuestions/QuestionnaireQuestionResource.php`
+- `app/Filament/Resources/QuestionnaireQuestions/Schemas/QuestionnaireQuestionForm.php`
+- `app/Filament/Resources/QuestionnaireQuestions/Tables/QuestionnaireQuestionsTable.php`
+- `app/Filament/Resources/QuestionnaireQuestions/Pages/ListQuestionnaireQuestions.php`
+- `app/Filament/Resources/QuestionnaireQuestions/Pages/CreateQuestionnaireQuestion.php`
+- `app/Filament/Resources/QuestionnaireQuestions/Pages/EditQuestionnaireQuestion.php`
+- `app/Filament/Resources/QuestionnaireAnswers/QuestionnaireAnswerResource.php`
+- `app/Filament/Resources/QuestionnaireAnswers/Schemas/QuestionnaireAnswerForm.php`
+- `app/Filament/Resources/QuestionnaireAnswers/Tables/QuestionnaireAnswersTable.php`
+- `app/Filament/Resources/QuestionnaireAnswers/Pages/ListQuestionnaireAnswers.php`
+- `app/Filament/Resources/QuestionnaireAnswers/Pages/CreateQuestionnaireAnswer.php`
+- `app/Filament/Resources/QuestionnaireAnswers/Pages/EditQuestionnaireAnswer.php`
+- `app/Policies/QuestionnaireSectionPolicy.php`
+- `app/Policies/QuestionnaireQuestionPolicy.php`
+- `app/Policies/QuestionnaireAnswerPolicy.php`
+- `lang/en/filament/resources/questionnaire_sections.php`
+- `lang/ar/filament/resources/questionnaire_sections.php`
+- `lang/en/filament/resources/questionnaire_questions.php`
+- `lang/ar/filament/resources/questionnaire_questions.php`
+- `lang/en/filament/resources/questionnaire_answers.php`
+- `lang/ar/filament/resources/questionnaire_answers.php`
+- `tests/Feature/QuestionnaireFilamentAdminSupportTest.php`
+
+### Files Modified
+
+- `app/Models/QuestionnaireQuestion.php`
+- `app/Models/QuestionnaireAnswer.php`
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Tests
+
+- MySQL migration verification through `php artisan migrate`
+- Questionnaire core data model tests
+- Questionnaire Filament admin support tests
+- Resource route registration verification
+
+### Findings
+
+- The Phase 1 questionnaire schema works correctly on the local MySQL development database.
+- The existing Filament Core split structure adapts cleanly to questionnaire sections, questions, and answers.
+- Readable answer formatting is best centralized in the questionnaire model layer instead of duplicating mapping logic across tables and forms.
+
+### Decisions
+
+- Answers can be created from Filament only for unanswered questions.
+- Type changes from option-based questions to non-option types are blocked while options still exist.
+- Section delete UX now stops before the database exception and shows a readable admin message when child subsections or questions still exist.
+
+### Issues
+
+- Shield permission generation command was reviewed, but existing manually created questionnaire policies already follow the project Shield convention, so no extra generator write step was required during this phase.
+
+### Next Step
+
+- Await Human Review before Phase 3 - Questionnaire Frontend.
+
 ---
 
 # 41. Current Phase
 
 Current Phase:
 
-Phase 1 — Core Data Model
+Phase 2 — Filament Administration
 
 Status:
 
@@ -1430,4 +1527,4 @@ Completed
 
 Next Action:
 
-Await approval for Phase 2 - Filament Administration.
+Await Human Review before Phase 3 - Questionnaire Frontend.

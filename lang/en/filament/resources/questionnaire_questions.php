@@ -1,0 +1,61 @@
+<?php
+
+return [
+    'navigation_group' => 'Questionnaire',
+    'navigation_label' => 'Questions',
+    'model_label' => 'Question',
+    'plural_model_label' => 'Questions',
+    'sections' => [
+        'basic' => 'Basic information',
+        'options' => 'Question type and options',
+        'dependency' => 'Conditional display',
+        'report' => 'Technical report metadata',
+    ],
+    'fields' => [
+        'main_section_id' => 'Main section',
+        'section_id' => 'Subsection',
+        'title' => 'Question title',
+        'help_text' => 'Help text',
+        'type' => 'Question type',
+        'is_required' => 'Required',
+        'sort_order' => 'Sort order',
+        'option_label' => 'Label',
+        'option_value' => 'Value',
+        'has_dependency' => 'Does this question depend on another question?',
+        'depends_on_question_id' => 'Parent question',
+        'dependency_operator' => 'Operator',
+        'dependency_value' => 'Expected value',
+        'report_category' => 'Report category',
+        'target_entity' => 'Target entity',
+        'has_answer' => 'Has answer',
+        'needs_review' => 'Needs review',
+    ],
+    'actions' => [
+        'add_option' => 'Add option',
+    ],
+    'hints' => [
+        'section_id' => 'Questions must belong to a subsection, not directly to a main section.',
+        'options' => 'Options are managed here only for single choice, multi choice, and select questions.',
+        'option_value' => 'A stable internal value will be used in stored answers and dependencies.',
+    ],
+    'messages' => [
+        'options_required' => 'At least one option is required for this question type.',
+        'options_type_change' => 'This question still has options. Remove them first before changing to a non-option type.',
+        'subsection_required' => 'Please choose a subsection before saving the question.',
+        'dependency_question_required' => 'Please choose the parent question for this dependency.',
+        'self_dependency' => 'A question cannot depend on itself.',
+    ],
+    'report_categories' => [
+        'field' => 'Field',
+        'lookup' => 'Lookup',
+        'relationship' => 'Relationship',
+        'workflow' => 'Workflow',
+        'rule' => 'Rule',
+        'alert' => 'Alert',
+        'report' => 'Report',
+        'general' => 'General',
+    ],
+    'values' => [
+        'unspecified' => 'Unspecified',
+    ],
+];
