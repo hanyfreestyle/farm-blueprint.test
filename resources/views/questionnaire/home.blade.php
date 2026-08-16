@@ -20,6 +20,16 @@
                     </div>
 
                     <div class="home-actions">
+                        <a class="btn btn-questionnaire-primary" href="{{ route('technical-report.preview') }}">
+                            <i class="fa-solid fa-file-lines"></i>
+                            <span>عرض التقرير الفني</span>
+                        </a>
+
+                        <a class="btn btn-questionnaire-secondary" href="{{ route('technical-report.download') }}">
+                            <i class="fa-solid fa-download"></i>
+                            <span>تحميل التقرير MD</span>
+                        </a>
+
                         <a class="btn btn-questionnaire-secondary" href="#">
                             <i class="fa-solid fa-file-pdf"></i>
                             <span>طباعة التقرير PDF</span>

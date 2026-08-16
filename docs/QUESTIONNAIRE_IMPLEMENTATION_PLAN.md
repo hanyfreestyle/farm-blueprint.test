@@ -1834,11 +1834,78 @@ Format:
 
 ---
 
-# 41. Current Phase
+# 41. Phase 3B - Master Technical Specification Pilot
+
+## Planned
+
+- Generate one master technical report for the entire questionnaire hierarchy.
+- Output Markdown only using a deterministic PHP transformation.
+- Include all Main Sections and all Subsections, even when a Subsection still has zero questions.
+- Interpret the currently answered Farm Data Pilot subsection and aggregate the rest of the hierarchy safely.
+
+## Implemented
+
+- Added one master technical report service built around `buildReportData()` then `renderMarkdown()`.
+- Loaded the full Section/Subsection hierarchy directly from the database without using frontend visibility settings.
+- Added a live preview route and a Markdown download route for the same generated report content.
+- Implemented current deterministic interpretation rules for `إدخال البيانات الأساسية للمزرعة -> بيانات المزرعة`.
+- Added consolidated global chapters for Entities, Fields, Enums, Lookup Tables, Relationships, Business Rules, UI Requirements, Needs Review, Unanswered Questions, and Decision Log.
+- Kept generation on demand only with no report persistence, no PDF generation, and no AI generation.
+- Updated the Home page with compact actions for report preview and Markdown download.
+- Added focused automated tests for hierarchy coverage, numbering, zero-question visibility, interpretation behavior, unresolved handling, notes aggregation, consistency checks, and download behavior.
+
+## Decisions
+
+- ONE master technical report only: `rabbit-farm-technical-specification.md`
+- Markdown output only in this phase
+- Entire Section/Subsection hierarchy remains visible in the report
+- Zero-question Subsections remain visible in the report
+- Farm Data currently has the only detailed interpretation mapping
+- Future Subsections will join the same report through the same master service
+- No separate report per Subsection
+- No AI generation
+- Deterministic PHP transformation only
+- Consolidated Entities / Fields / Enums / Lookups / Relationships / Rules are generated from approved current answers only
+- Needs Review items are aggregated per Subsection and globally
+- Unanswered applicable Questions are aggregated per Subsection and globally
+- Report generation is on demand only
+- No report persistence
+- No PDF generation yet
+
+## Tests
+
+- Master report includes all Main Sections
+- Master report includes all Subsections
+- Zero-question Subsection still appears
+- Section numbering follows sort order
+- Farm Data answers generate technical interpretation
+- Unanswered applicable Question appears as unresolved
+- Non-applicable Question is not treated as unresolved
+- Yes/No `false` is treated as a valid Answer
+- Fixed Farm Status produces Enum output
+- Managed Farm Status produces Lookup output
+- Fixed Activity produces Enum output
+- Managed Activity produces Lookup output
+- Notes appear in Needs Review
+- Free-text Farm requirement appears in Needs Review
+- Contradictions appear in Needs Review
+- Consolidated sections are generated
+- Download returns the expected Markdown filename
+- Arabic report content remains readable
+
+## Status
+
+Completed
+
+## Next Action
+
+HUMAN review of the generated Master Markdown specification.
+
+# 42. Current Phase
 
 Current Phase:
 
-Phase 3A-R2 - Home Configuration Revision
+Phase 3B - Master Technical Specification Pilot
 
 Status:
 
@@ -1846,5 +1913,5 @@ Completed
 
 Next Action:
 
-Await the next approved frontend or report instruction.
+HUMAN review of the generated Master Markdown specification.
 

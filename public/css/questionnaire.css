@@ -697,6 +697,21 @@ a {
     gap: 10px;
 }
 
+.technical-report-preview-card {
+    margin-top: 18px;
+    overflow: auto;
+}
+
+.technical-report-preview {
+    margin: 0;
+    white-space: pre-wrap;
+    word-break: break-word;
+    direction: rtl;
+    font-family: "Courier New", monospace;
+    font-size: 13px;
+    line-height: 1.8;
+}
+
 .markdown-content > *:last-child {
     margin-bottom: 0;
 }
