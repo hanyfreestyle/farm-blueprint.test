@@ -61,6 +61,10 @@
                                     @endif
                                 </div>
 
+                                @if (filled($subsection->description))
+                                    <div class="study-description markdown-content">{!! \Illuminate\Support\Str::markdown($subsection->description) !!}</div>
+                                @endif
+
                                 <div class="subsection-overview-meta">
                                     @if ($subsectionQuestionCount > 0)
                                         <span>{{ $subsectionAnsweredCount }} / {{ $subsectionQuestionCount }} سؤال</span>
