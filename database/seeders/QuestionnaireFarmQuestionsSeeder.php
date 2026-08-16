@@ -3,6 +3,9 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Questions\FarmStructure\BarnDataQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\BatteryDataQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\BreedDataQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\CageDataQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\FarmDataQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
@@ -12,6 +15,9 @@ class QuestionnaireFarmQuestionsSeeder extends Seeder {
     $this->call([
       FarmDataQuestionsSeeder::class,
       BarnDataQuestionsSeeder::class,
+      BatteryDataQuestionsSeeder::class,
+      CageDataQuestionsSeeder::class,
+      BreedDataQuestionsSeeder::class,
     ]);
 
 
