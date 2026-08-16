@@ -11,3 +11,4 @@ Route::get('/study/{mainSection}/{subsection}/questions/{question}', [Questionna
 Route::get('/study/{mainSection}/{subsection}/completed', [QuestionnairePageController::class, 'completion'])->name('study.subsection.complete');
 Route::post('/questionnaire/questions/{question}/answer', [QuestionnaireAnswerController::class, 'store'])->name('questionnaire.answers.store');
 Route::post('/questionnaire/questions/{question}/continue', [QuestionnaireAnswerController::class, 'continue'])->name('questionnaire.answers.continue');
+Route::post('/study/{mainSection}/{subsection}/questions/{question}/skip', [QuestionnaireAnswerController::class, 'skip'])->name('study.question.skip');

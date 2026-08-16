@@ -6,6 +6,7 @@ use App\Http\Controllers\Controller;
 use App\Http\Requests\Questionnaire\SaveQuestionnaireAnswerRequest;
 use App\Http\Requests\Questionnaire\SubmitQuestionnaireAnswerStepRequest;
 use App\Models\QuestionnaireQuestion;
+use App\Models\QuestionnaireSection;
 use App\Services\Questionnaire\QuestionnaireFrontendService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
@@ -63,6 +64,27 @@ class QuestionnaireAnswerController extends Controller
         return redirect()->route('study.subsection.complete', [
             'mainSection' => $refreshedContext['mainSection'],
             'subsection' => $refreshedContext['subsection'],
+        ]);
+    }
+
+    public function skip(
+        QuestionnaireSection $mainSection,
+        QuestionnaireSection $subsection,
+        QuestionnaireQuestion $question,
+    ): RedirectResponse {
+        $context = $this->frontendService->getSubsectionStepContext($mainSection->id, $subsection->id, $question->id);
+
+        if ($context['nextQuestion'] instanceof QuestionnaireQuestion) {
+            return redirect()->route('study.question', [
+                'mainSection' => $context['mainSection'],
+                'subsection' => $context['subsection'],
+                'question' => $context['nextQuestion'],
+            ]);
+        }
+
+        return redirect()->route('study.subsection.complete', [
+            'mainSection' => $context['mainSection'],
+            'subsection' => $context['subsection'],
         ]);
     }
 }

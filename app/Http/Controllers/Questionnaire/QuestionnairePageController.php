@@ -76,15 +76,13 @@ class QuestionnairePageController extends Controller
 
     public function completion(QuestionnaireSection $mainSection, QuestionnaireSection $subsection): View
     {
-        $context = $this->frontendService->getSubsectionStepContext($mainSection->id, $subsection->id);
-
-        abort_if($context['currentQuestion'] instanceof QuestionnaireQuestion, 404);
+        $context = $this->frontendService->getSubsectionCompletionContext($mainSection->id, $subsection->id);
 
         return view('questionnaire.completion', [
-            'mainSections' => $this->frontendService->getVisibleMainSectionsTree(),
             'mainSection' => $context['mainSection'],
             'subsection' => $context['subsection'],
             'progressSummary' => $context['progressSummary'],
+            'applicableCount' => $context['applicableCount'],
             'nextSubsection' => $this->frontendService->getNextVisibleSubsection($context['mainSection'], $context['subsection']),
         ]);
     }

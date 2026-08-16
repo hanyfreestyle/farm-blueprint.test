@@ -132,6 +132,31 @@ class QuestionnaireFrontendService
         return $visibleSubsections->get($index + 1);
     }
 
+    /**
+     * @return array{
+     *   mainSection: QuestionnaireSection,
+     *   subsection: QuestionnaireSection,
+     *   progressSummary: array<string, mixed>,
+     *   applicableCount: int
+     * }
+     */
+    public function getSubsectionCompletionContext(int $mainSectionId, int $subsectionId): array
+    {
+        $mainSection = $this->getVisibleMainSection($mainSectionId);
+        $subsection = $mainSection->children->firstWhere('id', $subsectionId);
+
+        abort_unless($subsection instanceof QuestionnaireSection, 404);
+
+        $applicableQuestions = $this->getApplicableQuestions($subsection);
+
+        return [
+            'mainSection' => $mainSection,
+            'subsection' => $subsection,
+            'progressSummary' => $subsection->progress_summary,
+            'applicableCount' => $applicableQuestions->count(),
+        ];
+    }
+
     public function saveAnswer(QuestionnaireQuestion $question, mixed $value, ?string $notes = null): QuestionnaireAnswer
     {
         return QuestionnaireAnswer::query()->updateOrCreate(

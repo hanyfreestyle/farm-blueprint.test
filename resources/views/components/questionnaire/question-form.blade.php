@@ -28,6 +28,10 @@
     data-question-type="{{ $question->type?->value }}"
     data-save-url="{{ route('questionnaire.answers.store', $question) }}"
 >
+    <form id="question_skip_{{ $question->id }}" method="POST" action="{{ route('study.question.skip', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $question]) }}" class="question-skip-form">
+        @csrf
+    </form>
+
     <div class="question-order">السؤال {{ $sequencePosition }} من {{ $applicableCount }}</div>
 
     <div class="question-header">
@@ -53,51 +57,57 @@
 
         <div class="question-answer-area">
             @if ($question->type === \App\Enums\Questionnaire\QuestionType::YES_NO)
-                <div class="choice-list">
+                <div class="row g-2 choice-grid">
                     @foreach (['1' => 'نعم', '0' => 'لا'] as $optionValue => $optionLabel)
-                        <label class="choice-row">
-                            <input
-                                class="form-check-input"
-                                type="radio"
-                                name="value"
-                                value="{{ $optionValue }}"
-                                {{ $payload['yes_no'] === $optionValue ? 'checked' : '' }}
-                                data-answer-input
-                            >
-                            <span>{{ $optionLabel }}</span>
-                        </label>
+                        <div class="col-12 col-md-6">
+                            <label class="choice-row">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="value"
+                                    value="{{ $optionValue }}"
+                                    {{ $payload['yes_no'] === $optionValue ? 'checked' : '' }}
+                                    data-answer-input
+                                >
+                                <span>{{ $optionLabel }}</span>
+                            </label>
+                        </div>
                     @endforeach
                 </div>
             @elseif ($question->type === \App\Enums\Questionnaire\QuestionType::SINGLE_CHOICE)
-                <div class="choice-list">
+                <div class="row g-2 choice-grid">
                     @foreach ($question->options as $option)
-                        <label class="choice-row">
-                            <input
-                                class="form-check-input"
-                                type="radio"
-                                name="value"
-                                value="{{ $option->value }}"
-                                {{ $payload['option'] === $option->value ? 'checked' : '' }}
-                                data-answer-input
-                            >
-                            <span>{{ $option->label }}</span>
-                        </label>
+                        <div class="col-12 col-md-6">
+                            <label class="choice-row">
+                                <input
+                                    class="form-check-input"
+                                    type="radio"
+                                    name="value"
+                                    value="{{ $option->value }}"
+                                    {{ $payload['option'] === $option->value ? 'checked' : '' }}
+                                    data-answer-input
+                                >
+                                <span>{{ $option->label }}</span>
+                            </label>
+                        </div>
                     @endforeach
                 </div>
             @elseif ($question->type === \App\Enums\Questionnaire\QuestionType::MULTI_CHOICE)
-                <div class="choice-list">
+                <div class="row g-2 choice-grid">
                     @foreach ($question->options as $option)
-                        <label class="choice-row">
-                            <input
-                                class="form-check-input"
-                                type="checkbox"
-                                name="value[]"
-                                value="{{ $option->value }}"
-                                {{ in_array($option->value, is_array($payload['options']) ? $payload['options'] : [], true) ? 'checked' : '' }}
-                                data-answer-input
-                            >
-                            <span>{{ $option->label }}</span>
-                        </label>
+                        <div class="col-12 col-md-6">
+                            <label class="choice-row">
+                                <input
+                                    class="form-check-input"
+                                    type="checkbox"
+                                    name="value[]"
+                                    value="{{ $option->value }}"
+                                    {{ in_array($option->value, is_array($payload['options']) ? $payload['options'] : [], true) ? 'checked' : '' }}
+                                    data-answer-input
+                                >
+                                <span>{{ $option->label }}</span>
+                            </label>
+                        </div>
                     @endforeach
                 </div>
             @elseif ($question->type === \App\Enums\Questionnaire\QuestionType::SELECT)
@@ -151,6 +161,10 @@
                     <span>السابق</span>
                 </a>
             @endif
+
+            <button type="submit" form="question_skip_{{ $question->id }}" class="btn btn-questionnaire-secondary">
+                <span>تخطي السؤال</span>
+            </button>
 
             <button type="submit" class="btn btn-questionnaire-primary">
                 <span>حفظ ومتابعة</span>
