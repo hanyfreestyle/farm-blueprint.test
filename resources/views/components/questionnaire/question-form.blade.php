@@ -20,11 +20,18 @@
         'options' => old('value', $question->answer_payload['options']),
         'notes' => old('notes', $question->answer_payload['notes']),
     ] : $question->answer_payload;
+
     $notesVisible = filled($payload['notes']);
     $questionOrderLabel = match ($activeFilter) {
         'answered' => 'تمت الإجابة - السؤال',
         'unanswered' => 'غير مجاب - السؤال',
         default => 'السؤال',
+    };
+
+    $selectedYesNo = match (true) {
+        $payload['yes_no'] === true, $payload['yes_no'] === 1, $payload['yes_no'] === '1', $payload['yes_no'] === 'true' => true,
+        $payload['yes_no'] === false, $payload['yes_no'] === 0, $payload['yes_no'] === '0', $payload['yes_no'] === 'false' => false,
+        default => null,
     };
 @endphp
 
@@ -37,6 +44,12 @@
 >
     <form id="question_skip_{{ $question->id }}" method="POST" action="{{ route('study.question.skip', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $question]) }}" class="question-skip-form">
         @csrf
+        <input type="hidden" name="filter" value="{{ $activeFilter }}">
+    </form>
+
+    <form id="question_delete_{{ $question->id }}" method="POST" action="{{ route('study.question.answer.destroy', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $question]) }}" class="question-delete-form" onsubmit="return confirm('هل تريد حذف الإجابة المحفوظة لهذا السؤال؟');">
+        @csrf
+        @method('DELETE')
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
     </form>
 
@@ -75,7 +88,7 @@
                                     type="radio"
                                     name="value"
                                     value="{{ $optionValue }}"
-                                    {{ $payload['yes_no'] === $optionValue ? 'checked' : '' }}
+                                    {{ $selectedYesNo === ($optionValue === '1') ? 'checked' : '' }}
                                     data-answer-input
                                 >
                                 <span>{{ $optionLabel }}</span>
@@ -156,29 +169,40 @@
         </div>
 
         <div class="question-step-actions">
-            @if ($previousQuestion)
-                <a
-                    href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $previousQuestion] + ($activeFilter !== 'all' ? ['filter' => $activeFilter] : [])) }}"
-                    class="btn btn-questionnaire-secondary"
-                >
-                    <i class="fa-solid fa-arrow-right"></i>
-                    <span>السابق</span>
-                </a>
-            @else
-                <a href="{{ route('study.main-section', $mainSection) }}" class="btn btn-questionnaire-secondary">
-                    <i class="fa-solid fa-arrow-right"></i>
-                    <span>السابق</span>
-                </a>
-            @endif
+            <div class="question-step-actions-group">
+                @if ($question->answer)
+                    <button type="submit" form="question_delete_{{ $question->id }}" class="btn btn-questionnaire-danger-soft">
+                        <i class="fa-solid fa-trash-can"></i>
+                        <span>حذف الإجابة</span>
+                    </button>
+                @endif
 
-            <button type="submit" form="question_skip_{{ $question->id }}" class="btn btn-questionnaire-secondary">
-                <span>تخطي السؤال</span>
-            </button>
+                <button type="submit" form="question_skip_{{ $question->id }}" class="btn btn-questionnaire-secondary">
+                    <span>تخطي السؤال</span>
+                </button>
+            </div>
 
-            <button type="submit" class="btn btn-questionnaire-primary">
-                <span>حفظ ومتابعة</span>
-                <i class="fa-solid fa-arrow-left"></i>
-            </button>
+            <div class="question-step-actions-group">
+                @if ($previousQuestion)
+                    <a
+                        href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $previousQuestion] + ($activeFilter !== 'all' ? ['filter' => $activeFilter] : [])) }}"
+                        class="btn btn-questionnaire-secondary"
+                    >
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>السابق</span>
+                    </a>
+                @else
+                    <a href="{{ route('study.main-section', $mainSection) }}" class="btn btn-questionnaire-secondary">
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>السابق</span>
+                    </a>
+                @endif
+
+                <button type="submit" class="btn btn-questionnaire-primary">
+                    <span>حفظ ومتابعة</span>
+                    <i class="fa-solid fa-arrow-left"></i>
+                </button>
+            </div>
         </div>
     </form>
 </section>

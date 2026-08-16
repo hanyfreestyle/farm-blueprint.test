@@ -125,6 +125,9 @@ a {
 .home-actions {
     display: flex;
     justify-content: flex-start;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
     flex-shrink: 0;
 }
 
@@ -546,13 +549,36 @@ a {
     color: var(--questionnaire-text);
 }
 
+.btn-questionnaire-danger-soft {
+    border: 1px solid #efc9c2;
+    background: var(--questionnaire-danger-soft);
+    color: #9f2d20;
+    font-size: 13px;
+    border-radius: 8px;
+    padding: 9px 14px;
+}
+
+.btn-questionnaire-danger-soft:hover,
+.btn-questionnaire-danger-soft:focus {
+    background: #f9e6e2;
+    color: #8a2318;
+}
+
 .question-step-actions .btn {
     display: inline-flex;
     align-items: center;
     gap: 7px;
 }
 
-.question-skip-form {
+.question-step-actions-group {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+}
+
+.question-skip-form,
+.question-delete-form {
     display: none;
 }
 

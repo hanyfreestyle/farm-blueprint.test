@@ -221,6 +221,16 @@ class QuestionnaireFrontendService
         );
     }
 
+    public function deleteAnswer(QuestionnaireQuestion $question): void
+    {
+        $question->answer()?->delete();
+    }
+
+    public function deleteAllAnswers(): void
+    {
+        QuestionnaireAnswer::query()->delete();
+    }
+
     public function isQuestionApplicable(QuestionnaireQuestion $question, array $answersByQuestionId): bool
     {
         if (! $question->depends_on_question_id || ! $question->dependency_operator || $question->dependency_value === null) {
@@ -460,6 +470,7 @@ class QuestionnaireFrontendService
     private function buildAnswerPayload(QuestionnaireQuestion $question): array
     {
         $value = $question->answer?->value;
+        $normalizedYesNo = $this->normalizeYesNoValue($value);
 
         return [
             'value' => $value,
@@ -467,9 +478,7 @@ class QuestionnaireFrontendService
             'textarea' => is_string($value) ? $value : '',
             'number' => is_scalar($value) && ! is_bool($value) ? (string) $value : '',
             'date' => is_string($value) ? $value : '',
-            'yes_no' => is_scalar($value) || is_bool($value)
-                ? ($this->normalizeBooleanString($value) ? '1' : '0')
-                : '',
+            'yes_no' => $normalizedYesNo,
             'option' => is_scalar($value) ? (string) $value : '',
             'options' => is_array($value) ? array_map('strval', $value) : [],
             'notes' => (string) ($question->answer?->notes ?? ''),
@@ -491,6 +500,10 @@ class QuestionnaireFrontendService
     {
         if ($value === null || $value === '') {
             return null;
+        }
+
+        if (is_bool($value)) {
+            return $value;
         }
 
         return $this->normalizeBooleanString($value);
@@ -537,6 +550,10 @@ class QuestionnaireFrontendService
 
     private function normalizeBooleanString(mixed $value): bool
     {
+        if (is_array($value)) {
+            return false;
+        }
+
         return in_array(Str::lower((string) $value), ['1', 'true', 'yes', 'on'], true);
     }
 

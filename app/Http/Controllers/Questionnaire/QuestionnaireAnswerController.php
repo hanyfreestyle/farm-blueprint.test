@@ -91,4 +91,36 @@ class QuestionnaireAnswerController extends Controller
             'subsection' => $context['subsection'],
         ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
     }
+
+    public function destroy(
+        Request $request,
+        QuestionnaireSection $mainSection,
+        QuestionnaireSection $subsection,
+        QuestionnaireQuestion $question,
+    ): RedirectResponse {
+        $filter = $this->frontendService->normalizeQuestionFilter($request->input('filter', $request->query('filter')));
+
+        $this->frontendService->deleteAnswer($question);
+
+        if ($filter === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+            return redirect()->route('study.subsection', [
+                'mainSection' => $mainSection,
+                'subsection' => $subsection,
+                'filter' => $filter,
+            ]);
+        }
+
+        return redirect()->route('study.question', [
+            'mainSection' => $mainSection,
+            'subsection' => $subsection,
+            'question' => $question,
+        ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+    }
+
+    public function destroyAll(): RedirectResponse
+    {
+        $this->frontendService->deleteAllAnswers();
+
+        return redirect()->route('home');
+    }
 }
