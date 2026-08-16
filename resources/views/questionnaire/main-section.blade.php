@@ -8,32 +8,7 @@
     @endphp
 
     <div class="questionnaire-app">
-        <div class="shell shell-study">
-            <button
-                class="btn btn-outline-secondary sidebar-mobile-toggle"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#questionnaireSidebar"
-                aria-controls="questionnaireSidebar"
-            >
-                <i class="fa-solid fa-list-ul"></i>
-                <span>الأقسام</span>
-            </button>
-
-            <aside class="study-sidebar d-none d-lg-block">
-                <x-questionnaire.sidebar :main-sections="$mainSections" :current-main-section-id="$mainSection->id" />
-            </aside>
-
-            <div class="offcanvas offcanvas-end study-sidebar-offcanvas" tabindex="-1" id="questionnaireSidebar" aria-labelledby="questionnaireSidebarLabel">
-                <div class="offcanvas-header">
-                    <h5 class="offcanvas-title" id="questionnaireSidebarLabel">الأقسام</h5>
-                    <button type="button" class="btn-close" data-bs-dismiss="offcanvas" aria-label="Close"></button>
-                </div>
-                <div class="offcanvas-body">
-                    <x-questionnaire.sidebar :main-sections="$mainSections" :current-main-section-id="$mainSection->id" />
-                </div>
-            </div>
-
+        <div class="shell shell-home">
             <main class="study-main">
                 <header class="study-header-card">
                     <div class="light-breadcrumb">
