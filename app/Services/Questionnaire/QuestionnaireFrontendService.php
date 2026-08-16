@@ -14,6 +14,12 @@ use Illuminate\Support\Str;
 
 class QuestionnaireFrontendService
 {
+    public const QUESTION_FILTER_ALL = 'all';
+
+    public const QUESTION_FILTER_ANSWERED = 'answered';
+
+    public const QUESTION_FILTER_UNANSWERED = 'unanswered';
+
     /**
      * @return Collection<int, QuestionnaireSection>
      */
@@ -80,15 +86,22 @@ class QuestionnaireFrontendService
      * @return array{
      *   mainSection: QuestionnaireSection,
      *   subsection: QuestionnaireSection,
-     *   currentQuestion: ?QuestionnaireQuestion,
-     *   previousQuestion: ?QuestionnaireQuestion,
-     *   nextQuestion: ?QuestionnaireQuestion,
-     *   progressSummary: array<string, mixed>,
-     *   sequencePosition: int,
-     *   applicableCount: int
+      *   currentQuestion: ?QuestionnaireQuestion,
+      *   previousQuestion: ?QuestionnaireQuestion,
+      *   nextQuestion: ?QuestionnaireQuestion,
+      *   progressSummary: array<string, mixed>,
+      *   sequencePosition: int,
+     *   applicableCount: int,
+     *   activeFilter: string,
+     *   filteredCount: int
      * }
      */
-    public function getSubsectionStepContext(int $mainSectionId, int $subsectionId, ?int $questionId = null): array
+    public function getSubsectionStepContext(
+        int $mainSectionId,
+        int $subsectionId,
+        ?int $questionId = null,
+        ?string $filter = null,
+    ): array
     {
         $mainSection = $this->getVisibleMainSection($mainSectionId);
         $subsection = $mainSection->children->firstWhere('id', $subsectionId);
@@ -96,27 +109,61 @@ class QuestionnaireFrontendService
         abort_unless($subsection instanceof QuestionnaireSection, 404);
 
         $applicableQuestions = $this->getApplicableQuestions($subsection);
-        $currentQuestion = $questionId === null
-            ? $applicableQuestions->first()
+        $activeFilter = $this->normalizeQuestionFilter($filter);
+        $filteredQuestions = $this->applyQuestionFilter($applicableQuestions, $activeFilter);
+        $requestedQuestion = $questionId === null
+            ? $filteredQuestions->first()
             : $applicableQuestions->firstWhere('id', $questionId);
 
-        if ($questionId !== null && ! $currentQuestion instanceof QuestionnaireQuestion) {
+        if ($questionId !== null && ! $requestedQuestion instanceof QuestionnaireQuestion) {
             abort(404);
         }
 
-        $currentIndex = $currentQuestion instanceof QuestionnaireQuestion
-            ? $applicableQuestions->search(fn (QuestionnaireQuestion $question): bool => $question->is($currentQuestion))
+        $currentQuestion = $questionId === null
+            ? $requestedQuestion
+            : $filteredQuestions->firstWhere('id', $questionId);
+
+        $requestedIndex = $requestedQuestion instanceof QuestionnaireQuestion
+            ? $applicableQuestions->search(fn (QuestionnaireQuestion $question): bool => $question->is($requestedQuestion))
             : false;
+
+        $filteredIndex = $currentQuestion instanceof QuestionnaireQuestion
+            ? $filteredQuestions->search(fn (QuestionnaireQuestion $question): bool => $question->is($currentQuestion))
+            : false;
+
+        $previousQuestion = null;
+        $nextQuestion = null;
+
+        if (is_int($filteredIndex)) {
+            $previousQuestion = $filteredIndex > 0 ? $filteredQuestions->get($filteredIndex - 1) : null;
+            $nextQuestion = $filteredQuestions->get($filteredIndex + 1);
+        } elseif (is_int($requestedIndex)) {
+            $previousQuestion = $filteredQuestions
+                ->filter(function (QuestionnaireQuestion $question) use ($applicableQuestions, $requestedIndex): bool {
+                    $index = $applicableQuestions->search(fn (QuestionnaireQuestion $candidate): bool => $candidate->is($question));
+
+                    return is_int($index) && $index < $requestedIndex;
+                })
+                ->last();
+
+            $nextQuestion = $filteredQuestions->first(function (QuestionnaireQuestion $question) use ($applicableQuestions, $requestedIndex): bool {
+                $index = $applicableQuestions->search(fn (QuestionnaireQuestion $candidate): bool => $candidate->is($question));
+
+                return is_int($index) && $index > $requestedIndex;
+            });
+        }
 
         return [
             'mainSection' => $mainSection,
             'subsection' => $subsection,
             'currentQuestion' => $currentQuestion,
-            'previousQuestion' => is_int($currentIndex) && $currentIndex > 0 ? $applicableQuestions->get($currentIndex - 1) : null,
-            'nextQuestion' => is_int($currentIndex) ? $applicableQuestions->get($currentIndex + 1) : null,
+            'previousQuestion' => $previousQuestion,
+            'nextQuestion' => $nextQuestion,
             'progressSummary' => $subsection->progress_summary,
-            'sequencePosition' => is_int($currentIndex) ? $currentIndex + 1 : 0,
+            'sequencePosition' => is_int($filteredIndex) ? $filteredIndex + 1 : 0,
             'applicableCount' => $applicableQuestions->count(),
+            'activeFilter' => $activeFilter,
+            'filteredCount' => $filteredQuestions->count(),
         ];
     }
 
@@ -136,11 +183,13 @@ class QuestionnaireFrontendService
      * @return array{
      *   mainSection: QuestionnaireSection,
      *   subsection: QuestionnaireSection,
-     *   progressSummary: array<string, mixed>,
-     *   applicableCount: int
+      *   progressSummary: array<string, mixed>,
+     *   applicableCount: int,
+     *   activeFilter: string,
+     *   filteredCount: int
      * }
      */
-    public function getSubsectionCompletionContext(int $mainSectionId, int $subsectionId): array
+    public function getSubsectionCompletionContext(int $mainSectionId, int $subsectionId, ?string $filter = null): array
     {
         $mainSection = $this->getVisibleMainSection($mainSectionId);
         $subsection = $mainSection->children->firstWhere('id', $subsectionId);
@@ -148,12 +197,16 @@ class QuestionnaireFrontendService
         abort_unless($subsection instanceof QuestionnaireSection, 404);
 
         $applicableQuestions = $this->getApplicableQuestions($subsection);
+        $activeFilter = $this->normalizeQuestionFilter($filter);
+        $filteredQuestions = $this->applyQuestionFilter($applicableQuestions, $activeFilter);
 
         return [
             'mainSection' => $mainSection,
             'subsection' => $subsection,
             'progressSummary' => $subsection->progress_summary,
             'applicableCount' => $applicableQuestions->count(),
+            'activeFilter' => $activeFilter,
+            'filteredCount' => $filteredQuestions->count(),
         ];
     }
 
@@ -206,6 +259,15 @@ class QuestionnaireFrontendService
         return $this->hasMeaningfulValue($question, $this->normalizeAnswerValue($question, $value));
     }
 
+    public function normalizeQuestionFilter(?string $filter): string
+    {
+        return match ($filter) {
+            self::QUESTION_FILTER_ANSWERED => self::QUESTION_FILTER_ANSWERED,
+            self::QUESTION_FILTER_UNANSWERED => self::QUESTION_FILTER_UNANSWERED,
+            default => self::QUESTION_FILTER_ALL,
+        };
+    }
+
     /**
      * @return Collection<int, QuestionnaireQuestion>
      */
@@ -231,6 +293,23 @@ class QuestionnaireFrontendService
 
                 return $question;
             });
+    }
+
+    /**
+     * @param  Collection<int, QuestionnaireQuestion>  $questions
+     * @return Collection<int, QuestionnaireQuestion>
+     */
+    public function applyQuestionFilter(Collection $questions, string $filter): Collection
+    {
+        return match ($this->normalizeQuestionFilter($filter)) {
+            self::QUESTION_FILTER_ANSWERED => $questions
+                ->filter(fn (QuestionnaireQuestion $question): bool => $this->hasMeaningfulAnswer($question, $question->answer))
+                ->values(),
+            self::QUESTION_FILTER_UNANSWERED => $questions
+                ->reject(fn (QuestionnaireQuestion $question): bool => $this->hasMeaningfulAnswer($question, $question->answer))
+                ->values(),
+            default => $questions->values(),
+        };
     }
 
     private function shouldShowZeroMainSections(): bool

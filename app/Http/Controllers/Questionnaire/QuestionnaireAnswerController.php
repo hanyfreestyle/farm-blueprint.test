@@ -10,6 +10,7 @@ use App\Models\QuestionnaireSection;
 use App\Services\Questionnaire\QuestionnaireFrontendService;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\RedirectResponse;
+use Illuminate\Http\Request;
 
 class QuestionnaireAnswerController extends Controller
 {
@@ -37,7 +38,8 @@ class QuestionnaireAnswerController extends Controller
     {
         $mainSectionId = (int) $request->integer('main_section_id');
         $subsectionId = (int) $request->integer('subsection_id');
-        $context = $this->frontendService->getSubsectionStepContext($mainSectionId, $subsectionId, $question->id);
+        $filter = $this->frontendService->normalizeQuestionFilter($request->input('filter'));
+        $context = $this->frontendService->getSubsectionStepContext($mainSectionId, $subsectionId, $question->id, $filter);
 
         if (! $this->frontendService->isValidAnswerForContinuation($question, $request->input('value'))) {
             return back()
@@ -51,40 +53,42 @@ class QuestionnaireAnswerController extends Controller
             $request->string('notes')->toString(),
         );
 
-        $refreshedContext = $this->frontendService->getSubsectionStepContext($mainSectionId, $subsectionId, $question->id);
+        $refreshedContext = $this->frontendService->getSubsectionStepContext($mainSectionId, $subsectionId, $question->id, $filter);
 
         if ($refreshedContext['nextQuestion'] instanceof QuestionnaireQuestion) {
             return redirect()->route('study.question', [
                 'mainSection' => $refreshedContext['mainSection'],
                 'subsection' => $refreshedContext['subsection'],
                 'question' => $refreshedContext['nextQuestion'],
-            ]);
+            ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
         }
 
         return redirect()->route('study.subsection.complete', [
             'mainSection' => $refreshedContext['mainSection'],
             'subsection' => $refreshedContext['subsection'],
-        ]);
+        ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
     }
 
     public function skip(
+        Request $request,
         QuestionnaireSection $mainSection,
         QuestionnaireSection $subsection,
         QuestionnaireQuestion $question,
     ): RedirectResponse {
-        $context = $this->frontendService->getSubsectionStepContext($mainSection->id, $subsection->id, $question->id);
+        $filter = $this->frontendService->normalizeQuestionFilter($request->input('filter', $request->query('filter')));
+        $context = $this->frontendService->getSubsectionStepContext($mainSection->id, $subsection->id, $question->id, $filter);
 
         if ($context['nextQuestion'] instanceof QuestionnaireQuestion) {
             return redirect()->route('study.question', [
                 'mainSection' => $context['mainSection'],
                 'subsection' => $context['subsection'],
                 'question' => $context['nextQuestion'],
-            ]);
+            ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
         }
 
         return redirect()->route('study.subsection.complete', [
             'mainSection' => $context['mainSection'],
             'subsection' => $context['subsection'],
-        ]);
+        ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
     }
 }

@@ -309,6 +309,31 @@ a {
     font-size: 13px;
 }
 
+.question-filter-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-top: 12px;
+}
+
+.question-filter-label {
+    font-size: 13px;
+    color: var(--questionnaire-muted);
+}
+
+.question-filter-actions {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.question-filter-actions .btn {
+    padding: 7px 12px;
+}
+
 .save-indicator {
     margin-bottom: 12px;
     font-size: 13px;
@@ -525,6 +550,10 @@ a {
     display: inline-flex;
     align-items: center;
     gap: 7px;
+}
+
+.question-skip-form {
+    display: none;
 }
 
 .questionnaire-sidebar {

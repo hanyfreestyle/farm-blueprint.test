@@ -4,6 +4,8 @@
     'question',
     'sequencePosition',
     'applicableCount',
+    'activeFilter' => 'all',
+    'filteredCount' => 0,
     'previousQuestion' => null,
 ])
 
@@ -19,6 +21,11 @@
         'notes' => old('notes', $question->answer_payload['notes']),
     ] : $question->answer_payload;
     $notesVisible = filled($payload['notes']);
+    $questionOrderLabel = match ($activeFilter) {
+        'answered' => 'تمت الإجابة - السؤال',
+        'unanswered' => 'غير مجاب - السؤال',
+        default => 'السؤال',
+    };
 @endphp
 
 <section
@@ -30,9 +37,10 @@
 >
     <form id="question_skip_{{ $question->id }}" method="POST" action="{{ route('study.question.skip', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $question]) }}" class="question-skip-form">
         @csrf
+        <input type="hidden" name="filter" value="{{ $activeFilter }}">
     </form>
 
-    <div class="question-order">السؤال {{ $sequencePosition }} من {{ $applicableCount }}</div>
+    <div class="question-order">{{ $questionOrderLabel }} {{ $sequencePosition }} من {{ $activeFilter === 'all' ? $applicableCount : $filteredCount }}</div>
 
     <div class="question-header">
         <h2 class="question-title">{{ $question->title }}</h2>
@@ -54,6 +62,7 @@
         @csrf
         <input type="hidden" name="main_section_id" value="{{ $mainSection->id }}">
         <input type="hidden" name="subsection_id" value="{{ $subsection->id }}">
+        <input type="hidden" name="filter" value="{{ $activeFilter }}">
 
         <div class="question-answer-area">
             @if ($question->type === \App\Enums\Questionnaire\QuestionType::YES_NO)
@@ -149,7 +158,7 @@
         <div class="question-step-actions">
             @if ($previousQuestion)
                 <a
-                    href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $previousQuestion]) }}"
+                    href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $previousQuestion] + ($activeFilter !== 'all' ? ['filter' => $activeFilter] : [])) }}"
                     class="btn btn-questionnaire-secondary"
                 >
                     <i class="fa-solid fa-arrow-right"></i>
