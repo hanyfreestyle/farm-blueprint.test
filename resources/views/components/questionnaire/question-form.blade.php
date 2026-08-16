@@ -7,17 +7,19 @@
     'previousQuestion' => null,
 ])
 
-@php($payload = old() ? [
-    'text' => old('value', $question->answer_payload['text']),
-    'textarea' => old('value', $question->answer_payload['textarea']),
-    'number' => old('value', $question->answer_payload['number']),
-    'date' => old('value', $question->answer_payload['date']),
-    'yes_no' => old('value', $question->answer_payload['yes_no']),
-    'option' => old('value', $question->answer_payload['option']),
-    'options' => old('value', $question->answer_payload['options']),
-    'notes' => old('notes', $question->answer_payload['notes']),
-] : $question->answer_payload)
-@php($notesVisible = filled($payload['notes']))
+@php
+    $payload = old() ? [
+        'text' => old('value', $question->answer_payload['text']),
+        'textarea' => old('value', $question->answer_payload['textarea']),
+        'number' => old('value', $question->answer_payload['number']),
+        'date' => old('value', $question->answer_payload['date']),
+        'yes_no' => old('value', $question->answer_payload['yes_no']),
+        'option' => old('value', $question->answer_payload['option']),
+        'options' => old('value', $question->answer_payload['options']),
+        'notes' => old('notes', $question->answer_payload['notes']),
+    ] : $question->answer_payload;
+    $notesVisible = filled($payload['notes']);
+@endphp
 
 <section
     class="question-card"
@@ -140,13 +142,20 @@
                     href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $previousQuestion]) }}"
                     class="btn btn-questionnaire-secondary"
                 >
-                    السابق
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>السابق</span>
                 </a>
             @else
-                <a href="{{ route('study.main-section', $mainSection) }}" class="btn btn-questionnaire-secondary">السابق</a>
+                <a href="{{ route('study.main-section', $mainSection) }}" class="btn btn-questionnaire-secondary">
+                    <i class="fa-solid fa-arrow-right"></i>
+                    <span>السابق</span>
+                </a>
             @endif
 
-            <button type="submit" class="btn btn-questionnaire-primary">حفظ ومتابعة</button>
+            <button type="submit" class="btn btn-questionnaire-primary">
+                <span>حفظ ومتابعة</span>
+                <i class="fa-solid fa-arrow-left"></i>
+            </button>
         </div>
     </form>
 </section>

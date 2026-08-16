@@ -42,6 +42,10 @@ a {
     max-width: 1040px;
 }
 
+.shell-question {
+    max-width: 840px;
+}
+
 .shell-study {
     display: grid;
     grid-template-columns: minmax(0, 1fr);
@@ -441,11 +445,11 @@ a {
 }
 
 .choice-row {
-    min-height: 46px;
+    min-height: 42px;
     display: flex;
     align-items: center;
     gap: 10px;
-    padding: 10px 14px;
+    padding: 9px 12px;
     border: 1px solid var(--questionnaire-border);
     border-radius: 8px;
     background: #fff;
@@ -515,6 +519,12 @@ a {
 .btn-questionnaire-secondary:focus {
     background: #f8f9f9;
     color: var(--questionnaire-text);
+}
+
+.question-step-actions .btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 7px;
 }
 
 .questionnaire-sidebar {
