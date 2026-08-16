@@ -88,7 +88,7 @@
                                     type="radio"
                                     name="value"
                                     value="{{ $optionValue }}"
-                                    {{ $selectedYesNo === ($optionValue === '1') ? 'checked' : '' }}
+                                    {{ $selectedYesNo === ((string) $optionValue === '1') ? 'checked' : '' }}
                                     data-answer-input
                                 >
                                 <span>{{ $optionLabel }}</span>
