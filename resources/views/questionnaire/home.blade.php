@@ -24,15 +24,6 @@
                             <i class="fa-solid fa-file-pdf"></i>
                             <span>طباعة التقرير PDF</span>
                         </a>
-
-                        <form method="POST" action="{{ route('questionnaire.answers.destroy-all') }}" onsubmit="return confirm('هل أنت متأكد من حذف جميع إجابات الدراسة؟' + '\n\n' + 'سيتم حذف جميع الإجابات والملاحظات المسجلة، ولا يمكن التراجع عن هذا الإجراء.');">
-                            @csrf
-                            @method('DELETE')
-                            <button type="submit" class="btn btn-questionnaire-danger-soft">
-                                <i class="fa-solid fa-trash-can"></i>
-                                <span>حذف جميع الإجابات</span>
-                            </button>
-                        </form>
                     </div>
                 </div>
             </header>
