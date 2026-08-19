@@ -598,7 +598,7 @@ a {
 
 .question-review-answer-label {
     font-size: 12px;
-    font-weight: 600;
+    font-weight: 800;
     color: var(--questionnaire-muted);
 }
 
@@ -611,7 +611,8 @@ a {
 
 .question-review-actions {
     display: flex;
-    justify-content: flex-start;
+    justify-content: flex-end;
+    margin-top: 8px;
 }
 
 .question-skip-form,

@@ -25,6 +25,7 @@
     $notesVisible = filled($payload['notes']);
     $questionOrderLabel = match ($activeFilter) {
         'answered' => 'تمت الإجابة - السؤال',
+        'review' => 'تحتاج مراجعة - السؤال',
         'unanswered' => 'غير مجاب - السؤال',
     };
 
