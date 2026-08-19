@@ -186,7 +186,7 @@
 
             <div class="question-step-actions-group">
                 @if ($reviewMode)
-                    <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => 'answered']) }}" class="btn btn-questionnaire-secondary">
+                    <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => $activeFilter]) }}" class="btn btn-questionnaire-secondary">
                         <i class="fa-solid fa-arrow-right"></i>
                         <span>العودة إلى الإجابات</span>
                     </a>

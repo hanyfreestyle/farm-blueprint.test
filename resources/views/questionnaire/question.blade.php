@@ -6,15 +6,17 @@
   @php
     $filterLabels = [
         'answered' => 'تمت الإجابة',
+        'review' => 'تحتاج مراجعة',
         'unanswered' => 'لم تتم الإجابة',
     ];
 
     $positionLabel = match ($activeFilter) {
         'answered' => 'تمت الإجابة - السؤال',
+        'review' => 'تحتاج مراجعة - السؤال',
         'unanswered' => 'غير مجاب - السؤال',
     };
 
-    $answeredReviewMode = $activeFilter === 'answered';
+    $answeredReviewMode = in_array($activeFilter, ['answered', 'review'], true);
   @endphp
 
   <div class="questionnaire-app">
@@ -53,7 +55,7 @@
             <div>
               <div class="study-progress-label">
                 @if ($answeredReviewMode)
-                  الأسئلة التي تمت الإجابة عليها: {{ $filteredCount }}
+                  {{ $activeFilter === 'review' ? 'الأسئلة التي تحتاج مراجعة' : 'الأسئلة التي تمت الإجابة عليها' }}: {{ $filteredCount }}
                 @else
                   {{ $positionLabel }} {{ $sequencePosition }} من {{ $filteredCount }}
                 @endif
@@ -119,7 +121,7 @@
 
                   <div class="question-review-actions">
                     <a
-                        href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $answeredQuestion, 'filter' => 'answered', 'edit' => $answeredQuestion->id]) }}"
+                        href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $answeredQuestion, 'filter' => $activeFilter, 'edit' => $answeredQuestion->id]) }}"
                         class="btn btn-questionnaire-secondary"
                     >
                       <i class="fa-solid fa-pen"></i>

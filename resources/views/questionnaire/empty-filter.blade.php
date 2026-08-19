@@ -6,6 +6,7 @@
     @php
         $message = match ($activeFilter) {
             'answered' => 'لا توجد أسئلة تمت الإجابة عليها بعد.',
+            'review' => 'لا توجد أسئلة تحتاج مراجعة حاليًا.',
             'unanswered' => 'لا توجد أسئلة غير مجابة في هذا القسم.',
             default => 'لا توجد أسئلة متاحة في هذا القسم.',
         };
@@ -37,6 +38,7 @@
                     <div class="completion-actions">
                         <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => 'unanswered']) }}" class="btn btn-questionnaire-primary">عرض الأسئلة غير المجاب عنها</a>
                         <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => 'answered']) }}" class="btn btn-questionnaire-secondary">عرض الإجابات</a>
+                        <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => 'review']) }}" class="btn btn-questionnaire-secondary">عرض ما يحتاج مراجعة</a>
                         <a href="{{ route('study.main-section', $mainSection) }}" class="btn btn-questionnaire-secondary">العودة إلى القسم الرئيسي</a>
                     </div>
                 </section>

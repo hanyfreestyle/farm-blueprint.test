@@ -16,6 +16,8 @@ class QuestionnaireFrontendService
 {
     public const QUESTION_FILTER_ANSWERED = 'answered';
 
+    public const QUESTION_FILTER_REVIEW = 'review';
+
     public const QUESTION_FILTER_UNANSWERED = 'unanswered';
 
     /**
@@ -273,6 +275,7 @@ class QuestionnaireFrontendService
     {
         return match ($filter) {
             self::QUESTION_FILTER_ANSWERED => self::QUESTION_FILTER_ANSWERED,
+            self::QUESTION_FILTER_REVIEW => self::QUESTION_FILTER_REVIEW,
             self::QUESTION_FILTER_UNANSWERED => self::QUESTION_FILTER_UNANSWERED,
             default => self::QUESTION_FILTER_UNANSWERED,
         };
@@ -314,6 +317,16 @@ class QuestionnaireFrontendService
         return match ($this->normalizeQuestionFilter($filter)) {
             self::QUESTION_FILTER_ANSWERED => $questions
                 ->filter(fn (QuestionnaireQuestion $question): bool => $this->hasMeaningfulAnswer($question, $question->answer))
+                ->values(),
+            self::QUESTION_FILTER_REVIEW => $questions
+                ->filter(function (QuestionnaireQuestion $question): bool {
+                    if (! $this->hasMeaningfulAnswer($question, $question->answer)) {
+                        return false;
+                    }
+
+                    return $question->answer?->needs_review === true
+                        && $question->answer?->review_status === AnswerReviewStatus::PENDING;
+                })
                 ->values(),
             self::QUESTION_FILTER_UNANSWERED => $questions
                 ->reject(fn (QuestionnaireQuestion $question): bool => $this->hasMeaningfulAnswer($question, $question->answer))

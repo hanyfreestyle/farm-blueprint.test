@@ -55,7 +55,10 @@ class QuestionnaireAnswerController extends Controller
 
         $refreshedContext = $this->frontendService->getSubsectionStepContext($mainSectionId, $subsectionId, $question->id, $filter);
 
-        if ($filter === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+        if (in_array($filter, [
+            QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED,
+            QuestionnaireFrontendService::QUESTION_FILTER_REVIEW,
+        ], true)) {
             return redirect()->route('study.subsection', [
                 'mainSection' => $refreshedContext['mainSection'],
                 'subsection' => $refreshedContext['subsection'],
@@ -97,7 +100,10 @@ class QuestionnaireAnswerController extends Controller
             ]);
         }
 
-        if ($filter === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+        if (in_array($filter, [
+            QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED,
+            QuestionnaireFrontendService::QUESTION_FILTER_REVIEW,
+        ], true)) {
             return redirect()->route('study.subsection', [
                 'mainSection' => $context['mainSection'],
                 'subsection' => $context['subsection'],
@@ -122,7 +128,10 @@ class QuestionnaireAnswerController extends Controller
 
         $this->frontendService->deleteAnswer($question);
 
-        if ($filter === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+        if (in_array($filter, [
+            QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED,
+            QuestionnaireFrontendService::QUESTION_FILTER_REVIEW,
+        ], true)) {
             return redirect()->route('study.subsection', [
                 'mainSection' => $mainSection,
                 'subsection' => $subsection,

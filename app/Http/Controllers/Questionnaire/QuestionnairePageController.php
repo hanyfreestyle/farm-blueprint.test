@@ -48,7 +48,10 @@ class QuestionnairePageController extends Controller
             ]);
         }
 
-        if ($context['activeFilter'] === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+        if (in_array($context['activeFilter'], [
+            QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED,
+            QuestionnaireFrontendService::QUESTION_FILTER_REVIEW,
+        ], true)) {
             return view('questionnaire.question', [
                 'mainSection' => $context['mainSection'],
                 'subsection' => $context['subsection'],
@@ -104,7 +107,10 @@ class QuestionnairePageController extends Controller
             ]);
         }
 
-        if ($context['activeFilter'] === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED && ! $reviewQuestion instanceof QuestionnaireQuestion) {
+        if (in_array($context['activeFilter'], [
+            QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED,
+            QuestionnaireFrontendService::QUESTION_FILTER_REVIEW,
+        ], true) && ! $reviewQuestion instanceof QuestionnaireQuestion) {
             return redirect()->route('study.subsection', [
                 'mainSection' => $context['mainSection'],
                 'subsection' => $context['subsection'],
