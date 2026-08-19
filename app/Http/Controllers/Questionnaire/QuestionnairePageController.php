@@ -48,18 +48,38 @@ class QuestionnairePageController extends Controller
             ]);
         }
 
+        if ($context['activeFilter'] === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+            return view('questionnaire.question', [
+                'mainSection' => $context['mainSection'],
+                'subsection' => $context['subsection'],
+                'currentQuestion' => null,
+                'previousQuestion' => null,
+                'nextQuestion' => null,
+                'progressSummary' => $context['progressSummary'],
+                'sequencePosition' => 0,
+                'applicableCount' => $context['applicableCount'],
+                'activeFilter' => $context['activeFilter'],
+                'filteredCount' => $context['filteredCount'],
+                'filteredQuestions' => $context['filteredQuestions'],
+                'reviewQuestion' => null,
+                'isCompleted' => false,
+            ]);
+        }
+
         if ($context['currentQuestion'] instanceof QuestionnaireQuestion) {
             return redirect()->route('study.question', [
                 'mainSection' => $context['mainSection'],
                 'subsection' => $context['subsection'],
                 'question' => $context['currentQuestion'],
-            ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+                'filter' => $filter,
+            ]);
         }
 
         return redirect()->route('study.subsection.complete', [
             'mainSection' => $context['mainSection'],
             'subsection' => $context['subsection'],
-        ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+            'filter' => $filter,
+        ]);
     }
 
     public function question(
@@ -70,6 +90,10 @@ class QuestionnairePageController extends Controller
     ): View|RedirectResponse {
         $filter = $this->frontendService->normalizeQuestionFilter($request->query('filter'));
         $context = $this->frontendService->getSubsectionStepContext($mainSection->id, $subsection->id, $question->id, $filter);
+        $reviewQuestionId = $request->integer('edit');
+        $reviewQuestion = $reviewQuestionId > 0
+            ? $context['filteredQuestions']->firstWhere('id', $reviewQuestionId)
+            : null;
 
         if ($context['filteredCount'] === 0) {
             return view('questionnaire.empty-filter', [
@@ -80,11 +104,20 @@ class QuestionnairePageController extends Controller
             ]);
         }
 
+        if ($context['activeFilter'] === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED && ! $reviewQuestion instanceof QuestionnaireQuestion) {
+            return redirect()->route('study.subsection', [
+                'mainSection' => $context['mainSection'],
+                'subsection' => $context['subsection'],
+                'filter' => $filter,
+            ]);
+        }
+
         if (! $context['currentQuestion']?->is($question)) {
             return redirect()->route('study.subsection', [
                 'mainSection' => $mainSection,
                 'subsection' => $subsection,
-            ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+                'filter' => $filter,
+            ]);
         }
 
         return view('questionnaire.question', [
@@ -98,6 +131,8 @@ class QuestionnairePageController extends Controller
             'applicableCount' => $context['applicableCount'],
             'activeFilter' => $context['activeFilter'],
             'filteredCount' => $context['filteredCount'],
+            'filteredQuestions' => $context['filteredQuestions'],
+            'reviewQuestion' => $reviewQuestion,
             'isCompleted' => false,
         ]);
     }

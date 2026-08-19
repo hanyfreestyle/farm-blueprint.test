@@ -35,7 +35,8 @@
                     </div>
 
                     <div class="completion-actions">
-                        <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection]) }}" class="btn btn-questionnaire-primary">عرض كل الأسئلة</a>
+                        <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => 'unanswered']) }}" class="btn btn-questionnaire-primary">عرض الأسئلة غير المجاب عنها</a>
+                        <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => 'answered']) }}" class="btn btn-questionnaire-secondary">عرض الإجابات</a>
                         <a href="{{ route('study.main-section', $mainSection) }}" class="btn btn-questionnaire-secondary">العودة إلى القسم الرئيسي</a>
                     </div>
                 </section>

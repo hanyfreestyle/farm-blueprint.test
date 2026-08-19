@@ -55,18 +55,28 @@ class QuestionnaireAnswerController extends Controller
 
         $refreshedContext = $this->frontendService->getSubsectionStepContext($mainSectionId, $subsectionId, $question->id, $filter);
 
+        if ($filter === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+            return redirect()->route('study.subsection', [
+                'mainSection' => $refreshedContext['mainSection'],
+                'subsection' => $refreshedContext['subsection'],
+                'filter' => $filter,
+            ]);
+        }
+
         if ($refreshedContext['nextQuestion'] instanceof QuestionnaireQuestion) {
             return redirect()->route('study.question', [
                 'mainSection' => $refreshedContext['mainSection'],
                 'subsection' => $refreshedContext['subsection'],
                 'question' => $refreshedContext['nextQuestion'],
-            ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+                'filter' => $filter,
+            ]);
         }
 
         return redirect()->route('study.subsection.complete', [
             'mainSection' => $refreshedContext['mainSection'],
             'subsection' => $refreshedContext['subsection'],
-        ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+            'filter' => $filter,
+        ]);
     }
 
     public function skip(
@@ -83,13 +93,23 @@ class QuestionnaireAnswerController extends Controller
                 'mainSection' => $context['mainSection'],
                 'subsection' => $context['subsection'],
                 'question' => $context['nextQuestion'],
-            ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+                'filter' => $filter,
+            ]);
+        }
+
+        if ($filter === QuestionnaireFrontendService::QUESTION_FILTER_ANSWERED) {
+            return redirect()->route('study.subsection', [
+                'mainSection' => $context['mainSection'],
+                'subsection' => $context['subsection'],
+                'filter' => $filter,
+            ]);
         }
 
         return redirect()->route('study.subsection.complete', [
             'mainSection' => $context['mainSection'],
             'subsection' => $context['subsection'],
-        ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+            'filter' => $filter,
+        ]);
     }
 
     public function destroy(
@@ -114,7 +134,8 @@ class QuestionnaireAnswerController extends Controller
             'mainSection' => $mainSection,
             'subsection' => $subsection,
             'question' => $question,
-        ] + ($filter !== QuestionnaireFrontendService::QUESTION_FILTER_ALL ? ['filter' => $filter] : []));
+            'filter' => $filter,
+        ]);
     }
 
     public function destroyAll(): RedirectResponse

@@ -581,6 +581,39 @@ a {
     flex-wrap: wrap;
 }
 
+.question-review-card {
+    display: grid;
+    gap: 12px;
+}
+
+.question-review-answer,
+.question-review-notes {
+    display: grid;
+    gap: 6px;
+    padding: 12px;
+    border: 1px solid #eef1f2;
+    border-radius: 8px;
+    background: #fcfcfb;
+}
+
+.question-review-answer-label {
+    font-size: 12px;
+    font-weight: 600;
+    color: var(--questionnaire-muted);
+}
+
+.question-review-answer-value {
+    font-size: 14px;
+    color: var(--questionnaire-text);
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+
+.question-review-actions {
+    display: flex;
+    justify-content: flex-start;
+}
+
 .question-skip-form,
 .question-delete-form {
     display: none;

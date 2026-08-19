@@ -4,9 +4,10 @@
     'question',
     'sequencePosition',
     'applicableCount',
-    'activeFilter' => 'all',
+    'activeFilter' => 'unanswered',
     'filteredCount' => 0,
     'previousQuestion' => null,
+    'reviewMode' => false,
 ])
 
 @php
@@ -25,7 +26,6 @@
     $questionOrderLabel = match ($activeFilter) {
         'answered' => 'تمت الإجابة - السؤال',
         'unanswered' => 'غير مجاب - السؤال',
-        default => 'السؤال',
     };
 
     $selectedYesNo = match (true) {
@@ -53,7 +53,7 @@
         <input type="hidden" name="filter" value="{{ $activeFilter }}">
     </form>
 
-    <div class="question-order">{{ $questionOrderLabel }} {{ $sequencePosition }} من {{ $activeFilter === 'all' ? $applicableCount : $filteredCount }}</div>
+    <div class="question-order">{{ $questionOrderLabel }} {{ $sequencePosition }} من {{ $filteredCount }}</div>
 
     <div class="question-header">
         <h2 class="question-title">{{ $question->title }}</h2>
@@ -177,15 +177,22 @@
                     </button>
                 @endif
 
-                <button type="submit" form="question_skip_{{ $question->id }}" class="btn btn-questionnaire-secondary">
-                    <span>تخطي السؤال</span>
-                </button>
+                @unless($reviewMode)
+                    <button type="submit" form="question_skip_{{ $question->id }}" class="btn btn-questionnaire-secondary">
+                        <span>تخطي السؤال</span>
+                    </button>
+                @endunless
             </div>
 
             <div class="question-step-actions-group">
-                @if ($previousQuestion)
+                @if ($reviewMode)
+                    <a href="{{ route('study.subsection', ['mainSection' => $mainSection, 'subsection' => $subsection, 'filter' => 'answered']) }}" class="btn btn-questionnaire-secondary">
+                        <i class="fa-solid fa-arrow-right"></i>
+                        <span>العودة إلى الإجابات</span>
+                    </a>
+                @elseif ($previousQuestion)
                     <a
-                        href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $previousQuestion] + ($activeFilter !== 'all' ? ['filter' => $activeFilter] : [])) }}"
+                        href="{{ route('study.question', ['mainSection' => $mainSection, 'subsection' => $subsection, 'question' => $previousQuestion, 'filter' => $activeFilter]) }}"
                         class="btn btn-questionnaire-secondary"
                     >
                         <i class="fa-solid fa-arrow-right"></i>
@@ -199,8 +206,8 @@
                 @endif
 
                 <button type="submit" class="btn btn-questionnaire-primary">
-                    <span>حفظ ومتابعة</span>
-                    <i class="fa-solid fa-arrow-left"></i>
+                    <span>{{ $reviewMode ? 'حفظ التعديل' : 'حفظ ومتابعة' }}</span>
+                    <i class="fa-solid {{ $reviewMode ? 'fa-floppy-disk' : 'fa-arrow-left' }}"></i>
                 </button>
             </div>
         </div>

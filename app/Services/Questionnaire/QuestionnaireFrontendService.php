@@ -14,8 +14,6 @@ use Illuminate\Support\Str;
 
 class QuestionnaireFrontendService
 {
-    public const QUESTION_FILTER_ALL = 'all';
-
     public const QUESTION_FILTER_ANSWERED = 'answered';
 
     public const QUESTION_FILTER_UNANSWERED = 'unanswered';
@@ -89,11 +87,12 @@ class QuestionnaireFrontendService
       *   currentQuestion: ?QuestionnaireQuestion,
       *   previousQuestion: ?QuestionnaireQuestion,
       *   nextQuestion: ?QuestionnaireQuestion,
-      *   progressSummary: array<string, mixed>,
-      *   sequencePosition: int,
+     *   progressSummary: array<string, mixed>,
+     *   sequencePosition: int,
      *   applicableCount: int,
      *   activeFilter: string,
-     *   filteredCount: int
+     *   filteredCount: int,
+     *   filteredQuestions: Collection<int, QuestionnaireQuestion>
      * }
      */
     public function getSubsectionStepContext(
@@ -164,6 +163,7 @@ class QuestionnaireFrontendService
             'applicableCount' => $applicableQuestions->count(),
             'activeFilter' => $activeFilter,
             'filteredCount' => $filteredQuestions->count(),
+            'filteredQuestions' => $filteredQuestions,
         ];
     }
 
@@ -274,7 +274,7 @@ class QuestionnaireFrontendService
         return match ($filter) {
             self::QUESTION_FILTER_ANSWERED => self::QUESTION_FILTER_ANSWERED,
             self::QUESTION_FILTER_UNANSWERED => self::QUESTION_FILTER_UNANSWERED,
-            default => self::QUESTION_FILTER_ALL,
+            default => self::QUESTION_FILTER_UNANSWERED,
         };
     }
 
@@ -318,7 +318,6 @@ class QuestionnaireFrontendService
             self::QUESTION_FILTER_UNANSWERED => $questions
                 ->reject(fn (QuestionnaireQuestion $question): bool => $this->hasMeaningfulAnswer($question, $question->answer))
                 ->values(),
-            default => $questions->values(),
         };
     }
 
