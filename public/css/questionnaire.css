@@ -406,6 +406,10 @@ a {
     color: var(--questionnaire-muted);
 }
 
+.subsection-overview-progress {
+    margin-top: 8px;
+}
+
 .question-title {
     margin: 0;
     font-size: 16px;

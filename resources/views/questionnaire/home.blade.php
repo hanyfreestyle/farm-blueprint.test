@@ -7,6 +7,8 @@
     $totalAnswered = $mainSections->sum(fn ($section) => $section->progress_summary['answered']);
     $totalQuestions = $mainSections->sum(fn ($section) => $section->progress_summary['total']);
     $overallPercentage = $totalQuestions > 0 ? (int) round(($totalAnswered / $totalQuestions) * 100) : 0;
+    $adminPanel = \Filament\Facades\Filament::getPanel('admin');
+    $canAccessTechnicalReport = auth()->check() && $adminPanel && auth()->user()?->canAccessPanel($adminPanel);
   @endphp
 
   <div class="questionnaire-app">
@@ -19,22 +21,19 @@
             <p>أداة لمراجعة التصور التشغيلي مع المختص وتحويل الإجابات لاحقًا إلى مواصفات تقنية واضحة.</p>
           </div>
 
-          <div class="home-actions">
-            <a class="btn btn-questionnaire-primary" href="{{ route('technical-report.preview') }}">
-              <i class="fa-solid fa-file-lines"></i>
-              <span>عرض التقرير الفني</span>
-            </a>
+          @if ($canAccessTechnicalReport)
+            <div class="home-actions">
+              <a class="btn btn-questionnaire-primary" href="{{ route('technical-report.preview') }}">
+                <i class="fa-solid fa-file-lines"></i>
+                <span>عرض التقرير الفني</span>
+              </a>
 
-            <a class="btn btn-questionnaire-secondary" href="{{ route('technical-report.download') }}">
-              <i class="fa-solid fa-download"></i>
-              <span>تحميل التقرير MD</span>
-            </a>
-
-            <a class="btn btn-questionnaire-secondary" href="#">
-              <i class="fa-solid fa-file-pdf"></i>
-              <span>طباعة التقرير PDF</span>
-            </a>
-          </div>
+              <a class="btn btn-questionnaire-secondary" href="{{ route('technical-report.download') }}">
+                <i class="fa-solid fa-download"></i>
+                <span>تحميل التقرير MD</span>
+              </a>
+            </div>
+          @endif
         </div>
       </header>
 

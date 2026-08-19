@@ -43,6 +43,7 @@
                             $subSummary = $subsection->progress_summary;
                             $subsectionQuestionCount = (int) ($subsection->question_count ?? ($subSummary['question_count'] ?? 0));
                             $subsectionAnsweredCount = (int) ($subsection->answered_count ?? ($subSummary['answered'] ?? 0));
+                            $subsectionPercentage = (int) ($subSummary['percentage'] ?? 0);
                         @endphp
 
                         <article class="subsection-overview-row">
@@ -71,6 +72,10 @@
                                     @else
                                         <span>0 سؤال</span>
                                     @endif
+                                </div>
+
+                                <div class="progress questionnaire-progress subsection-overview-progress" role="progressbar" aria-valuenow="{{ $subsectionPercentage }}" aria-valuemin="0" aria-valuemax="100">
+                                    <div class="progress-bar" style="width: {{ $subsectionPercentage }}%"></div>
                                 </div>
                             </div>
                         </article>
