@@ -17,7 +17,9 @@ class DatabaseSeeder extends Seeder {
       AdminUserSeeder::class,
       UploadFilterSeeder::class,
       QuestionnaireSectionSeeder::class,
-      QuestionnaireFarmQuestionsSeeder::class,
+
+      // Temporarily disabled while Farm Structure questions are being redesigned.
+      // QuestionnaireFarmQuestionsSeeder::class,
     ]);
   }
 }
