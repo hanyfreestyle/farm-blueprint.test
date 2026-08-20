@@ -2,10 +2,18 @@
 
 @section('title', 'التقرير الفني')
 
+@push('head')
+    <link href="{{ asset('css/technical-report.css') }}" rel="stylesheet">
+@endpush
+
 @section('content')
-    <div class="questionnaire-app">
+    @php
+        $renderedMarkdown = \Illuminate\Support\Str::markdown($markdown);
+    @endphp
+
+    <div class="questionnaire-app technical-report-page">
         <div class="shell shell-home">
-            <header class="home-header">
+            <header class="home-header technical-report-hero">
                 <div class="home-header-row">
                     <div class="page-heading">
                         <div class="page-kicker">المعاينة الحالية</div>
@@ -26,7 +34,7 @@
                 </div>
             </header>
 
-            <section class="overall-progress-card">
+            <section class="overall-progress-card technical-report-summary">
                 <div class="overall-progress-head">
                     <div>
                         <div class="overall-progress-title">حالة التقرير الحالية</div>
@@ -41,8 +49,10 @@
                 </div>
             </section>
 
-            <section class="home-header technical-report-preview-card">
-                <pre class="technical-report-preview">{{ $markdown }}</pre>
+            <section class="home-header technical-report-preview-card technical-report-sheet">
+                <div class="technical-report-preview markdown-content">
+                    {!! $renderedMarkdown !!}
+                </div>
             </section>
         </div>
     </div>

@@ -1,0 +1,181 @@
+.technical-report-page {
+    background:
+        radial-gradient(circle at top right, rgba(47, 107, 79, 0.08), transparent 28%),
+        linear-gradient(180deg, #f7faf8 0%, #f5f6f3 100%);
+}
+
+.technical-report-page .shell-home {
+    max-width: 1120px;
+}
+
+.technical-report-hero,
+.technical-report-summary,
+.technical-report-sheet {
+    border-radius: 18px;
+    border-color: #dce4df;
+    box-shadow: 0 14px 42px rgba(31, 37, 41, 0.05);
+}
+
+.technical-report-hero {
+    background: linear-gradient(135deg, #ffffff 0%, #f6fbf8 100%);
+}
+
+.technical-report-hero .page-heading h1 {
+    font-size: 2rem;
+    font-weight: 700;
+    letter-spacing: -0.01em;
+}
+
+.technical-report-hero .page-heading p {
+    max-width: 820px;
+    font-size: 15px;
+    line-height: 1.9;
+}
+
+.technical-report-summary {
+    background: #fff;
+}
+
+.technical-report-sheet {
+    padding: 26px 28px;
+    background:
+        linear-gradient(180deg, rgba(249, 251, 250, 0.95) 0%, #ffffff 100%);
+}
+
+.technical-report-preview {
+    direction: rtl;
+    color: #22302a;
+    font-family: 'Tajawal', sans-serif;
+    font-size: 15px;
+    line-height: 2;
+}
+
+.technical-report-preview > :first-child {
+    margin-top: 0;
+}
+
+.technical-report-preview h1,
+.technical-report-preview h2,
+.technical-report-preview h3,
+.technical-report-preview h4 {
+    margin-top: 1.5rem;
+    margin-bottom: 0.85rem;
+    font-family: 'Tajawal', sans-serif;
+    font-weight: 700;
+    color: #163a2a;
+    line-height: 1.45;
+}
+
+.technical-report-preview h1 {
+    padding-bottom: 0.9rem;
+    border-bottom: 2px solid #e0ebe5;
+    font-size: 2rem;
+}
+
+.technical-report-preview h2 {
+    padding: 0.4rem 0.8rem;
+    border-right: 4px solid #2f6b4f;
+    background: #f5faf7;
+    border-radius: 10px;
+    font-size: 1.45rem;
+}
+
+.technical-report-preview h3 {
+    font-size: 1.2rem;
+}
+
+.technical-report-preview h4 {
+    font-size: 1.05rem;
+}
+
+.technical-report-preview p,
+.technical-report-preview ul,
+.technical-report-preview ol,
+.technical-report-preview table,
+.technical-report-preview blockquote {
+    margin-bottom: 1rem;
+}
+
+.technical-report-preview ul,
+.technical-report-preview ol {
+    padding-right: 1.4rem;
+}
+
+.technical-report-preview li::marker {
+    color: #2f6b4f;
+}
+
+.technical-report-preview li + li {
+    margin-top: 0.35rem;
+}
+
+.technical-report-preview table {
+    width: 100%;
+    min-width: 680px;
+    overflow: hidden;
+    border-collapse: separate;
+    border-spacing: 0;
+    border: 1px solid #dce4df;
+    border-radius: 14px;
+    background: #fff;
+}
+
+.technical-report-preview th,
+.technical-report-preview td {
+    padding: 12px 14px;
+    border-bottom: 1px solid #e8eeea;
+    text-align: right;
+    vertical-align: top;
+}
+
+.technical-report-preview tr:last-child td {
+    border-bottom: 0;
+}
+
+.technical-report-preview th {
+    background: #f2f7f4;
+    color: #163a2a;
+    font-weight: 700;
+}
+
+.technical-report-preview code {
+    display: inline-block;
+    direction: ltr;
+    background: #eef5f1;
+    color: #204633;
+    padding: 0.15rem 0.45rem;
+    border-radius: 7px;
+    font-size: 0.92em;
+}
+
+.technical-report-preview blockquote {
+    margin-right: 0;
+    padding: 0.95rem 1rem;
+    border-right: 4px solid #b9d2c3;
+    border-radius: 12px;
+    background: #f7fbf8;
+    color: #5d6b64;
+}
+
+@media (max-width: 991.98px) {
+    .technical-report-hero .page-heading h1 {
+        font-size: 1.6rem;
+    }
+
+    .technical-report-sheet {
+        padding: 18px 16px;
+    }
+
+    .technical-report-preview {
+        font-size: 14px;
+        line-height: 1.9;
+    }
+
+    .technical-report-preview h1 {
+        font-size: 1.55rem;
+    }
+
+    .technical-report-preview h2 {
+        font-size: 1.2rem;
+    }
+}
