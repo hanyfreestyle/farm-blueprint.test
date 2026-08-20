@@ -23,7 +23,6 @@ class FarmDataQuestionsSeeder extends Seeder
                 'options' => [
                     ['label' => 'اسم المزرعة', 'value' => 'name'],
                     ['label' => 'كود المزرعة', 'value' => 'code'],
-                    ['label' => 'أنشطة المزرعة', 'value' => 'activities'],
                     ['label' => 'أرقام الهاتف', 'value' => 'phones'],
                     ['label' => 'أرقام واتساب', 'value' => 'whatsapps'],
                     ['label' => 'المحافظة', 'value' => 'governorate'],
@@ -47,7 +46,6 @@ class FarmDataQuestionsSeeder extends Seeder
                 'options' => [
                     ['label' => 'اسم المزرعة', 'value' => 'name'],
                     ['label' => 'كود المزرعة', 'value' => 'code'],
-                    ['label' => 'نشاط واحد على الأقل', 'value' => 'activities'],
                     ['label' => 'رقم هاتف واحد على الأقل', 'value' => 'phones'],
                     ['label' => 'رقم واتساب واحد على الأقل', 'value' => 'whatsapps'],
                     ['label' => 'المحافظة', 'value' => 'governorate'],
@@ -75,23 +73,12 @@ class FarmDataQuestionsSeeder extends Seeder
                 ],
             ],
             [
-                'seed_key' => 'farm.multiple_activities',
-                'title' => 'هل يمكن ربط المزرعة بأكثر من نشاط في نفس الوقت؟',
-                'help_text' => 'أنشطة المزرعة أصبحت بيانات مرجعية مستقلة، وهذا السؤال يحدد هل علاقة المزرعة بالأنشطة تسمح بنشاط واحد أم أكثر.',
-                'type' => QuestionType::YES_NO,
-                'is_required' => true,
-                'sort_order' => 4,
-                'report_category' => 'relationship',
-                'target_entity' => 'farm',
-                'options' => [],
-            ],
-            [
                 'seed_key' => 'farm.unique_rule',
                 'title' => 'ما قاعدة عدم التكرار المطلوبة لبيانات المزرعة؟',
                 'help_text' => 'حدد البيانات التي يجب اعتبارها فريدة بين المزارع حتى نحدد قيود Unique المناسبة في قاعدة البيانات.',
                 'type' => QuestionType::SINGLE_CHOICE,
                 'is_required' => true,
-                'sort_order' => 5,
+                'sort_order' => 4,
                 'report_category' => 'rule',
                 'target_entity' => 'farm',
                 'options' => [
@@ -107,7 +94,7 @@ class FarmDataQuestionsSeeder extends Seeder
                 'help_text' => 'التصور المرجعي يتضمن حالتي نشطة ومتوقفة. حدد الحالات التي يجب أن يمثلها النظام.',
                 'type' => QuestionType::MULTI_CHOICE,
                 'is_required' => true,
-                'sort_order' => 6,
+                'sort_order' => 5,
                 'report_category' => 'field',
                 'target_entity' => 'farm',
                 'options' => [
@@ -122,7 +109,7 @@ class FarmDataQuestionsSeeder extends Seeder
                 'help_text' => 'حدد المعنى التشغيلي لحالة المزرعة المتوقفة حتى لا تظل الحالة مجرد وصف بدون Business Rule واضح.',
                 'type' => QuestionType::SINGLE_CHOICE,
                 'is_required' => true,
-                'sort_order' => 7,
+                'sort_order' => 6,
                 'report_category' => 'rule',
                 'target_entity' => 'farm',
                 'options' => [
@@ -137,7 +124,7 @@ class FarmDataQuestionsSeeder extends Seeder
                 'help_text' => 'حدد هل توقف المزرعة يغير حالات العناصر التابعة فعليًا أم يؤثر فقط على إتاحتها التشغيلية.',
                 'type' => QuestionType::SINGLE_CHOICE,
                 'is_required' => true,
-                'sort_order' => 8,
+                'sort_order' => 7,
                 'report_category' => 'rule',
                 'target_entity' => 'farm',
                 'options' => [
@@ -152,7 +139,7 @@ class FarmDataQuestionsSeeder extends Seeder
                 'help_text' => 'التصور يسمح بتعدد المزارع. المطلوب هنا تحديد نطاق الإصدار الأول مع الحفاظ على قابلية التوسع.',
                 'type' => QuestionType::SINGLE_CHOICE,
                 'is_required' => true,
-                'sort_order' => 9,
+                'sort_order' => 8,
                 'report_category' => 'relationship',
                 'target_entity' => 'farm',
                 'options' => [
@@ -166,7 +153,7 @@ class FarmDataQuestionsSeeder extends Seeder
                 'help_text' => 'حدد سياسة الحذف المطلوبة بما يحافظ على سلامة العلاقات والسجل التاريخي.',
                 'type' => QuestionType::SINGLE_CHOICE,
                 'is_required' => true,
-                'sort_order' => 10,
+                'sort_order' => 9,
                 'report_category' => 'rule',
                 'target_entity' => 'farm',
                 'options' => [
@@ -181,7 +168,7 @@ class FarmDataQuestionsSeeder extends Seeder
                 'help_text' => 'اكتب أي نقطة مهمة لم تغطها الأسئلة السابقة حتى تتم مراجعتها قبل اعتماد Blueprint بيانات المزرعة.',
                 'type' => QuestionType::TEXTAREA,
                 'is_required' => false,
-                'sort_order' => 11,
+                'sort_order' => 10,
                 'report_category' => 'general',
                 'target_entity' => 'farm',
                 'options' => [],
