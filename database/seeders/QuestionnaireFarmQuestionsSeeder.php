@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Questions\FarmStructure\FarmDataQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\OperationalActivitiesQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireFarmQuestionsSeeder extends Seeder
@@ -10,12 +11,13 @@ class QuestionnaireFarmQuestionsSeeder extends Seeder
     public function run(): void
     {
         /*
-         * Temporary review mode:
-         * Seed only "بيانات المزرعة" while the remaining Master Data
-         * question groups are being redesigned and approved one by one.
+         * Review mode:
+         * Seed only the question groups that have already been redesigned
+         * and approved for the current Master Data review flow.
          */
         $this->call([
             FarmDataQuestionsSeeder::class,
+            OperationalActivitiesQuestionsSeeder::class,
         ]);
     }
 }
