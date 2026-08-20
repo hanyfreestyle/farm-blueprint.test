@@ -2,9 +2,11 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\FarmStructure\CitiesQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\ExclusionReasonsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\ExitReasonsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\FarmDataQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\GovernoratesQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\MaleChangeReasonsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\MortalityReasonsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\OperationalActivitiesQuestionsSeeder;
@@ -28,6 +30,8 @@ class QuestionnaireFarmQuestionsSeeder extends Seeder
             ExclusionReasonsQuestionsSeeder::class,
             ExitReasonsQuestionsSeeder::class,
             MaleChangeReasonsQuestionsSeeder::class,
+            GovernoratesQuestionsSeeder::class,
+            CitiesQuestionsSeeder::class,
         ]);
     }
 }
