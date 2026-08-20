@@ -2,8 +2,13 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\FarmStructure\ExclusionReasonsQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\ExitReasonsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\FarmDataQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\MaleChangeReasonsQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\MortalityReasonsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\OperationalActivitiesQuestionsSeeder;
+use Database\Seeders\Questions\FarmStructure\TransferReasonsQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireFarmQuestionsSeeder extends Seeder
@@ -18,6 +23,11 @@ class QuestionnaireFarmQuestionsSeeder extends Seeder
         $this->call([
             FarmDataQuestionsSeeder::class,
             OperationalActivitiesQuestionsSeeder::class,
+            TransferReasonsQuestionsSeeder::class,
+            MortalityReasonsQuestionsSeeder::class,
+            ExclusionReasonsQuestionsSeeder::class,
+            ExitReasonsQuestionsSeeder::class,
+            MaleChangeReasonsQuestionsSeeder::class,
         ]);
     }
 }
