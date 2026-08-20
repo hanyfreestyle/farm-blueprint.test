@@ -5,6 +5,7 @@ namespace App\Filament\Resources\QuestionnaireSections;
 use App\Filament\Resources\QuestionnaireSections\Pages\CreateQuestionnaireSection;
 use App\Filament\Resources\QuestionnaireSections\Pages\EditQuestionnaireSection;
 use App\Filament\Resources\QuestionnaireSections\Pages\ListQuestionnaireSections;
+use App\Filament\Resources\QuestionnaireSections\RelationManagers\ChildrenRelationManager;
 use App\Filament\Resources\QuestionnaireSections\Schemas\QuestionnaireSectionForm;
 use App\Filament\Resources\QuestionnaireSections\Tables\QuestionnaireSectionsTable;
 use App\Models\QuestionnaireSection;
@@ -32,7 +33,9 @@ class QuestionnaireSectionResource extends Resource
 
     public static function getRelations(): array
     {
-        return [];
+        return [
+            ChildrenRelationManager::class,
+        ];
     }
 
     public static function getPages(): array

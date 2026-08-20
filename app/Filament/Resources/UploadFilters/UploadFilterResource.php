@@ -246,6 +246,7 @@ class UploadFilterResource extends Resource {
           ->label(__('filament/resources/upload_filters.fields.state'))
           ->options(EnumsActive::options()),
       ], layout: FiltersLayout::Modal)
+      ->deferFilters(false)
       ->filtersFormColumns(4)
       ->persistFiltersInSession()
       ->persistSearchInSession()

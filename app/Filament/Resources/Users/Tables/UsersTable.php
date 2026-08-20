@@ -60,6 +60,7 @@ class UsersTable {
       ->filters([
         //
       ])
+      ->deferFilters(false)
       ->persistFiltersInSession()
       ->persistSearchInSession()
       ->persistSortInSession()

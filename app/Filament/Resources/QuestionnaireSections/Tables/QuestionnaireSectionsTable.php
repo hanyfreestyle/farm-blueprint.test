@@ -67,6 +67,7 @@ class QuestionnaireSectionsTable
                     ->searchable()
                     ->preload(),
             ], layout: FiltersLayout::Modal)
+            ->deferFilters(false)
             ->filtersFormColumns(4)
             ->persistFiltersInSession()
             ->persistSearchInSession()
