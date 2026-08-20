@@ -17,8 +17,13 @@ class QuestionSeederSyncService
      *   prune: true
      *   preserveAnswers: false
      *
-     * This makes the Seeder the source of truth: removed questions are deleted and
-     * their answers/options are removed automatically by database cascade rules.
+     * This makes the Seeder the source of truth:
+     * - removed questions are deleted;
+     * - their answers/options are removed automatically by database cascade rules;
+     * - when an option is removed from a multi-choice question, only that invalid
+     *   selected value is removed while the remaining valid answer is preserved;
+     * - if no valid multi-choice selections remain, the answer is deleted so the
+     *   question becomes unanswered and can be reviewed again.
      *
      * Later, once answers become production/reference data, use preserveAnswers: true
      * to block destructive structural changes that would invalidate stored answers.
@@ -168,7 +173,7 @@ class QuestionSeederSyncService
             ->first();
 
         if ($existingQuestion?->answer) {
-            $this->guardOrClearInvalidAnswer(
+            $this->guardOrAdjustInvalidAnswer(
                 question: $existingQuestion,
                 definition: $definition,
                 options: $options,
@@ -196,47 +201,102 @@ class QuestionSeederSyncService
      * @param array<string, mixed> $definition
      * @param array<int, array<string, mixed>> $options
      */
-    private function guardOrClearInvalidAnswer(
+    private function guardOrAdjustInvalidAnswer(
         QuestionnaireQuestion $question,
         array $definition,
         array $options,
         bool $preserveAnswers,
     ): void {
         $desiredType = $definition['type'] ?? null;
-        $typeChanged = $desiredType instanceof QuestionType
-            ? $question->type !== $desiredType
-            : $question->type->value !== (string) $desiredType;
+        $desiredQuestionType = $desiredType instanceof QuestionType
+            ? $desiredType
+            : QuestionType::from((string) $desiredType);
 
-        $answerInvalid = $typeChanged;
+        if ($question->type !== $desiredQuestionType) {
+            $this->deleteOrBlockInvalidAnswer(
+                question: $question,
+                preserveAnswers: $preserveAnswers,
+                reason: 'question type would change',
+            );
 
-        if (! $answerInvalid && $question->isOptionBasedType()) {
-            $desiredOptionValues = collect($options)
-                ->pluck('value')
-                ->map(fn (mixed $value): string => (string) $value)
-                ->all();
-
-            $answerValue = $question->answer?->value;
-            $selectedValues = is_array($answerValue) ? $answerValue : [$answerValue];
-
-            foreach ($selectedValues as $selectedValue) {
-                if ($selectedValue === null || $selectedValue === '') {
-                    continue;
-                }
-
-                if (! in_array((string) $selectedValue, $desiredOptionValues, true)) {
-                    $answerInvalid = true;
-                    break;
-                }
-            }
-        }
-
-        if (! $answerInvalid) {
             return;
         }
 
+        if (! $question->isOptionBasedType()) {
+            return;
+        }
+
+        $desiredOptionValues = collect($options)
+            ->pluck('value')
+            ->map(fn (mixed $value): string => (string) $value)
+            ->all();
+
+        $answer = $question->answer;
+
+        if (! $answer) {
+            return;
+        }
+
+        if ($question->type === QuestionType::MULTI_CHOICE) {
+            $selectedValues = is_array($answer->value) ? $answer->value : [$answer->value];
+            $selectedValues = collect($selectedValues)
+                ->filter(fn (mixed $value): bool => $value !== null && $value !== '')
+                ->map(fn (mixed $value): string => (string) $value)
+                ->values();
+
+            $validValues = $selectedValues
+                ->filter(fn (string $value): bool => in_array($value, $desiredOptionValues, true))
+                ->values()
+                ->all();
+
+            if (count($validValues) === $selectedValues->count()) {
+                return;
+            }
+
+            if ($preserveAnswers) {
+                throw new RuntimeException(
+                    "Question sync stopped safely: '{$question->title}' contains selected option values that would be removed."
+                );
+            }
+
+            if ($validValues === []) {
+                $answer->delete();
+
+                return;
+            }
+
+            // Keep the answer and its notes/review metadata; remove only obsolete selections.
+            $answer->value = $validValues;
+            $answer->save();
+
+            return;
+        }
+
+        $selectedValue = $answer->value;
+
+        if ($selectedValue === null || $selectedValue === '') {
+            return;
+        }
+
+        if (in_array((string) $selectedValue, $desiredOptionValues, true)) {
+            return;
+        }
+
+        $this->deleteOrBlockInvalidAnswer(
+            question: $question,
+            preserveAnswers: $preserveAnswers,
+            reason: 'selected option would be removed',
+        );
+    }
+
+    private function deleteOrBlockInvalidAnswer(
+        QuestionnaireQuestion $question,
+        bool $preserveAnswers,
+        string $reason,
+    ): void {
         if ($preserveAnswers) {
             throw new RuntimeException(
-                "Question sync stopped safely: '{$question->title}' has an answer that would become invalid after this Seeder change."
+                "Question sync stopped safely: '{$question->title}' has an answer that would become invalid because {$reason}."
             );
         }
 
