@@ -18,6 +18,7 @@ class QuestionnaireQuestion extends Model
 
     protected $fillable = [
         'section_id',
+        'seed_key',
         'title',
         'help_text',
         'type',
