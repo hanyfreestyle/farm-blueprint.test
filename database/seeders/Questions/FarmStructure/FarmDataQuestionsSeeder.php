@@ -36,6 +36,34 @@ class FarmDataQuestionsSeeder extends Seeder
                 );
             }
 
+            /*
+             * Intentional one-question cleanup for the current redesign test.
+             * Operational settings no longer belong to Farm. They are being
+             * moved to reusable settings profiles assigned to Barns.
+             *
+             * This deletion is deliberately scoped by the exact old title so
+             * it cannot become a general destructive Seeder behavior.
+             */
+            $obsoleteFarmSettingsQuestion = QuestionnaireQuestion::query()
+                ->where('section_id', $section->id)
+                ->where('title', 'كيف يجب تطبيق إعدادات التشغيل والإنتاج على المزارع؟')
+                ->first();
+
+            if ($obsoleteFarmSettingsQuestion) {
+                $hadAnswer = $obsoleteFarmSettingsQuestion->answer()->exists();
+
+                // Explicitly delete the old answer first so this behavior can be tested.
+                $obsoleteFarmSettingsQuestion->answer()->delete();
+                $obsoleteFarmSettingsQuestion->options()->delete();
+                $obsoleteFarmSettingsQuestion->delete();
+
+                $this->command?->info(
+                    $hadAnswer
+                        ? 'Removed the obsolete farm-level settings question and its existing answer.'
+                        : 'Removed the obsolete farm-level settings question (no answer was stored).'
+                );
+            }
+
             $questions = [
                 [
                     'title' => 'ما البيانات التي يجب أن يحتوي عليها ملف المزرعة؟',
@@ -162,20 +190,6 @@ class FarmDataQuestionsSeeder extends Seeder
                         ['label' => 'تظل حالاتها الأصلية كما هي ولكن تعتبر غير متاحة تشغيليًا بسبب توقف المزرعة', 'value' => 'preserve_status_block_usage'],
                         ['label' => 'يتم تحويل العناصر التابعة تلقائيًا إلى حالة متوقفة', 'value' => 'cascade_stopped_status'],
                         ['label' => 'لا يوجد تأثير تلقائي ويتم التعامل مع كل عنصر بصورة مستقلة', 'value' => 'independent_status'],
-                    ],
-                ],
-                [
-                    'title' => 'كيف يجب تطبيق إعدادات التشغيل والإنتاج على المزارع؟',
-                    'help_text' => 'هذا القرار سيحدد طريقة بناء قسم إعدادات التشغيل القادم وعلاقة الإعدادات بكل مزرعة.',
-                    'type' => QuestionType::SINGLE_CHOICE,
-                    'is_required' => true,
-                    'sort_order' => 9,
-                    'report_category' => 'rule',
-                    'target_entity' => 'farm',
-                    'options' => [
-                        ['label' => 'إعدادات مستقلة بالكامل لكل مزرعة', 'value' => 'per_farm'],
-                        ['label' => 'إعدادات عامة مشتركة بين جميع المزارع', 'value' => 'global'],
-                        ['label' => 'إعدادات عامة افتراضية مع إمكانية تخصيصها لكل مزرعة', 'value' => 'global_with_farm_overrides'],
                     ],
                 ],
                 [
