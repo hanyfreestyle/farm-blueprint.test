@@ -49,9 +49,10 @@ MD,
                 'sort_order' => 1,
             ],
             [
-                'name' => 'أنشطة المزرعة',
+                'name' => 'الأنشطة التشغيلية',
+                'legacy_names' => ['أنشطة المزرعة'],
                 'description' => <<<'MD'
-قائمة مرجعية مستقلة للأنشطة التشغيلية التي يمكن إسنادها للعنابر، ويمكن استنتاج أنشطة المزرعة الفعلية من أنشطة العنابر التابعة لها وتوحيد مسميات الأنشطة في الإدخال والتقارير.
+قائمة مرجعية مستقلة للأنشطة أو الاستخدامات التشغيلية التي يمكن إسنادها للعنابر، مثل الإنتاج والفطام والتسمين والحجر أو العزل. ويمكن استنتاج الأنشطة الفعلية للمزرعة من أنشطة العنابر التابعة لها بدل تخزين نشاط مستقل على المزرعة.
 MD,
                 'sort_order' => 2,
             ],
@@ -149,16 +150,35 @@ MD,
         ];
 
         foreach ($subsections as $subsection) {
-            QuestionnaireSection::query()->updateOrCreate(
-                [
-                    'parent_id' => $mainSection->id,
-                    'name' => $subsection['name'],
-                ],
-                [
-                    'description' => $subsection['description'],
-                    'sort_order' => $subsection['sort_order'],
-                ],
-            );
+            $section = QuestionnaireSection::query()
+                ->where('parent_id', $mainSection->id)
+                ->where('name', $subsection['name'])
+                ->first();
+
+            if (! $section) {
+                foreach ($subsection['legacy_names'] ?? [] as $legacyName) {
+                    $section = QuestionnaireSection::query()
+                        ->where('parent_id', $mainSection->id)
+                        ->where('name', $legacyName)
+                        ->first();
+
+                    if ($section) {
+                        break;
+                    }
+                }
+            }
+
+            if (! $section) {
+                $section = new QuestionnaireSection();
+                $section->parent_id = $mainSection->id;
+            }
+
+            $section->fill([
+                'name' => $subsection['name'],
+                'description' => $subsection['description'],
+                'sort_order' => $subsection['sort_order'],
+            ]);
+            $section->save();
         }
     }
 }
