@@ -28,6 +28,11 @@
                 <span>عرض التقرير الفني</span>
               </a>
 
+              <a class="btn btn-questionnaire-secondary" href="{{ route('implementation-prep-report.preview') }}">
+                <i class="fa-solid fa-list-check"></i>
+                <span>تقرير إعداد التنفيذ</span>
+              </a>
+
               <a class="btn btn-questionnaire-secondary" href="{{ route('technical-report.download') }}">
                 <i class="fa-solid fa-download"></i>
                 <span>تحميل التقرير MD</span>

@@ -12,6 +12,8 @@ Route::get('/study/{mainSection}/{subsection}/questions/{question}', [Questionna
 Route::get('/study/{mainSection}/{subsection}/completed', [QuestionnairePageController::class, 'completion'])->name('study.subsection.complete');
 Route::get('/technical-report', [QuestionnaireTechnicalReportController::class, 'preview'])->name('technical-report.preview');
 Route::get('/technical-report/download', [QuestionnaireTechnicalReportController::class, 'download'])->name('technical-report.download');
+Route::get('/implementation-prep-report', [QuestionnaireTechnicalReportController::class, 'implementationPrepPreview'])->name('implementation-prep-report.preview');
+Route::get('/implementation-prep-report/download', [QuestionnaireTechnicalReportController::class, 'implementationPrepDownload'])->name('implementation-prep-report.download');
 Route::post('/questionnaire/questions/{question}/answer', [QuestionnaireAnswerController::class, 'store'])->name('questionnaire.answers.store');
 Route::post('/questionnaire/questions/{question}/continue', [QuestionnaireAnswerController::class, 'continue'])->name('questionnaire.answers.continue');
 Route::delete('/study/{mainSection}/{subsection}/questions/{question}/answer', [QuestionnaireAnswerController::class, 'destroy'])->name('study.question.answer.destroy');

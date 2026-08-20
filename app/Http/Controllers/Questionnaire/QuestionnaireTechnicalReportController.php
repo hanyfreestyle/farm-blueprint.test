@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Questionnaire;
 
 use App\Http\Controllers\Controller;
+use App\Services\Questionnaire\QuestionnaireImplementationPrepReportService;
 use App\Services\Questionnaire\QuestionnaireTechnicalReportService;
 use Illuminate\Contracts\View\View;
 use Symfony\Component\HttpFoundation\StreamedResponse;
@@ -11,6 +12,7 @@ class QuestionnaireTechnicalReportController extends Controller
 {
     public function __construct(
         private readonly QuestionnaireTechnicalReportService $technicalReportService,
+        private readonly QuestionnaireImplementationPrepReportService $implementationPrepReportService,
     ) {
     }
 
@@ -34,6 +36,32 @@ class QuestionnaireTechnicalReportController extends Controller
                 echo $markdown;
             },
             QuestionnaireTechnicalReportService::REPORT_FILENAME,
+            [
+                'Content-Type' => 'text/markdown; charset=UTF-8',
+            ],
+        );
+    }
+
+    public function implementationPrepPreview(): View
+    {
+        $reportData = $this->implementationPrepReportService->buildReportData();
+        $markdown = $this->implementationPrepReportService->renderMarkdown($reportData);
+
+        return view('questionnaire.implementation-prep-report', [
+            'reportData' => $reportData,
+            'markdown' => $markdown,
+        ]);
+    }
+
+    public function implementationPrepDownload(): StreamedResponse
+    {
+        $markdown = $this->implementationPrepReportService->buildReport();
+
+        return response()->streamDownload(
+            static function () use ($markdown): void {
+                echo $markdown;
+            },
+            QuestionnaireImplementationPrepReportService::REPORT_FILENAME,
             [
                 'Content-Type' => 'text/markdown; charset=UTF-8',
             ],
