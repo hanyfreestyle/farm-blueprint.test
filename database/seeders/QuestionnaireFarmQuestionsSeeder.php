@@ -2,25 +2,20 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Questions\FarmStructure\BarnDataQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\BatteryDataQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\BreedDataQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\CageDataQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\FarmDataQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
-class QuestionnaireFarmQuestionsSeeder extends Seeder {
-
-  public function run(): void {
-    $this->call([
-      FarmDataQuestionsSeeder::class,
-      BarnDataQuestionsSeeder::class,
-      BatteryDataQuestionsSeeder::class,
-      CageDataQuestionsSeeder::class,
-      BreedDataQuestionsSeeder::class,
-    ]);
-
-
-  }
-
+class QuestionnaireFarmQuestionsSeeder extends Seeder
+{
+    public function run(): void
+    {
+        /*
+         * Temporary review mode:
+         * Seed only "بيانات المزرعة" while the remaining Master Data
+         * question groups are being redesigned and approved one by one.
+         */
+        $this->call([
+            FarmDataQuestionsSeeder::class,
+        ]);
+    }
 }
