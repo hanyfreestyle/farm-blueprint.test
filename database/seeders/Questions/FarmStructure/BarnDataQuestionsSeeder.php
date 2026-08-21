@@ -5,280 +5,411 @@ namespace Database\Seeders\Questions\FarmStructure;
 use App\Enums\Questionnaire\QuestionType;
 use App\Models\QuestionnaireQuestion;
 use App\Models\QuestionnaireSection;
+use App\Services\Questionnaire\QuestionSeederSyncService;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
 class BarnDataQuestionsSeeder extends Seeder
 {
     public function run(): void
     {
         DB::transaction(function (): void {
-            $mainSection = QuestionnaireSection::query()
-                ->whereNull('parent_id')
-                ->where('name', 'إدخال البيانات الأساسية للمزرعة')
-                ->first();
-
-            if (! $mainSection) {
-                throw new RuntimeException(
-                    'Main questionnaire section "إدخال البيانات الأساسية للمزرعة" was not found. Run the section seeders first.'
-                );
-            }
-
-            $subsection = QuestionnaireSection::query()
-                ->where('parent_id', $mainSection->id)
-                ->where('name', 'بيانات العنبر')
-                ->first();
-
-            if (! $subsection) {
-                throw new RuntimeException(
-                    'Questionnaire subsection "بيانات العنبر" was not found. Run the section seeders first.'
-                );
-            }
+            $this->adoptLegacySeedKeys();
 
             $questions = [
                 [
+                    'seed_key' => 'barn.fields',
                     'title' => 'ما البيانات التي يجب أن يحتوي عليها ملف العنبر؟',
-                    'help_text' => 'حدد البيانات الأساسية التي ترى ضرورة تسجيلها لكل عنبر.',
-                    'type' => QuestionType::from('multi_choice'),
+                    'help_text' => 'حدد البيانات والارتباطات الأساسية التي يجب أن يدعمها ملف العنبر. الأنشطة وأنظمة التهوية والتبريد والتدفئة معرفة كـMaster Data مستقلة ويتم ربط العنبر بها بدل إدخالها كنص حر.',
+                    'type' => QuestionType::MULTI_CHOICE,
                     'is_required' => true,
                     'sort_order' => 1,
                     'report_category' => 'field',
                     'target_entity' => 'barn',
                     'options' => [
-                        ['label' => 'اسم العنبر', 'value' => 'name', 'sort_order' => 1],
-                        ['label' => 'كود العنبر', 'value' => 'code', 'sort_order' => 2],
-                        ['label' => 'المزرعة التابع لها', 'value' => 'farm', 'sort_order' => 3],
-                        ['label' => 'نوع / استخدام العنبر', 'value' => 'usage', 'sort_order' => 4],
-                        ['label' => 'السعة الاستيعابية', 'value' => 'capacity', 'sort_order' => 5],
-                        ['label' => 'حالة العنبر', 'value' => 'status', 'sort_order' => 6],
-                        ['label' => 'تاريخ بدء التشغيل', 'value' => 'started_at', 'sort_order' => 7],
-                        ['label' => 'وصف الموقع داخل المزرعة', 'value' => 'location_description', 'sort_order' => 8],
-                        ['label' => 'ملاحظات', 'value' => 'notes', 'sort_order' => 9],
-                        ['label' => 'خصائص بيئية / إنشائية', 'value' => 'environmental_features', 'sort_order' => 10],
+                        ['label' => 'اسم العنبر', 'value' => 'name'],
+                        ['label' => 'كود العنبر', 'value' => 'code'],
+                        ['label' => 'المزرعة التابع لها', 'value' => 'farm'],
+                        ['label' => 'النشاط التشغيلي', 'value' => 'usage'],
+                        ['label' => 'ملف إعدادات التشغيل', 'value' => 'settings_profile'],
+                        ['label' => 'نظام التهوية', 'value' => 'ventilation_system'],
+                        ['label' => 'نظام التبريد', 'value' => 'cooling_system'],
+                        ['label' => 'نظام التدفئة', 'value' => 'heating_system'],
+                        ['label' => 'المساحة', 'value' => 'area'],
+                        ['label' => 'السعة التصميمية / التقريبية', 'value' => 'capacity'],
+                        ['label' => 'الحالة التشغيلية', 'value' => 'status'],
+                        ['label' => 'تاريخ بدء التشغيل', 'value' => 'started_at'],
+                        ['label' => 'وصف الموقع داخل المزرعة', 'value' => 'location_description'],
+                        ['label' => 'ملاحظات', 'value' => 'notes'],
                     ],
                 ],
                 [
-                    'title' => 'هل اسم العنبر يجب أن يكون من البيانات الإلزامية؟',
-                    'help_text' => 'حدد ما إذا كان يمكن إنشاء عنبر بدون اسم.',
-                    'type' => QuestionType::from('yes_no'),
+                    'seed_key' => 'barn.required_fields',
+                    'title' => 'أي من بيانات العنبر يجب أن تكون إلزامية عند إنشائه؟',
+                    'help_text' => 'حدد الحد الأدنى من البيانات والعلاقات التي لا يسمح النظام بإنشاء عنبر بدونها.',
+                    'type' => QuestionType::MULTI_CHOICE,
                     'is_required' => true,
                     'sort_order' => 2,
-                    'report_category' => 'field_rule',
+                    'report_category' => 'rule',
                     'target_entity' => 'barn',
-                    'options' => [],
+                    'options' => [
+                        ['label' => 'اسم العنبر', 'value' => 'name'],
+                        ['label' => 'كود العنبر', 'value' => 'code'],
+                        ['label' => 'المزرعة التابع لها', 'value' => 'farm'],
+                        ['label' => 'النشاط التشغيلي', 'value' => 'usage'],
+                        ['label' => 'ملف إعدادات التشغيل', 'value' => 'settings_profile'],
+                        ['label' => 'نظام التهوية', 'value' => 'ventilation_system'],
+                        ['label' => 'نظام التبريد', 'value' => 'cooling_system'],
+                        ['label' => 'نظام التدفئة', 'value' => 'heating_system'],
+                        ['label' => 'المساحة', 'value' => 'area'],
+                        ['label' => 'السعة التصميمية / التقريبية', 'value' => 'capacity'],
+                        ['label' => 'الحالة التشغيلية', 'value' => 'status'],
+                        ['label' => 'تاريخ بدء التشغيل', 'value' => 'started_at'],
+                        ['label' => 'وصف الموقع داخل المزرعة', 'value' => 'location_description'],
+                        ['label' => 'ملاحظات', 'value' => 'notes'],
+                    ],
                 ],
                 [
-                    'title' => 'كيف تريد التعامل مع كود العنبر؟',
-                    'help_text' => 'حدد ما إذا كان كود العنبر غير مطلوب أو يتم إدخاله أو توليده تلقائيًا.',
-                    'type' => QuestionType::from('single_choice'),
+                    'seed_key' => 'barn.code_strategy',
+                    'title' => 'كيف يجب التعامل مع كود العنبر؟',
+                    'help_text' => 'حدد هل كود العنبر غير مطلوب أو يتم إدخاله يدويًا أو يولده النظام تلقائيًا.',
+                    'type' => QuestionType::SINGLE_CHOICE,
                     'is_required' => true,
                     'sort_order' => 3,
                     'report_category' => 'field_rule',
                     'target_entity' => 'barn',
                     'options' => [
-                        ['label' => 'لا نحتاج كودًا للعنبر', 'value' => 'not_required', 'sort_order' => 1],
-                        ['label' => 'يتم إدخال الكود يدويًا', 'value' => 'manual', 'sort_order' => 2],
-                        ['label' => 'يقوم النظام بتوليد الكود تلقائيًا', 'value' => 'automatic', 'sort_order' => 3],
-                        ['label' => 'يحتاج الأمر إلى مراجعة قبل الاعتماد', 'value' => 'needs_review', 'sort_order' => 4],
+                        ['label' => 'لا نحتاج كودًا للعنبر', 'value' => 'not_required'],
+                        ['label' => 'يتم إدخال الكود يدويًا', 'value' => 'manual'],
+                        ['label' => 'يقوم النظام بتوليد الكود تلقائيًا', 'value' => 'automatic'],
                     ],
                 ],
                 [
-                    'title' => 'ما الاستخدامات التي يمكن تخصيص العنبر لها؟',
-                    'help_text' => 'حدد الاستخدامات الفعلية التي قد يعمل بها العنبر.',
-                    'type' => QuestionType::from('multi_choice'),
+                    'seed_key' => 'barn.code_unique_scope',
+                    'title' => 'ما نطاق عدم تكرار كود العنبر؟',
+                    'help_text' => 'حدد نطاق التحقق من تكرار كود العنبر إذا تم استخدام الأكواد في النظام.',
+                    'type' => QuestionType::SINGLE_CHOICE,
                     'is_required' => true,
                     'sort_order' => 4,
-                    'report_category' => 'lookup_values',
+                    'report_category' => 'rule',
                     'target_entity' => 'barn',
                     'options' => [
-                        ['label' => 'إنتاج', 'value' => 'production', 'sort_order' => 1],
-                        ['label' => 'فطام', 'value' => 'weaning', 'sort_order' => 2],
-                        ['label' => 'تسمين', 'value' => 'fattening', 'sort_order' => 3],
-                        ['label' => 'حجر / عزل', 'value' => 'quarantine', 'sort_order' => 4],
-                        ['label' => 'أخرى', 'value' => 'other', 'sort_order' => 5],
+                        ['label' => 'يجب أن يكون الكود فريدًا داخل نفس المزرعة فقط', 'value' => 'unique_within_farm'],
+                        ['label' => 'يجب أن يكون الكود فريدًا على مستوى النظام بالكامل', 'value' => 'global_unique'],
+                        ['label' => 'يسمح بتكرار الكود', 'value' => 'duplicates_allowed'],
                     ],
                 ],
                 [
-                    'title' => 'هل يمكن للعنبر الواحد أن يخدم أكثر من استخدام في نفس الوقت؟',
-                    'help_text' => 'مثال: أن يعمل العنبر للإنتاج والفطام في نفس الفترة.',
-                    'type' => QuestionType::from('yes_no'),
+                    'seed_key' => 'barn.unique_name_within_farm',
+                    'title' => 'هل يجب منع تكرار اسم العنبر داخل نفس المزرعة؟',
+                    'help_text' => 'حدد هل يمكن أن تحتوي المزرعة الواحدة على أكثر من عنبر يحمل نفس الاسم.',
+                    'type' => QuestionType::YES_NO,
                     'is_required' => true,
                     'sort_order' => 5,
+                    'report_category' => 'rule',
+                    'target_entity' => 'barn',
+                    'options' => [],
+                ],
+                [
+                    'seed_key' => 'barn.farm_relation',
+                    'title' => 'هل يجب أن يتبع كل عنبر مزرعة واحدة؟',
+                    'help_text' => 'يثبت هذا السؤال العلاقة التنظيمية الأساسية Farm → Barn بحيث يكون لكل عنبر مرجع لمزرعة واحدة.',
+                    'type' => QuestionType::YES_NO,
+                    'is_required' => true,
+                    'sort_order' => 6,
                     'report_category' => 'relationship_rule',
                     'target_entity' => 'barn',
                     'options' => [],
                 ],
                 [
-                    'title' => 'هل أنواع استخدام العنابر ثابتة أم قابلة للإدارة؟',
-                    'help_text' => 'حدد هل ستظل قائمة الاستخدامات ثابتة داخل النظام أم يمكن للمدير إضافة أنواع جديدة وتعديلها.',
-                    'type' => QuestionType::from('single_choice'),
-                    'is_required' => true,
-                    'sort_order' => 6,
-                    'report_category' => 'value_management',
-                    'target_entity' => 'barn_usage',
-                    'options' => [
-                        ['label' => 'قيم ثابتة داخل النظام', 'value' => 'fixed', 'sort_order' => 1],
-                        ['label' => 'قابلة للإضافة والتعديل من لوحة التحكم', 'value' => 'managed', 'sort_order' => 2],
-                    ],
-                ],
-                [
-                    'title' => 'ما الحالات التشغيلية التي يمكن أن يكون عليها العنبر؟',
-                    'help_text' => 'حدد الحالات التي تحتاج إلى تمثيلها في النظام.',
-                    'type' => QuestionType::from('multi_choice'),
+                    'seed_key' => 'barn.activity_requirement',
+                    'title' => 'متى يجب تحديد النشاط التشغيلي للعنبر؟',
+                    'help_text' => 'الأنشطة التشغيلية معرفة مسبقًا كـMaster Data مستقلة؛ المطلوب هنا تحديد إلزامية ربط العنبر بها وتوقيت ذلك.',
+                    'type' => QuestionType::SINGLE_CHOICE,
                     'is_required' => true,
                     'sort_order' => 7,
-                    'report_category' => 'lookup_values',
-                    'target_entity' => 'barn',
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'barn_activity',
                     'options' => [
-                        ['label' => 'نشط', 'value' => 'active', 'sort_order' => 1],
-                        ['label' => 'متوقف', 'value' => 'stopped', 'sort_order' => 2],
-                        ['label' => 'تحت الصيانة', 'value' => 'maintenance', 'sort_order' => 3],
-                        ['label' => 'أخرى', 'value' => 'other', 'sort_order' => 4],
+                        ['label' => 'إلزامي عند إنشاء العنبر', 'value' => 'required_on_create'],
+                        ['label' => 'يمكن إنشاء العنبر بدونه ولكن يجب تحديده قبل بدء التشغيل', 'value' => 'required_before_operation'],
+                        ['label' => 'اختياري دائمًا', 'value' => 'optional'],
                     ],
                 ],
                 [
-                    'title' => 'هل حالات العنبر ثابتة أم قابلة للإدارة؟',
-                    'help_text' => 'حدد هل يتم تمثيل الحالات كقيم ثابتة أم كقائمة يمكن إدارتها من لوحة التحكم.',
-                    'type' => QuestionType::from('single_choice'),
+                    'seed_key' => 'barn.multiple_activities',
+                    'title' => 'هل يمكن ربط العنبر بأكثر من نشاط تشغيلي في نفس الوقت؟',
+                    'help_text' => 'يحدد هذا القرار هل العلاقة النهائية Barn → Activity أم Barn ↔ Activities.',
+                    'type' => QuestionType::YES_NO,
                     'is_required' => true,
                     'sort_order' => 8,
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'barn_activity',
+                    'options' => [],
+                ],
+                [
+                    'seed_key' => 'barn.settings_profile_requirement',
+                    'title' => 'متى يجب ربط العنبر بملف إعدادات تشغيل؟',
+                    'help_text' => 'ملفات إعدادات التشغيل مستقلة وقابلة لإعادة الاستخدام؛ المطلوب هنا تحديد إلزامية اختيار ملف إعدادات للعنبر وتوقيت ذلك.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 9,
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'barn_settings_profile',
+                    'options' => [
+                        ['label' => 'إلزامي عند إنشاء العنبر', 'value' => 'required_on_create'],
+                        ['label' => 'يمكن إنشاء العنبر بدونه ولكن يجب ربطه قبل بدء التشغيل', 'value' => 'required_before_operation'],
+                        ['label' => 'اختياري', 'value' => 'optional'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'barn.multiple_active_settings_profiles',
+                    'title' => 'هل يمكن أن يكون للعنبر أكثر من ملف إعدادات تشغيل فعال في نفس الوقت؟',
+                    'help_text' => 'يحدد هذا السؤال Cardinality العلاقة الفعالة بين العنبر وملفات إعدادات التشغيل، دون الدخول في محتوى الإعدادات نفسها.',
+                    'type' => QuestionType::YES_NO,
+                    'is_required' => true,
+                    'sort_order' => 10,
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'barn_settings_profile',
+                    'options' => [],
+                ],
+                [
+                    'seed_key' => 'barn.ventilation_relation',
+                    'title' => 'كيف يتم ربط العنبر بنظام التهوية؟',
+                    'help_text' => 'أنظمة التهوية معرفة كـMaster Data مستقلة؛ حدد هل العلاقة مطلوبة وهل يسمح بأكثر من نظام تهوية للعنبر.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 11,
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'barn_ventilation',
+                    'options' => [
+                        ['label' => 'لا نحتاج تسجيل نظام تهوية للعنبر', 'value' => 'not_recorded'],
+                        ['label' => 'اختياري، ونظام واحد كحد أقصى', 'value' => 'optional_single'],
+                        ['label' => 'إلزامي، ويجب اختيار نظام واحد', 'value' => 'required_single'],
+                        ['label' => 'اختياري، ويمكن ربط أكثر من نظام', 'value' => 'optional_multiple'],
+                        ['label' => 'إلزامي، ويجب اختيار نظام واحد على الأقل ويمكن ربط أكثر من نظام', 'value' => 'required_multiple'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'barn.cooling_relation',
+                    'title' => 'كيف يتم ربط العنبر بنظام التبريد؟',
+                    'help_text' => 'أنظمة التبريد معرفة كـMaster Data مستقلة؛ حدد هل العلاقة مطلوبة وهل يسمح بأكثر من نظام تبريد للعنبر.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 12,
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'barn_cooling',
+                    'options' => [
+                        ['label' => 'لا نحتاج تسجيل نظام تبريد للعنبر', 'value' => 'not_recorded'],
+                        ['label' => 'اختياري، ونظام واحد كحد أقصى', 'value' => 'optional_single'],
+                        ['label' => 'إلزامي، ويجب اختيار نظام واحد', 'value' => 'required_single'],
+                        ['label' => 'اختياري، ويمكن ربط أكثر من نظام', 'value' => 'optional_multiple'],
+                        ['label' => 'إلزامي، ويجب اختيار نظام واحد على الأقل ويمكن ربط أكثر من نظام', 'value' => 'required_multiple'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'barn.heating_relation',
+                    'title' => 'كيف يتم ربط العنبر بنظام التدفئة؟',
+                    'help_text' => 'أنظمة التدفئة معرفة كـMaster Data مستقلة؛ حدد هل العلاقة مطلوبة وهل يسمح بأكثر من نظام تدفئة للعنبر.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 13,
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'barn_heating',
+                    'options' => [
+                        ['label' => 'لا نحتاج تسجيل نظام تدفئة للعنبر', 'value' => 'not_recorded'],
+                        ['label' => 'اختياري، ونظام واحد كحد أقصى', 'value' => 'optional_single'],
+                        ['label' => 'إلزامي، ويجب اختيار نظام واحد', 'value' => 'required_single'],
+                        ['label' => 'اختياري، ويمكن ربط أكثر من نظام', 'value' => 'optional_multiple'],
+                        ['label' => 'إلزامي، ويجب اختيار نظام واحد على الأقل ويمكن ربط أكثر من نظام', 'value' => 'required_multiple'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'barn.statuses',
+                    'title' => 'ما الحالات التشغيلية التي يمكن أن يكون عليها العنبر؟',
+                    'help_text' => 'حدد الحالات التي يحتاج النظام إلى تمثيلها للعنبر.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 14,
+                    'report_category' => 'lookup_values',
+                    'target_entity' => 'barn_status',
+                    'options' => [
+                        ['label' => 'نشط', 'value' => 'active'],
+                        ['label' => 'متوقف', 'value' => 'stopped'],
+                        ['label' => 'تحت الصيانة', 'value' => 'maintenance'],
+                        ['label' => 'أخرى', 'value' => 'other'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'barn.status_management',
+                    'title' => 'هل حالات العنبر ثابتة أم قابلة للإدارة؟',
+                    'help_text' => 'حدد هل حالات العنبر قيم ثابتة في النظام أم قائمة يمكن إدارتها من لوحة التحكم.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 15,
                     'report_category' => 'value_management',
                     'target_entity' => 'barn_status',
                     'options' => [
-                        ['label' => 'قيم ثابتة داخل النظام', 'value' => 'fixed', 'sort_order' => 1],
-                        ['label' => 'قابلة للإضافة والتعديل من لوحة التحكم', 'value' => 'managed', 'sort_order' => 2],
+                        ['label' => 'قيم ثابتة داخل النظام', 'value' => 'fixed'],
+                        ['label' => 'قابلة للإضافة والتعديل من لوحة التحكم', 'value' => 'managed'],
                     ],
                 ],
                 [
-                    'title' => 'كيف تريد تحديد السعة الاستيعابية للعنبر؟',
-                    'help_text' => 'حدد هل السعة قيمة يكتبها المستخدم أم يتم احتسابها من البطاريات والأقفاص المرتبطة بالعنبر.',
-                    'type' => QuestionType::from('single_choice'),
+                    'seed_key' => 'barn.capacity_strategy',
+                    'title' => 'كيف يجب تحديد السعة الاستيعابية للعنبر؟',
+                    'help_text' => 'حدد الفرق المطلوب بين السعة التصميمية أو التخطيطية وبين السعة الفعلية التي يمكن للنظام اشتقاقها من البطاريات والأقفاص.',
+                    'type' => QuestionType::SINGLE_CHOICE,
                     'is_required' => true,
-                    'sort_order' => 9,
+                    'sort_order' => 16,
                     'report_category' => 'calculation_rule',
                     'target_entity' => 'barn',
                     'options' => [
-                        ['label' => 'لا نحتاج تسجيل السعة الاستيعابية', 'value' => 'not_required', 'sort_order' => 1],
-                        ['label' => 'يتم إدخال السعة يدويًا', 'value' => 'manual', 'sort_order' => 2],
-                        ['label' => 'يتم حسابها تلقائيًا من البطاريات والأقفاص', 'value' => 'calculated', 'sort_order' => 3],
-                        ['label' => 'نحتفظ بسعة تصميمية منفصلة ونحسب السعة الفعلية تلقائيًا', 'value' => 'planned_and_calculated', 'sort_order' => 4],
+                        ['label' => 'لا نحتاج تسجيل السعة الاستيعابية', 'value' => 'not_required'],
+                        ['label' => 'يتم إدخال السعة يدويًا', 'value' => 'manual'],
+                        ['label' => 'يتم حسابها تلقائيًا من البطاريات والأقفاص', 'value' => 'calculated'],
+                        ['label' => 'نحتفظ بسعة تصميمية منفصلة ونحسب السعة الفعلية تلقائيًا', 'value' => 'planned_and_calculated'],
                     ],
                 ],
                 [
-                    'title' => 'ما الخصائص البيئية أو الإنشائية التي تحتاج إلى تسجيلها لكل عنبر؟',
-                    'help_text' => 'اختر فقط الخصائص التي لها قيمة فعلية في تشغيل وإدارة العنبر.',
-                    'type' => QuestionType::from('multi_choice'),
-                    'is_required' => false,
-                    'sort_order' => 10,
-                    'report_category' => 'field',
-                    'target_entity' => 'barn',
-                    'options' => [
-                        ['label' => 'المساحة', 'value' => 'area', 'sort_order' => 1],
-                        ['label' => 'نظام التهوية', 'value' => 'ventilation', 'sort_order' => 2],
-                        ['label' => 'نظام التبريد', 'value' => 'cooling', 'sort_order' => 3],
-                        ['label' => 'نظام التدفئة', 'value' => 'heating', 'sort_order' => 4],
-                        ['label' => 'أخرى', 'value' => 'other', 'sort_order' => 5],
-                    ],
-                ],
-                [
-                    'title' => 'كيف تريد التعامل مع خصائص العنبر الإضافية مستقبلًا؟',
-                    'help_text' => 'هذا السؤال يساعد في تحديد ما إذا كانت خصائص العنبر أعمدة ثابتة أم خصائص قابلة للإضافة لاحقًا.',
-                    'type' => QuestionType::from('single_choice'),
-                    'is_required' => false,
-                    'sort_order' => 11,
-                    'report_category' => 'architecture_rule',
-                    'target_entity' => 'barn',
-                    'options' => [
-                        ['label' => 'حقول ثابتة في ملف العنبر', 'value' => 'fixed_fields', 'sort_order' => 1],
-                        ['label' => 'خصائص يمكن للإدارة إضافتها وإدارتها', 'value' => 'managed_properties', 'sort_order' => 2],
-                        ['label' => 'لم يتحدد بعد', 'value' => 'undecided', 'sort_order' => 3],
-                    ],
-                ],
-                [
+                    'seed_key' => 'barn.battery_count_strategy',
                     'title' => 'كيف يتم تحديد عدد البطاريات الموجودة داخل العنبر؟',
-                    'help_text' => 'المفضل ألا يتم تكرار قيمة يمكن للنظام استخراجها من البطاريات المرتبطة بالعنبر.',
-                    'type' => QuestionType::from('single_choice'),
+                    'help_text' => 'حدد هل عدد البطاريات قيمة مستقلة أم يتم اشتقاقه من البطاريات المرتبطة فعليًا بالعنبر.',
+                    'type' => QuestionType::SINGLE_CHOICE,
                     'is_required' => true,
-                    'sort_order' => 12,
+                    'sort_order' => 17,
                     'report_category' => 'calculation_rule',
                     'target_entity' => 'barn',
                     'options' => [
-                        ['label' => 'يُحسب تلقائيًا من البطاريات المرتبطة بالعنبر', 'value' => 'calculated', 'sort_order' => 1],
-                        ['label' => 'يُدخل يدويًا', 'value' => 'manual', 'sort_order' => 2],
-                        ['label' => 'عدد فعلي محسوب مع قيمة تخطيطية منفصلة', 'value' => 'planned_and_calculated', 'sort_order' => 3],
+                        ['label' => 'يُحسب تلقائيًا من البطاريات المرتبطة بالعنبر', 'value' => 'calculated'],
+                        ['label' => 'يُدخل يدويًا', 'value' => 'manual'],
+                        ['label' => 'عدد فعلي محسوب مع قيمة تخطيطية منفصلة', 'value' => 'planned_and_calculated'],
                     ],
                 ],
                 [
-                    'title' => 'هل تريد أن يحسب النظام تلقائيًا مؤشرات الإشغال الحالية للعنبر؟',
-                    'help_text' => 'مثل عدد الأقفاص، الأقفاص المشغولة، الأقفاص المتاحة، وعدد الأرانب الموجودة حاليًا.',
-                    'type' => QuestionType::from('yes_no'),
+                    'seed_key' => 'barn.occupancy_calculation',
+                    'title' => 'هل يجب أن يحسب النظام مؤشرات الإشغال الحالية للعنبر تلقائيًا؟',
+                    'help_text' => 'مثل عدد الأقفاص، الأقفاص المشغولة، الأقفاص المتاحة، وعدد الأرانب الموجودة حاليًا اعتمادًا على البيانات التابعة للعنبر.',
+                    'type' => QuestionType::YES_NO,
                     'is_required' => true,
-                    'sort_order' => 13,
+                    'sort_order' => 18,
                     'report_category' => 'calculation_rule',
                     'target_entity' => 'barn',
                     'options' => [],
                 ],
                 [
-                    'title' => 'ما الأسباب التي قد تستدعي نقل الحيوان من عنبر إلى آخر؟',
-                    'help_text' => 'حدد الأسباب التشغيلية التي يجب أن يستطيع النظام تسجيلها عند نقل الحيوانات بين العنابر.',
-                    'type' => QuestionType::from('multi_choice'),
-                    'is_required' => false,
-                    'sort_order' => 14,
+                    'seed_key' => 'barn.inactive_operational_effect',
+                    'title' => 'ما تأثير إيقاف العنبر أو وضعه تحت الصيانة على استخدامه التشغيلي؟',
+                    'help_text' => 'حدد القاعدة المطلوبة عند محاولة استخدام عنبر غير نشط في تسكين أو نقل أو عملية تشغيلية جديدة، مع الحفاظ على السجل التاريخي.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 19,
                     'report_category' => 'workflow_rule',
-                    'target_entity' => 'barn_transfer',
+                    'target_entity' => 'barn',
                     'options' => [
-                        ['label' => 'تغيير المرحلة الإنتاجية', 'value' => 'production_stage_change', 'sort_order' => 1],
-                        ['label' => 'التسكين أو إعادة التوزيع', 'value' => 'rehousing', 'sort_order' => 2],
-                        ['label' => 'الحجر / العزل', 'value' => 'quarantine', 'sort_order' => 3],
-                        ['label' => 'صيانة العنبر', 'value' => 'maintenance', 'sort_order' => 4],
-                        ['label' => 'ازدحام / إعادة توزيع السعة', 'value' => 'capacity_redistribution', 'sort_order' => 5],
-                        ['label' => 'قرار إداري', 'value' => 'administrative', 'sort_order' => 6],
-                        ['label' => 'أخرى', 'value' => 'other', 'sort_order' => 7],
+                        ['label' => 'يمنع استخدامه في أي تسكين أو نقل أو عملية تشغيلية جديدة حتى يعود إلى الحالة النشطة', 'value' => 'block_new_operations'],
+                        ['label' => 'يعرض تحذيرًا فقط ويسمح بالاستمرار وفق الصلاحيات', 'value' => 'warning_only'],
+                        ['label' => 'يختلف السلوك حسب الحالة ويحدد لكل حالة على حدة', 'value' => 'per_status_rule'],
                     ],
                 ],
                 [
-                    'title' => 'هل توجد بيانات أو خصائص أو متطلبات أخرى تخص العنبر ولم نتطرق إليها؟',
-                    'help_text' => 'اكتب أي ملاحظة أو متطلب إضافي يحتاج إلى مراجعة قبل اعتماد التصميم الفني.',
-                    'type' => QuestionType::from('textarea'),
+                    'seed_key' => 'barn.delete_policy',
+                    'title' => 'كيف يجب التعامل مع حذف عنبر سبق استخدامه؟',
+                    'help_text' => 'حدد سياسة حذف العنبر مع الحفاظ على البطاريات والأقفاص والحركات والسجلات التاريخية المرتبطة به.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 20,
+                    'report_category' => 'lifecycle_rule',
+                    'target_entity' => 'barn',
+                    'options' => [
+                        ['label' => 'لا يسمح بحذفه نهائيًا ويتم إيقافه فقط', 'value' => 'disable_only'],
+                        ['label' => 'يسمح بحذفه إذا لم يستخدم سابقًا، وإلا يتم إيقافه فقط', 'value' => 'delete_if_unused_otherwise_disable'],
+                        ['label' => 'يسمح بالحذف المنطقي Soft Delete مع الاحتفاظ بالسجل التاريخي', 'value' => 'soft_delete'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'barn.additional_requirements',
+                    'title' => 'هل توجد بيانات أو قواعد أخرى تخص العنبر؟',
+                    'help_text' => 'اكتب أي بيانات أو علاقة أو قاعدة تشغيلية إضافية تخص العنبر ولم تغطها الأسئلة السابقة.',
+                    'type' => QuestionType::TEXTAREA,
                     'is_required' => false,
-                    'sort_order' => 15,
+                    'sort_order' => 21,
                     'report_category' => 'manual_review',
                     'target_entity' => 'barn',
                     'options' => [],
                 ],
             ];
 
-            foreach ($questions as $questionData) {
-                $options = $questionData['options'] ?? [];
-                unset($questionData['options']);
-
-                $question = QuestionnaireQuestion::query()->updateOrCreate(
-                    [
-                        'section_id' => $subsection->id,
-                        'title' => $questionData['title'],
-                    ],
-                    $questionData,
-                );
-
-                $optionValues = collect($options)->pluck('value')->all();
-
-                if ($optionValues !== []) {
-                    $question->options()->whereNotIn('value', $optionValues)->delete();
-                } else {
-                    $question->options()->delete();
-                }
-
-                foreach ($options as $optionData) {
-                    $question->options()->updateOrCreate(
-                        ['value' => $optionData['value']],
-                        [
-                            'label' => $optionData['label'],
-                            'sort_order' => $optionData['sort_order'],
-                        ],
-                    );
-                }
-            }
+            app(QuestionSeederSyncService::class)->sync(
+                mainSectionName: 'إدارة البيانات الأساسية',
+                sectionName: 'بيانات العنبر',
+                questions: $questions,
+                prune: true,
+                preserveAnswers: true,
+            );
         });
+    }
+
+    /**
+     * Adopt stable seed keys for legacy questions that have the same semantic meaning.
+     *
+     * Questions whose meaning was moved to another Master Data subsection are not
+     * adopted. If any such legacy question already has an answer, preserveAnswers
+     * will stop the sync safely instead of deleting that answer silently.
+     */
+    private function adoptLegacySeedKeys(): void
+    {
+        $mainSection = QuestionnaireSection::query()
+            ->whereNull('parent_id')
+            ->where('name', 'إدارة البيانات الأساسية')
+            ->first();
+
+        if (! $mainSection) {
+            return;
+        }
+
+        $section = QuestionnaireSection::query()
+            ->where('parent_id', $mainSection->id)
+            ->where('name', 'بيانات العنبر')
+            ->first();
+
+        if (! $section) {
+            return;
+        }
+
+        $legacyMap = [
+            'ما البيانات التي يجب أن يحتوي عليها ملف العنبر؟' => 'barn.fields',
+            'كيف تريد التعامل مع كود العنبر؟' => 'barn.code_strategy',
+            'هل يمكن للعنبر الواحد أن يخدم أكثر من استخدام في نفس الوقت؟' => 'barn.multiple_activities',
+            'ما الحالات التشغيلية التي يمكن أن يكون عليها العنبر؟' => 'barn.statuses',
+            'هل حالات العنبر ثابتة أم قابلة للإدارة؟' => 'barn.status_management',
+            'كيف تريد تحديد السعة الاستيعابية للعنبر؟' => 'barn.capacity_strategy',
+            'كيف يتم تحديد عدد البطاريات الموجودة داخل العنبر؟' => 'barn.battery_count_strategy',
+            'هل تريد أن يحسب النظام تلقائيًا مؤشرات الإشغال الحالية للعنبر؟' => 'barn.occupancy_calculation',
+            'هل توجد بيانات أو خصائص أو متطلبات أخرى تخص العنبر ولم نتطرق إليها؟' => 'barn.additional_requirements',
+        ];
+
+        foreach ($legacyMap as $legacyTitle => $seedKey) {
+            $alreadyAdopted = QuestionnaireQuestion::query()
+                ->where('section_id', $section->id)
+                ->where('seed_key', $seedKey)
+                ->exists();
+
+            if ($alreadyAdopted) {
+                continue;
+            }
+
+            $legacyQuestion = QuestionnaireQuestion::query()
+                ->where('section_id', $section->id)
+                ->whereNull('seed_key')
+                ->where('title', $legacyTitle)
+                ->first();
+
+            if (! $legacyQuestion) {
+                continue;
+            }
+
+            $legacyQuestion->seed_key = $seedKey;
+            $legacyQuestion->save();
+        }
     }
 }
