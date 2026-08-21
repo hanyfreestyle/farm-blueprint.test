@@ -33,6 +33,11 @@
                 <span>تقرير إعداد التنفيذ</span>
               </a>
 
+              <a class="btn btn-questionnaire-secondary" href="{{ route('final-requirements-input.preview') }}">
+                <i class="fa-solid fa-diagram-project"></i>
+                <span>ملف المتطلبات النهائي</span>
+              </a>
+
               <a class="btn btn-questionnaire-secondary" href="{{ route('technical-report.download') }}">
                 <i class="fa-solid fa-download"></i>
                 <span>تحميل التقرير MD</span>
