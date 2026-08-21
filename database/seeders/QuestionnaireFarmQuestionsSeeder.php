@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\FarmStructure\BarnDataQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\CitiesQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\CoolingSystemsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\ExclusionReasonsQuestionsSeeder;
@@ -28,6 +29,7 @@ class QuestionnaireFarmQuestionsSeeder extends Seeder
         $this->call([
             FarmDataQuestionsSeeder::class,
             OperationalActivitiesQuestionsSeeder::class,
+            BarnDataQuestionsSeeder::class,
             TransferReasonsQuestionsSeeder::class,
             MortalityReasonsQuestionsSeeder::class,
             ExclusionReasonsQuestionsSeeder::class,
