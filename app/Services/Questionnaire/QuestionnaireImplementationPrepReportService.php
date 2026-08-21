@@ -112,9 +112,10 @@ class QuestionnaireImplementationPrepReportService
             '## طريقة قراءة هذا التقرير',
             '',
             '- كل قسم فرعي يعرض الأسئلة بترتيبها الحالي.',
+            '- كل سؤال يعرض `Question Key` الثابت المستخدم لربطه بدليل تفسير الأسئلة وملفات الـRequirements.',
             '- كل سؤال يوضح إن كان قابلًا حاليًا أو مخفيًا بسبب شرط.',
             '- كل سؤال يوضح الإجابة الحالية بشكل يصلح للمراجعة البشرية أو التحليل الآلي.',
-            '- هذا التقرير لا يحاول استنتاج التصميم النهائي، بل يرتب المعرفة الخام المنظمة تمهيدًا للتقرير النهائي.',
+            '- هذا التقرير يخص مرحلة الدراسة والمراجعة وقد يحتوي أسئلة مفتوحة وملاحظات لا تدخل مباشرة في الـRequirements النهائية.',
             '',
         ];
 
@@ -154,6 +155,7 @@ class QuestionnaireImplementationPrepReportService
                 foreach ($subsection['questions'] as $question) {
                     $lines[] = '### س' . $question['sort_order'] . '. ' . $question['title'];
                     $lines[] = '';
+                    $lines[] = '- Question Key: `' . ($question['seed_key'] ?: 'غير محدد') . '`';
                     $lines[] = '- النوع: ' . $question['type_label'];
                     $lines[] = '- مطلوب: ' . ($question['is_required'] ? 'نعم' : 'لا');
                     $lines[] = '- الحالة الحالية: ' . $question['applicability_label'];
@@ -191,6 +193,7 @@ class QuestionnaireImplementationPrepReportService
             foreach ($reportData['open_review_items'] as $item) {
                 $lines[] = '- **القسم الرئيسي:** ' . $item['main_section'];
                 $lines[] = '  **القسم الفرعي:** ' . $item['subsection'];
+                $lines[] = '  **Question Key:** `' . ($item['seed_key'] ?: 'غير محدد') . '`';
                 $lines[] = '  **السؤال:** ' . $item['question'];
                 $lines[] = '  **الإجابة الحالية:** ' . $item['answer_display'];
                 $lines[] = '  **الملاحظات:** ' . ($item['notes'] ?: 'بدون ملاحظات نصية');
@@ -208,6 +211,7 @@ class QuestionnaireImplementationPrepReportService
             foreach ($reportData['unanswered_items'] as $item) {
                 $lines[] = '- **القسم الرئيسي:** ' . $item['main_section'];
                 $lines[] = '  **القسم الفرعي:** ' . $item['subsection'];
+                $lines[] = '  **Question Key:** `' . ($item['seed_key'] ?: 'غير محدد') . '`';
                 $lines[] = '  **السؤال:** ' . $item['question'];
 
                 if (filled($item['help_text'])) {
@@ -236,6 +240,7 @@ class QuestionnaireImplementationPrepReportService
                             ->select([
                                 'id',
                                 'section_id',
+                                'seed_key',
                                 'title',
                                 'help_text',
                                 'type',
@@ -250,7 +255,7 @@ class QuestionnaireImplementationPrepReportService
                             ->with([
                                 'options:id,question_id,label,value,sort_order',
                                 'answer:id,question_id,value,notes,needs_review,review_status,reviewed_at',
-                                'dependencyQuestion:id,title,sort_order',
+                                'dependencyQuestion:id,seed_key,title,sort_order',
                             ])
                             ->orderBy('sort_order')
                             ->orderBy('id'),
@@ -324,6 +329,7 @@ class QuestionnaireImplementationPrepReportService
         return [
             'main_section' => $mainSection->name,
             'subsection' => $subsection->name,
+            'seed_key' => $question->seed_key,
             'question' => $question->title,
             'sort_order' => $question->sort_order,
             'title' => $question->title,
@@ -360,8 +366,12 @@ class QuestionnaireImplementationPrepReportService
 
         $operator = $question->dependency_operator?->value ?? 'unknown';
         $dependencyValue = $question->dependency_value;
+        $dependencyKey = $question->dependencyQuestion->seed_key
+            ? ' [' . $question->dependencyQuestion->seed_key . ']'
+            : '';
 
         return 'يعتمد على السؤال رقم ' . $question->dependencyQuestion->sort_order
+            . $dependencyKey
             . ' (' . $question->dependencyQuestion->title . ')'
             . ' — الشرط: ' . $operator
             . ' — القيمة: ' . ($dependencyValue !== null ? (string) $dependencyValue : 'غير محددة');
