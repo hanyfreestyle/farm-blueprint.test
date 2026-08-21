@@ -270,7 +270,7 @@ City
 كل واحدة:
 
 - Module مستقل.
-- Table مستقل.
+- Table مستقل في النظام النهائي.
 - قابلة للإدارة من لوحة التحكم.
 - العلاقات تعتمد على IDs / Foreign Keys.
 - لا تعتمد على `code` كهوية للعلاقة.
@@ -752,3 +752,141 @@ git pull origin master
 **نظام إدارة المزرعة النهائي.**
 
 الهدف الوصول إلى Blueprint موثق ومنظم يقلل الافتراضات والقرارات غير المثبتة قبل بدء بناء النظام الحقيقي.
+
+---
+
+## 28. دليل تفسير الأسئلة ومسار Final Requirements — قاعدة معتمدة
+
+تم اعتماد طبقة تفسير مستقلة بين الأسئلة والإجابات وبين وكيل كتابة الـRequirements.
+
+هيكل الأدلة:
+
+```text
+docs/questionnaire-guide/
+├── 01-master-data.md
+├── 02-operation-settings.md
+├── 03-herd-setup.md
+├── 04-workflow.md
+├── 05-reports.md
+└── REQUIREMENTS_CONFLICTS.md
+```
+
+### وظيفة ملفات Guide
+
+ملفات `questionnaire-guide`:
+
+- تشرح معنى الأسئلة وحدود تفسيرها.
+- تشير إلى الأسئلة باستخدام `Question Key / seed_key`.
+- لا تكرر الإجابات الفعلية حتى لا يصبح لدينا مصدران للحقيقة.
+- توضح ما الذي يجب أن ينتج من الإجابة من Requirements / Rules / Relationships / Validation.
+- توضح ما الذي لا يجوز استنتاجه من السؤال.
+
+### Question Key في التقارير
+
+يجب أن يظهر `seed_key` في تقارير الدراسة باسم:
+
+```text
+Question Key: farm.stopped_behavior
+```
+
+وهو مفتاح الربط بين:
+
+```text
+Questionnaire Guide
+        ↕
+Exported Answers
+        ↓
+Requirements Agent
+```
+
+### نوعا التصدير
+
+يوجد فرق بين:
+
+1. **Study / Implementation Preparation Report**
+   - مخصص للدراسة والمراجعة.
+   - يمكن أن يحتوي أسئلة مفتوحة وملاحظات وعناصر مراجعة.
+   - الملف الحالي: `rabbit-farm-implementation-prep-report.md`.
+
+2. **Final Requirements Input**
+   - مخصص لتغذية وكيل كتابة الـRequirements بعد اكتمال الدراسة.
+   - الملف: `rabbit-farm-final-requirements-input.md`.
+   - يستبعد أسئلة `manual_review`.
+   - يستبعد أسئلة `*.additional_requirements` لأنها أدوات مرحلة الدراسة.
+   - لا يعتمد سؤالًا نهائيًا بلا إجابة.
+   - لا يعتمد سؤالًا نهائيًا بلا `Question Key`.
+   - لا يعتمد إجابة عليها مراجعة غير محسومة.
+
+### قاعدة الأسئلة المفتوحة
+
+الأسئلة مثل:
+
+```text
+farm.additional_requirements
+barn.additional_requirements
+```
+
+وظيفتها جمع ملاحظات أثناء الدراسة فقط.
+
+إذا ظهرت فيها نقطة مهمة، يجب تحويلها إلى سؤال حقيقي مستقل له `Question Key` ثم الإجابة عليه قبل إنهاء الدراسة.
+
+لا تحول إجابة السؤال المفتوح مباشرة إلى Requirement نهائي، ولا يراجعها وكيل كتابة الـRequirements بعد انتهاء مرحلة الدراسة.
+
+### المصادر المسموح بها لوكيل كتابة الـRequirements
+
+بعد اكتمال الأسئلة والإجابات، يقرأ وكيل كتابة الـRequirements فقط:
+
+1. `docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`.
+2. ملف Guide الخاص بالقسم داخل `docs/questionnaire-guide/`.
+3. `rabbit-farm-final-requirements-input.md`.
+4. `docs/questionnaire-guide/REQUIREMENTS_CONFLICTS.md`.
+
+**لا يستخدم `تصور_مشروع_الارانب.md` في مرحلة كتابة الـRequirements النهائية.**
+
+دور `تصور_مشروع_الارانب.md` ينتهي عند استخدامه كمرجع وظيفي لبناء ومراجعة أسئلة الدراسة. بعد ذلك تكون الأسئلة المعتمدة وإجاباتها وأدلة تفسيرها هي مصدر القرارات النهائية.
+
+### قاعدة التعارضات
+
+إذا اكتشف وكيل الـRequirements تعارضًا بين قرارين أو إجابتين:
+
+- لا يحسمه بنفسه.
+- لا يخترع حلًا وسطًا.
+- لا يرجع إلى المرجع الوظيفي القديم لحسمه.
+- يسجله في `docs/questionnaire-guide/REQUIREMENTS_CONFLICTS.md` بكود فريد.
+- يوضح Question Keys المتعارضة والأثر والقرار المطلوب.
+- يستمر في الأجزاء غير المتأثرة.
+- بعد قرار المستخدم يصحح الـRequirement المتأثر ويتحقق من زوال التعارض ثم يحذف الملاحظة المفتوحة.
+
+أكواد التعارضات:
+
+```text
+RQ-CF-MD-0001   Master Data
+RQ-CF-OPS-0001  Operation Settings
+RQ-CF-HERD-0001 Herd Setup
+RQ-CF-WF-0001   Workflow
+RQ-CF-RPT-0001  Reports
+```
+
+### مسار البيانات النهائي
+
+```text
+تصور_مشروع_الارانب.md
+      ↓  يستخدم أثناء بناء الدراسة فقط
+Sections / Questions
+      ↓
+Answers / Review
+      ↓
+Questionnaire Interpretation Guides
+      +
+Final Requirements Input
+      +
+Project Context
+      ↓
+Requirements Agent
+      ↓
+Software Requirements / Business Rules
+      ↓
+Blueprint
+      ↓
+النظام النهائي لاحقًا
+```
