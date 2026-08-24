@@ -8,6 +8,9 @@ class DatabaseSeeder extends Seeder
 {
     /**
      * Seed the application's database.
+     *
+     * Current local development workflow:
+     *   php artisan migrate:refresh --seed
      */
     public function run(): void
     {
@@ -16,7 +19,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             UploadFilterSeeder::class,
             QuestionnaireSectionSeeder::class,
-            QuestionnaireFarmQuestionsSeeder::class,
+            QuestionnaireMasterDataQuestionsSeeder::class,
         ]);
     }
 }
