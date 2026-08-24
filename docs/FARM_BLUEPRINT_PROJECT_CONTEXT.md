@@ -493,6 +493,93 @@ Target Weight / Minimum / Maximum / Threshold → Settings
 
 > المصدر الوظيفي الحالي يوثق **الوزن** كقياس رقمي تشغيلي واضح. لا يتم اختراع أنواع قياسات جسم أخرى من تلقاء المشروع؛ إذا ظهر احتياج موثق لاحقًا يضاف بسؤال مستقل.
 
+### 7.4 Mating / Attempts — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/MatingAttemptsQuestionsSeeder.php`
+
+عدد الأسئلة: **12**.
+
+```text
+mating.structure_model
+mating.reproductive_cycle_start_model
+mating.attempt_event_cardinality
+mating.event_record_fields
+mating.event_result_categories
+mating.execution_context_fields
+mating.assigned_male_execution_role
+mating.runtime_kinship_check
+mating.multiple_males_paternity_policy
+mating.attempt_completion_model
+mating.new_attempt_boundary
+mating.attempt_cancellation_model
+```
+
+المبدأ الوظيفي الذي تحسمه المجموعة:
+
+```text
+Mating Event
+≠ Mating Attempt
+≠ Reproductive Cycle
+```
+
+والتصور المرجعي يدعم النموذج:
+
+```text
+Reproductive Cycle
+→ Mating Attempt(s)
+→ Mating Event(s)
+```
+
+مع بقاء الاختيار النهائي سؤالًا داخل الـBlueprint.
+
+القرارات التي تغطيها 4.4:
+
+- البنية بين Reproductive Cycle / Attempt / Mating Event.
+- هل أول Mating Event ينشئ الدورة تلقائيًا أم تبدأ الدورة بإجراء مستقل.
+- هل Attempt يحتوي عددًا متغيرًا من Mating Events بدل حقول ثابتة First/Second Mating.
+- بيانات كل Mating Event، وبالأخص Actual Male وOccurred At والنتيجة المباشرة وربط الأوزان عند الحاجة بالسجل الموثوق.
+- نتائج الحدث الفعلي قبل Pregnancy Check، وتشمل توثيق رفض الأنثى للتلقيح.
+- المعلومات التي يحتاجها العامل وقت التنفيذ دون إعادة إدخال بيانات موجودة أصلًا.
+- دور Assigned Male / Production Group في شاشة التنفيذ مع الفصل بين Assignment وبين Actual Male.
+- إعادة فحص القرابة عند التلقيح الفعلي حتى إذا فحصت أثناء تكوين المجموعة.
+- حماية بيانات النسب عند استخدام أكثر من ذكر داخل نفس Attempt وعدم اختيار أب تلقائيًا إذا اعتمد هذا القرار.
+- كيفية انتقال Attempt إلى Waiting Pregnancy Check بعد استيفاء قواعد التكرار.
+- الحد الفاصل بين Repeated Mating داخل Attempt وبين New Attempt بعد إغلاق السابقة.
+- إلغاء Attempt كحدث محفوظ تاريخيًا أو معالجته من خلال General Correction Policy حسب الإجابة.
+
+Dependencies:
+
+```text
+mating.event_result_categories
+→ mating.event_record_fields CONTAINS result
+
+mating.attempt_event_cardinality
+mating.multiple_males_paternity_policy
+mating.attempt_completion_model
+mating.new_attempt_boundary
+mating.attempt_cancellation_model
+→ mating.structure_model EQUALS cycle_attempts_mating_events
+```
+
+حدود 4.4:
+
+```text
+تعريف Production Group والذكر المخصص → 3.5
+الذكر المستخدم فعليًا → 4.4 Mating Event
+شروط جاهزية الأنثى والذكر → Settings 6.5
+العمر/الوزن المطلوب للتلقيح → Settings 6.5
+عدد التلقيحات داخل Attempt والفاصل بينها → Settings 6.5
+قواعد استخدام ذكر مختلف عن Assigned Male → Settings 6.5 / 6.2 عند الحاجة للتحكم والتجاوز
+مستوى القرابة وحدود Information / Warning / Block / Override → Settings 6.2 و6.5
+هل يلزم وزن حديث في يوم التلقيح وما معنى حديث → Settings 6.5؛ الوزن الفعلي نفسه → 4.3
+مرجع احتساب موعد Pregnancy Check من أول/آخر Mating → Settings 6.6
+Pregnancy Check ونتيجته وإغلاق Attempt كناجحة/فاشلة → 4.5
+إعادة تلقيح الأم أثناء الرضاعة تستخدم نفس Mating Workflow لكن تداخل الدورات يعالج في 4.7
+تقارير الخصوبة وأداء الذكر/الأنثى والتوافق → Reports 5.3 / 5.7
+قواعد توليد المهام بعد Mating → Settings 6.12؛ تنفيذ المهمة نفسها → 4.17
+```
+
 ---
 
 ## 8. Reports — حدود مختصرة
@@ -502,7 +589,9 @@ Target Weight / Minimum / Maximum / Threshold → Settings
 ذات الصلة بالعمل الحالي:
 
 ```text
+5.3 تقارير الخصوبة والتلقيح والحمل
 5.5 تقارير النمو والأوزان والتسمين
+5.7 تحليل أداء الحيوانات الإنتاجية
 5.10 الاتجاهات والمقارنات والتحليل عبر الزمن
 ```
 
@@ -511,8 +600,10 @@ Reports مسؤولة عن:
 - منحنيات الوزن والنمو.
 - الزيادة بين القياسات.
 - Average Daily Gain عند اعتماد طريقة الحساب.
+- نسب نجاح الحمل وربط النتائج بالإناث والذكور والمحاولات.
+- تقييم تكرار الفشل عند ذكر أو أنثى أو توليفة معينة.
 - المقارنة بين الحيوانات/البطون/السلالة/المزرعة حسب Requirements لاحقة.
-- اكتشاف الحالات وعرضها، لا تغيير سجلات القياس الأصلية.
+- اكتشاف الحالات وعرضها، لا تغيير السجلات التشغيلية الأصلية.
 
 Thresholds / Targets / Periods القابلة للضبط → Settings.
 
@@ -548,6 +639,21 @@ Open Requirements تشمل:
 حدود القبول/التنبيه
 قواعد الجاهزية المبنية على الوزن
 → Settings
+```
+
+للتلقيح خصوصًا:
+
+```text
+جاهزية الأنثى والذكر
+العمر والوزن والقيود الصحية
+التلقيح أثناء الرضاعة
+عدد Mating Events المطلوبة داخل Attempt
+الفاصل بينها
+Male Usage Limits / Rest Periods
+قواعد استخدام ذكر غير المخصص
+Kinship Warning / Block / Override
+متى تعتبر Attempt مكتملة أو تحتاج مراجعة
+→ Settings 6.5 أساسًا
 ```
 
 ---
@@ -619,6 +725,7 @@ ProductionHerdGroupsQuestionsSeeder
 AnimalIntakeQuestionsSeeder
 HousingMovementQuestionsSeeder
 OperationalMeasurementsQuestionsSeeder
+MatingAttemptsQuestionsSeeder
 ```
 
 شجرة الأسئلة الحالية ذات الصلة:
@@ -634,7 +741,8 @@ database/seeders/Questions/
 └── Workflow/
     ├── AnimalIntakeQuestionsSeeder.php
     ├── HousingMovementQuestionsSeeder.php
-    └── OperationalMeasurementsQuestionsSeeder.php
+    ├── OperationalMeasurementsQuestionsSeeder.php
+    └── MatingAttemptsQuestionsSeeder.php
 ```
 
 ---
@@ -654,6 +762,7 @@ Question Creation → IN PROGRESS
 4.1 Animal Intake / Re-entry → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.2 Housing / Movement / Vacating / Occupancy → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.3 Operational Weight / Measurements → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.4 Mating / Attempts → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث التطوير المحلي دون فقد الإجابات:
@@ -666,9 +775,9 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 إذا كان AnimalHerd قد تم Seed له بالفعل، يشغل Workflow Seeder فقط.
 
-**التالي بعد 4.3:**
+**التالي بعد 4.4:**
 
-`4.4 التلقيح وإدارة المحاولات`
+`4.5 فحص الحمل ومتابعة الحمل وتجهيز الولادة`
 
 ---
 
