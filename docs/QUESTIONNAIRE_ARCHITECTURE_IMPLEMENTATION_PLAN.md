@@ -1,51 +1,48 @@
 # Questionnaire Architecture Implementation Plan
 
-> خطة التنفيذ الرسمية لإعادة هيكلة أقسام الاستبيان بعد اكتمال واعتماد `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`.
+> خطة التنفيذ الرسمية لإعادة هيكلة أقسام الاستبيان بعد اعتماد `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`.
 >
-> هذه الوثيقة **ليست مصدر القرارات الوظيفية**؛ مصدر القرارات المعمارية هو `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`، والمرجع الأعلى للحالة الحالية هو `FARM_BLUEPRINT_PROJECT_CONTEXT.md`.
+> مصدر القرار المعماري هو `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`، والمرجع الأعلى للحالة الحالية هو `FARM_BLUEPRINT_PROJECT_CONTEXT.md`.
 >
-> الهدف من هذه الوثيقة هو الإجابة عن: **ماذا سننفذ؟ بأي ترتيب؟ وما حالة كل خطوة؟**
+> الهدف من هذه الوثيقة: **ماذا سننفذ؟ بأي ترتيب؟ وما حالة كل خطوة؟**
 
 ---
 
 ## 1. حالات المتابعة
 
-تستخدم الخطة الحالات التالية:
-
 | Status | المعنى |
 |---|---|
 | `PENDING` | لم تبدأ الخطوة بعد |
-| `IN_PROGRESS` | جاري تنفيذ الخطوة |
-| `DONE` | تم تنفيذ الخطوة، لكنها لم تحصل بعد على مراجعة نهائية مستقلة |
-| `VERIFIED` | تم التنفيذ ومراجعة النتيجة والتأكد منها |
-| `WAITING_LOCAL` | التعديل في GitHub جاهز وينتظر تشغيل/تحقق محلي لا يمكن تنفيذه من GitHub Connector |
+| `IN_PROGRESS` | جاري التنفيذ |
+| `DONE` | تم التنفيذ ولم تحصل بعد على مراجعة كافية |
+| `VERIFIED` | تم التنفيذ ومراجعة الناتج المناسب للخطوة |
+| `WAITING_LOCAL` | تغييرات GitHub جاهزة وتنتظر تشغيلًا أو تحققًا محليًا |
 
-### قاعدة تحديث الحالة
+### قاعدة الحالة
 
-- لا تتحول خطوة إلى `DONE` قبل تنفيذها فعليًا في المستودع.
-- لا تتحول إلى `VERIFIED` لمجرد نجاح Commit؛ يجب مراجعة الناتج المناسب لها.
-- عند بدء أي خطوة، يتم تحديث هذه الوثيقة إلى `IN_PROGRESS` عند الحاجة، ثم `DONE` أو `VERIFIED` بعد التنفيذ.
-- لا يتم تخطي خطوة معلقة إذا كانت الخطوة التالية تعتمد عليها.
+- Commit ناجح وحده لا يعني أن التشغيل المحلي نجح.
+- خطوات الكود يمكن اعتبارها `VERIFIED` بعد مراجعة الملفات والاستدعاءات على GitHub.
+- `P8` و`P9` لا يصبحان `VERIFIED` قبل التشغيل على بيئة التطوير المحلية ومراجعة النتيجة.
 
 ---
 
-## 2. الحالة العامة للخطة
+## 2. الحالة العامة
 
-**الحالة الحالية:** `READY FOR IMPLEMENTATION`
+**الحالة الحالية:** `WAITING_LOCAL_VERIFICATION`
 
 | المرحلة | الحالة |
 |---|---|
 | P0 — Architecture Review | `VERIFIED` |
-| P1 — إنشاء خطة التنفيذ وربطها بالحالة الحالية | `DONE` |
-| P2 — فحص ما قبل التنفيذ | `PENDING` |
-| P3 — تنفيذ Section Seeders الجديدة | `PENDING` |
-| P4 — تحديث ترتيب وتشغيل Main Sections | `PENDING` |
-| P5 — تجهيز Question Orchestrators للأقسام 3–6 | `PENDING` |
-| P6 — تحديث QuestionnaireQuestionsSeeder | `PENDING` |
-| P7 — مزامنة الوثائق بعد التنفيذ | `PENDING` |
-| P8 — تشغيل migrate:refresh --seed محليًا | `PENDING` |
-| P9 — مراجعة الشجرة الناتجة | `PENDING` |
-| P10 — إغلاق إعادة الهيكلة وبدء مرحلة إنشاء الأسئلة | `PENDING` |
+| P1 — إنشاء خطة التنفيذ | `VERIFIED` |
+| P2 — فحص ما قبل التنفيذ | `VERIFIED` |
+| P3 — تنفيذ Section Seeders | `VERIFIED` |
+| P4 — تحديث ترتيب وتشغيل Main Sections | `VERIFIED` |
+| P5 — تجهيز Question Orchestrators للأقسام 3–6 | `VERIFIED` |
+| P6 — تحديث QuestionnaireQuestionsSeeder | `VERIFIED` |
+| P7 — مزامنة الوثائق بعد تنفيذ GitHub | `VERIFIED` |
+| P8 — تشغيل migrate:refresh --seed محليًا | `WAITING_LOCAL` |
+| P9 — مراجعة الشجرة الناتجة | `WAITING_LOCAL` |
+| P10 — إغلاق إعادة الهيكلة وبدء الأسئلة | `PENDING` |
 
 ---
 
@@ -53,11 +50,7 @@
 
 **Status:** `VERIFIED`
 
-تم اعتماد الهيكل المعماري النهائي في:
-
-`docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
-
-الهيكل المستهدف:
+الهيكل المعتمد:
 
 ```text
 1. إدارة البيانات الأساسية
@@ -68,146 +61,77 @@
 6. الإعدادات وقواعد التشغيل
 ```
 
-### أعداد الـSubsections المستهدفة
+أعداد الـSubsections المستهدفة:
 
-| Main Section | العدد |
-|---|---:|
-| إدارة البيانات الأساسية | 15 |
-| هيكل المزرعة | 4 |
-| بيانات الحيوان وتكوين القطيع | 5 |
-| الحركات ودورة التشغيل الفعلية | 17 |
-| التقارير والتحليلات والتنبيهات ومؤشرات الأداء | 15 |
-| الإعدادات وقواعد التشغيل | 13 |
-| **الإجمالي** | **69** |
+```text
+Master Data = 15
+Farm Structure = 4
+Animal / Herd = 5
+Workflow = 17
+Reports = 15
+Settings = 13
+Total = 69
+```
 
 ---
 
-# P1 — إنشاء خطة التنفيذ وربطها بالحالة الحالية
+# P1 — إنشاء خطة التنفيذ
 
-**Status:** `DONE`
+**Status:** `VERIFIED`
 
-## Baseline تم التحقق منه عند إنشاء الخطة
+تم إنشاء هذه الوثيقة وربطها بـ:
 
-### Section Seeders الحالية
-
-المجلد:
-
-`database/seeders/Sections/`
-
-يحتوي حاليًا على:
-
-```text
-QuestionnaireMasterDataSectionSeeder.php
-QuestionnaireFarmStructureSectionSeeder.php
-QuestionnaireOperationSettingsSectionSeeder.php
-QuestionnaireHerdSetupSectionSeeder.php
-QuestionnaireWorkflowSectionSeeder.php
-QuestionnaireReportsSectionSeeder.php
-```
-
-### الترتيب الحالي قبل التنفيذ
-
-`database/seeders/QuestionnaireSectionSeeder.php` ما زال يشغل:
-
-```text
-1. إدارة البيانات الأساسية
-2. هيكل المزرعة
-3. إعدادات التشغيل ودورة الإنتاج
-4. تكوين وإدخال القطيع
-5. الحركات ودورة التشغيل الفعلية
-6. التقارير والإشعارات ومؤشرات الأداء
-```
-
-### Question Seeders الحالية
-
-`database/seeders/Questions/` يحتوي حاليًا فقط على:
-
-```text
-Concerns/
-MasterData/
-FarmStructure/
-```
-
-ولا توجد Question Seeder folders للأقسام 3–6 الجديدة حتى الآن.
-
-### Orchestrator الحالي
-
-`database/seeders/QuestionnaireQuestionsSeeder.php` يستدعي حاليًا:
-
-```text
-QuestionnaireMasterDataQuestionsSeeder
-QuestionnaireFarmStructureQuestionsSeeder
-```
-
-### DatabaseSeeder
-
-`database/seeders/DatabaseSeeder.php` يشغّل الترتيب الصحيح على مستوى الطبقات:
-
-```text
-QuestionnaireSectionSeeder
-↓
-QuestionnaireQuestionsSeeder
-```
-
-ولا يحتاج هذا الجزء إلى تغيير لمجرد إعادة هيكلة الأقسام ما لم يظهر سبب جديد أثناء التنفيذ.
+- `FARM_BLUEPRINT_PROJECT_CONTEXT.md`
+- `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
 
 ---
 
 # P2 — فحص ما قبل التنفيذ
 
-**Status:** `PENDING`
-
-الهدف منع تعديل الشجرة اعتمادًا على افتراض قديم.
+**Status:** `VERIFIED`
 
 ## Checklist
 
-- [ ] إعادة قراءة `FARM_BLUEPRINT_PROJECT_CONTEXT.md` قبل أول تعديل كود.
-- [ ] إعادة قراءة `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`.
-- [ ] مراجعة آخر نسخة من `QuestionnaireSectionSeeder.php`.
-- [ ] مراجعة Section Seeders الستة الموجودة وقت التنفيذ.
-- [ ] التأكد أن Question Seeders للأقسام 3–6 لم تظهر منذ إعداد هذه الخطة.
-- [ ] التأكد أن مرحلة التطوير الحالية ما زالت تسمح بـ`php artisan migrate:refresh --seed` وأن الإجابات القديمة غير مطلوب الحفاظ عليها.
-- [ ] التأكد أن إعادة هيكلة Sections وحدها لا تحتاج Migration أو Model change جديد.
-- [ ] تسجيل أي اختلاف عن Baseline داخل هذه الخطة قبل الاستمرار.
+- [x] إعادة قراءة `FARM_BLUEPRINT_PROJECT_CONTEXT.md` قبل تعديل الكود.
+- [x] إعادة قراءة `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`.
+- [x] مراجعة `QuestionnaireSectionSeeder.php`.
+- [x] مراجعة Section Seeders الستة القديمة قبل الاستبدال.
+- [x] التأكد أن `Questions/` لا يحتوي Question Seeders للأقسام 3–6.
+- [x] التأكد من بقاء `migrate:refresh --seed` هو Workflow التطوير الحالي الموثق.
+- [x] مراجعة `QuestionnaireSection` والتأكد أن إعادة الهيكلة تستخدم الحقول الحالية فقط.
+- [x] التأكد أن إعادة الهيكلة لا تحتاج Migration أو Model Change جديدًا.
 
-### شرط إيقاف
+### النتيجة
 
-إذا ظهرت إجابات جديدة يجب الحفاظ عليها أو Question Seeders جديدة للأقسام 3–6 قبل التنفيذ، **لا يستمر التنفيذ بنفس خطة الـrefresh** قبل مراجعة أثرها على Stable Sections / seed keys / answers.
+لم يظهر Stop Condition. الوضع كان مطابقًا للـBaseline الموثق، ولذلك استمر التنفيذ.
+
+**مهم:** هذا الفحص يعتمد على حالة المستودع والـProject Context. قاعدة البيانات المحلية نفسها لا يمكن فحصها عبر GitHub Connector؛ لذلك النجاح الفعلي للـFresh Seed ينتظر P8/P9.
 
 ---
 
-# P3 — تنفيذ Section Seeders الجديدة
+# P3 — تنفيذ Section Seeders
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
 ## P3.1 — Master Data
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-الملف:
+لم يحتج تعديلًا وظيفيًا. ما زال:
 
 `database/seeders/Sections/QuestionnaireMasterDataSectionSeeder.php`
 
-المطلوب:
-
-- الحفاظ على Main Section الحالي `إدارة البيانات الأساسية`.
-- الحفاظ على الـ15 Subsection المعتمدة حاليًا.
-- عدم إعادة `ملفات إعدادات التشغيل` إلى Master Data.
-- إجراء تعديل فقط إذا كشف P2 اختلافًا عن الحالة الموثقة.
-
-**Expected result:** لا تغيير وظيفي متوقع حاليًا.
-
----
+ويبني 15 Subsection معتمدة، بدون إعادة `ملفات إعدادات التشغيل` إلى Master Data.
 
 ## P3.2 — Farm Structure
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-الملف:
+لم يحتج تعديلًا وظيفيًا. ما زال:
 
 `database/seeders/Sections/QuestionnaireFarmStructureSectionSeeder.php`
 
-المطلوب الحفاظ على:
+ويبني:
 
 ```text
 هيكل المزرعة
@@ -217,35 +141,17 @@ QuestionnaireQuestionsSeeder
 └── بيانات القفص / العين
 ```
 
-**Expected result:** لا تغيير وظيفي متوقع حاليًا.
+السؤال المؤجل عن الأنواع الفيزيائية للبطاريات لم يحسم ضمن هذه المرحلة.
 
-السؤال المؤجل:
+## P3.3 — Animal / Herd
 
-`كيف يجب إدارة الأنواع الفيزيائية للبطاريات؟`
+**Status:** `VERIFIED`
 
-لا يحسم ضمن إعادة هيكلة الـSections؛ يعود له العمل بعد تثبيت الشجرة وقبل/أثناء استكمال أسئلة Farm Structure.
-
----
-
-## P3.3 — بيانات الحيوان وتكوين القطيع
-
-**Status:** `PENDING`
-
-### Legacy
-
-`database/seeders/Sections/QuestionnaireHerdSetupSectionSeeder.php`
-
-### Target
-
-يفضل أن يصبح اسم الملف/الكلاس مطابقًا للمسؤولية الجديدة، مثل:
+تم إنشاء:
 
 `database/seeders/Sections/QuestionnaireAnimalHerdSectionSeeder.php`
 
-الـMain Section المستهدف:
-
-`بيانات الحيوان وتكوين القطيع`
-
-الشجرة:
+ويبني:
 
 ```text
 بيانات الحيوان وتكوين القطيع
@@ -256,128 +162,83 @@ QuestionnaireQuestionsSeeder
 └── تكوين القطيع الإنتاجي وتنظيم المجموعات
 ```
 
-### Mapping وظيفي من القديم
+تم حذف Legacy file:
 
-- `بيانات ملف الأرنب الأساسية` → `بيانات وهوية الحيوان`.
-- `مصادر تكوين القطيع` → `مصدر الحيوان وبداية السجل`.
-- `النسب وشجرة العائلة` → يبقى.
-- إضافة `القطيع الافتتاحي وتهيئة نقطة البداية` كنطاق معتمد.
-- `تنظيم الذكور والإناث داخل القطيع` → يتطور إلى `تكوين القطيع الإنتاجي وتنظيم المجموعات`.
-- `الدخول الأول للمزرعة والتقييم الأولي` → لا يبقى هنا؛ نطاقه انتقل إلى Workflow.
-- `تسكين القطيع وإدارة الإشغال` → لا يبقى هنا؛ انتقل إلى Workflow.
-- `تحويل إنتاج المزرعة إلى القطيع والإحلال الداخلي` → لا يبقى هنا؛ التنفيذ التشغيلي انتقل إلى Workflow.
-- `جاهزية القطيع لبدء دورة التشغيل والإنتاج` → لا تبقى ككتلة واحدة؛ القواعد Settings والتنفيذ Workflow والعرض Reports.
-
----
+`QuestionnaireHerdSetupSectionSeeder.php`
 
 ## P3.4 — Workflow
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-الملف:
+تم تحديث:
 
 `database/seeders/Sections/QuestionnaireWorkflowSectionSeeder.php`
 
-الـMain Section يبقى بالاسم:
-
-`الحركات ودورة التشغيل الفعلية`
-
-ويتحول من الشجرة القديمة إلى الشجرة المعتمدة ذات 17 نطاقًا:
+ليبني 17 نطاقًا:
 
 ```text
-الحركات ودورة التشغيل الفعلية
-├── استقبال الحيوان من الخارج وإعادة الإدخال
-├── التسكين والنقل والإخلاء وإدارة الإشغال
-├── الوزن والقياسات التشغيلية
-├── التلقيح وإدارة المحاولات
-├── فحص الحمل ومتابعة الحمل وتجهيز الولادة
-├── تسجيل الولادة وإنشاء البطن
-├── الرضاعة ومتابعة البطن وتداخل دورات الأم
-├── الفطام والتحول إلى التتبع الفردي
-├── النمو والفرز وإعادة التقييم
-├── تحديد المصير والاستبعاد من المسار
-├── الإحلال والاعتماد داخل القطيع الإنتاجي
-├── التسمين والجاهزية للبيع
-├── الصحة والعزل والتعافي والنفوق
-├── الحالات الاستثنائية وإعادة بناء المسار
-├── الخروج من المزرعة وإعادة الدخول
-├── تشغيل وصيانة وتجهيز مواقع الإيواء
-└── تنفيذ وإدارة المهام التشغيلية
+استقبال الحيوان من الخارج وإعادة الإدخال
+التسكين والنقل والإخلاء وإدارة الإشغال
+الوزن والقياسات التشغيلية
+التلقيح وإدارة المحاولات
+فحص الحمل ومتابعة الحمل وتجهيز الولادة
+تسجيل الولادة وإنشاء البطن
+الرضاعة ومتابعة البطن وتداخل دورات الأم
+الفطام والتحول إلى التتبع الفردي
+النمو والفرز وإعادة التقييم
+تحديد المصير والاستبعاد من المسار
+الإحلال والاعتماد داخل القطيع الإنتاجي
+التسمين والجاهزية للبيع
+الصحة والعزل والتعافي والنفوق
+الحالات الاستثنائية وإعادة بناء المسار
+الخروج من المزرعة وإعادة الدخول
+تشغيل وصيانة وتجهيز مواقع الإيواء
+تنفيذ وإدارة المهام التشغيلية
 ```
-
-### قواعد تنفيذ إلزامية
-
-- لا يعاد إدخال Rules الخاصة بالجاهزية هنا؛ Workflow يسجل القرار/الحدث الفعلي.
-- لا تدخل تحليلات وتقارير هنا.
-- لا تنشأ Main Sections مستقلة للمواقع أو المهام.
-
----
 
 ## P3.5 — Reports
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-الملف:
+تم تحديث:
 
 `database/seeders/Sections/QuestionnaireReportsSectionSeeder.php`
 
-تغيير اسم Main Section من:
-
-`التقارير والإشعارات ومؤشرات الأداء`
-
-إلى:
+وتغيير Main Section إلى:
 
 `التقارير والتحليلات والتنبيهات ومؤشرات الأداء`
 
-الشجرة المستهدفة ذات 15 نطاقًا:
+ويبني 15 نطاقًا:
 
 ```text
-التقارير والتحليلات والتنبيهات ومؤشرات الأداء
-├── لوحة التحكم ومتابعة التشغيل اليومي
-├── تقارير القطيع والجاهزية
-├── تقارير الخصوبة والتلقيح والحمل
-├── تقارير الولادة والرضاعة والفطام
-├── تقارير النمو والأوزان والتسمين
-├── تقارير الصحة والنفوق والعزل
-├── تحليل أداء الحيوانات الإنتاجية
-├── تقارير النسب والإحلال
-├── تقارير الإشغال والسعة والمواقع
-├── الاتجاهات والمقارنات والتحليل عبر الزمن
-├── الصفحات والسجلات التحليلية
-├── التنبيهات والإنذار المبكر واكتشاف الحالات غير الطبيعية
-├── جودة البيانات والاستثناءات الإدارية
-├── المؤشرات الرئيسية للمزرعة KPIs
-└── خصائص التقارير والتصفية والتصدير
+لوحة التحكم ومتابعة التشغيل اليومي
+تقارير القطيع والجاهزية
+تقارير الخصوبة والتلقيح والحمل
+تقارير الولادة والرضاعة والفطام
+تقارير النمو والأوزان والتسمين
+تقارير الصحة والنفوق والعزل
+تحليل أداء الحيوانات الإنتاجية
+تقارير النسب والإحلال
+تقارير الإشغال والسعة والمواقع
+الاتجاهات والمقارنات والتحليل عبر الزمن
+الصفحات والسجلات التحليلية
+التنبيهات والإنذار المبكر واكتشاف الحالات غير الطبيعية
+جودة البيانات والاستثناءات الإدارية
+المؤشرات الرئيسية للمزرعة KPIs
+خصائص التقارير والتصفية والتصدير
 ```
 
-### نقاط لا تنشأ كـSubsections مستقلة
-
-- `مستويات التنبيه` → Settings.
-- `التقرير → التنبيه → القرار → الإجراء` → مبدأ معماري وليس Subsection.
-- صفحات الحيوان والبطن المنفصلة → مدمجة تحت `الصفحات والسجلات التحليلية`.
-- المقارنات الزمنية والمكانية → مدمجة في نطاق واحد.
-
----
+لم تعد `مستويات التنبيه` أو `التقرير → التنبيه → القرار → الإجراء` Subsections مستقلة.
 
 ## P3.6 — Settings
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-### Legacy
-
-`database/seeders/Sections/QuestionnaireOperationSettingsSectionSeeder.php`
-
-### Target
-
-يفضل اسم ملف/كلاس يعكس القسم النهائي، مثل:
+تم إنشاء:
 
 `database/seeders/Sections/QuestionnaireSettingsSectionSeeder.php`
 
-Main Section:
-
-`الإعدادات وقواعد التشغيل`
-
-الشجرة المعتمدة:
+ويبني:
 
 ```text
 الإعدادات وقواعد التشغيل
@@ -396,29 +257,28 @@ Main Section:
 └── إعدادات التقارير وKPIs والأهداف
 ```
 
-### قواعد الحدود
+تم حذف Legacy file:
 
-- لا تنقل Code identity / Unique / Entity statuses / Delete policies من الأقسام الأصلية إلى Settings.
-- 6.1 يحدد نموذج Settings وScope ولا يفترض Profile/Inheritance/Override/Versioning قبل الأسئلة.
-- 6.2 يركز على Enforcement / Override / Correction / Audit.
-- تنفيذ الأحداث يظل Workflow.
-- التقرير أو الـKPI نفسه يظل Reports؛ Targets / Thresholds القابلة للضبط فقط تدخل Settings.
-- لا يتم افتراض Environmental Control Setpoints أو Treatment Module أو Financial Module من مجرد وجود بيانات مرتبطة بها.
+`QuestionnaireOperationSettingsSectionSeeder.php`
+
+### حدود محفوظة
+
+- Code identity / Unique / Entity Status / Delete Policy لا تنتقل تلقائيًا إلى Settings.
+- تنفيذ الأحداث يبقى Workflow.
+- تعريف التقرير وKPI يبقى Reports؛ Targets وThresholds القابلة للضبط فقط تدخل Settings.
+- لا يوجد افتراض جديد لـEnvironmental Control / Veterinary Treatment / Financial modules.
 
 ---
 
 # P4 — تحديث ترتيب وتشغيل Main Sections
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-الملف:
+تم تحديث:
 
 `database/seeders/QuestionnaireSectionSeeder.php`
 
-## المطلوب
-
-1. تحديث Imports إذا تم تغيير أسماء Classes الخاصة بـHerd/Settings.
-2. تعديل ترتيب `$this->call()` إلى:
+الاستدعاء الحالي:
 
 ```text
 QuestionnaireMasterDataSectionSeeder
@@ -429,7 +289,7 @@ QuestionnaireReportsSectionSeeder
 QuestionnaireSettingsSectionSeeder
 ```
 
-3. تعديل `$mainSectionOrder` إلى:
+والترتيب:
 
 ```text
 إدارة البيانات الأساسية => 1
@@ -440,19 +300,13 @@ QuestionnaireSettingsSectionSeeder
 الإعدادات وقواعد التشغيل => 6
 ```
 
-4. التأكد أن أسماء الـMain Sections المستخدمة في الـSeeders و`mainSectionOrder` متطابقة حرفيًا.
-
 ---
 
 # P5 — تجهيز Question Orchestrators للأقسام 3–6
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-## الهدف
-
-تجهيز بنية استدعاء الأسئلة من الآن حتى لا تنشأ Question Seeders لاحقًا بدون Orchestrator واضح.
-
-الملفات المقترحة:
+تم إنشاء:
 
 ```text
 database/seeders/QuestionnaireAnimalHerdQuestionsSeeder.php
@@ -461,36 +315,30 @@ database/seeders/QuestionnaireReportsQuestionsSeeder.php
 database/seeders/QuestionnaireSettingsQuestionsSeeder.php
 ```
 
-في هذه المرحلة يمكن أن تكون Orchestrators بدون Question Seeders فعلية، إلى أن يبدأ بناء الأسئلة قسمًا قسمًا.
+هذه Orchestrators فارغة وظيفيًا الآن ولا تنشئ أسئلة جديدة؛ سيتم إضافة Question Seeders داخلها عند بدء تصميم أسئلة كل قسم.
 
-## Target Question folder tree
+### مجلدات Questions
+
+لم يتم إنشاء Empty Folders أو Placeholder files لأن Git لا يحتفظ بالمجلدات الفارغة. المجلدات التالية ستظهر مع أول Question Seeder حقيقي:
 
 ```text
-database/seeders/Questions/
-├── Concerns/
-├── MasterData/
-├── FarmStructure/
-├── AnimalHerd/
-├── Workflow/
-├── Reports/
-└── Settings/
+Questions/AnimalHerd/
+Questions/Workflow/
+Questions/Reports/
+Questions/Settings/
 ```
-
-### ملاحظة Git
-
-Git لا يحتفظ بالمجلدات الفارغة. لذلك لا تنشأ ملفات Placeholder لمجرد إظهار المجلد؛ يظهر كل مجلد عند إنشاء أول Question Seeder حقيقي له، إلا إذا ظهر سبب عملي مختلف.
 
 ---
 
 # P6 — تحديث QuestionnaireQuestionsSeeder
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-الملف:
+تم تحديث:
 
 `database/seeders/QuestionnaireQuestionsSeeder.php`
 
-الترتيب المستهدف:
+والترتيب الحالي:
 
 ```text
 QuestionnaireMasterDataQuestionsSeeder
@@ -501,65 +349,62 @@ QuestionnaireReportsQuestionsSeeder
 QuestionnaireSettingsQuestionsSeeder
 ```
 
-### شرط
-
-يجب ألا يؤدي إدخال Orchestrators الجديدة إلى تغيير أو حذف أسئلة MasterData / FarmStructure الحالية.
+لم يتم تعديل Question Seeders الحالية الخاصة بـMasterData أوFarmStructure.
 
 ---
 
-# P7 — مزامنة الوثائق بعد تنفيذ الكود
+# P7 — مزامنة الوثائق بعد تنفيذ GitHub
 
-**Status:** `PENDING`
+**Status:** `VERIFIED`
 
-بعد تنفيذ P3–P6 يجب تحديث الوثائق، وليس قبل معرفة النتيجة الفعلية.
+تم تحديث الوثائق لتفرق بوضوح بين:
 
-## الملفات
+```text
+GitHub implementation
+→ COMPLETE / STATICALLY REVIEWED
 
-### `docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`
+Local database execution
+→ WAITING_LOCAL
+```
 
-- تحويل وصف الهيكل من `Target / not implemented` إلى الهيكل المنفذ فعليًا بعد التحقق.
-- تحديث أسماء ملفات Section Seeders الجديدة.
-- تحديث Question Orchestrators الجديدة.
-- الحفاظ على Open Requirements الخاصة بالأسئلة كما هي؛ تنفيذ الشجرة لا يعني حسمها.
+الملفات المرجعية:
 
-### `docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
+```text
+docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md
+docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md
+docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md
+```
 
-- الحفاظ عليه كسجل قرارات.
-- إضافة ملاحظة قصيرة أن التنفيذ يتم تتبعه في:
-  `QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`.
-- لا يحول إلى Checklist تنفيذية.
-
-### `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-- لا يستبدل بهذه الخطة.
-- بعد نجاح إعادة الهيكلة يمكن إضافة Summary تاريخي/مرجع للخطة الجديدة إذا كان ذلك مفيدًا، بدون خلط التاريخ التقني القديم بخطوات التنفيذ الحالية.
+`docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md` يظل سجلًا تقنيًا تاريخيًا مستقلًا، ولا يتم استبداله بهذه الخطة. يمكن إضافة Summary له بعد نجاح P9 إذا احتجنا.
 
 ---
 
 # P8 — تشغيل محلي بعد Pull
 
-**Status:** `PENDING`
+**Status:** `WAITING_LOCAL`
 
-هذه الخطوة تنفذ على بيئة التطوير المحلية بعد انتهاء تغييرات GitHub.
+نفذ على بيئة التطوير المحلية:
 
 ```bash
 git pull origin master
 php artisan migrate:refresh --seed
 ```
 
-بسبب طبيعة الأمر التدميرية يجب استخدامه فقط طالما ما زالت مرحلة التطوير الحالية تسمح بالتخلص من الإجابات القديمة كما هو موثق في Project Context.
+لا يمكن اعتبار هذه الخطوة منفذة من GitHub Connector.
 
-بعد بدء دورة إجابات نريد الاحتفاظ بها، لا يستخدم هذا الأسلوب كروتين عادي.
+### إذا ظهر Error
+
+لا ننتقل إلى P9 كـVerified. يتم إرسال الخطأ ومراجعته قبل الاستمرار.
 
 ---
 
 # P9 — Verification بعد Seed
 
-**Status:** `PENDING`
+**Status:** `WAITING_LOCAL`
 
-## 9.1 Main Sections
+## Main Sections المطلوبة
 
-يجب أن تظهر **6 فقط** وبالترتيب:
+يجب أن تظهر 6 فقط:
 
 ```text
 1 إدارة البيانات الأساسية
@@ -570,9 +415,7 @@ php artisan migrate:refresh --seed
 6 الإعدادات وقواعد التشغيل
 ```
 
-## 9.2 Legacy Main Sections
-
-يجب ألا تظهر كـMain Sections منفصلة:
+## Legacy Main Sections التي يجب ألا تظهر
 
 ```text
 إعدادات التشغيل ودورة الإنتاج
@@ -580,9 +423,7 @@ php artisan migrate:refresh --seed
 التقارير والإشعارات ومؤشرات الأداء
 ```
 
-## 9.3 Subsection counts
-
-يجب التحقق من:
+## Counts
 
 ```text
 Master Data = 15
@@ -594,40 +435,36 @@ Settings = 13
 Total = 69
 ```
 
-## 9.4 Existing Questions
+## Existing Questions
 
-يجب التأكد أن:
+يجب التأكد من:
 
-- أسئلة MasterData ما زالت تظهر.
-- أسئلة FarmStructure ما زالت تظهر.
-- لا يوجد Seeder Error بسبب Orchestrators الجديدة الفارغة.
-- لا تظهر أسئلة في Section قديم أو Parent غير صحيح.
+- ظهور أسئلة MasterData الحالية.
+- ظهور أسئلة FarmStructure الحالية.
+- عدم حدوث Seeder Error بسبب Orchestrators الجديدة الفارغة.
+- عدم ظهور سؤال تحت Parent قديم أو خاطئ.
 
-## 9.5 UI review
+## UI
 
-مراجعة الـSidebar / Navigation للتأكد من:
-
-- الترتيب مطابق للشجرة.
+- الترتيب مطابق.
 - لا توجد أسماء Legacy.
 - كل Subsection تحت Parent الصحيح.
 - لا توجد أقسام مكررة.
 
-### نتيجة P9
-
-لا تنتقل الخطة إلى `VERIFIED` قبل مراجعة هذه النقاط بعد تشغيل Seed محليًا.
-
 ---
 
-# P10 — إغلاق إعادة الهيكلة وفتح مرحلة الأسئلة
+# P10 — إغلاق إعادة الهيكلة وبدء مرحلة الأسئلة
 
 **Status:** `PENDING`
 
-بعد نجاح P9:
+لا يبدأ قبل نجاح P8/P9.
 
-1. تحويل P3–P9 إلى `VERIFIED` حسب نتيجة المراجعة.
-2. تحديث الحالة العامة لهذه الخطة إلى `ARCHITECTURE IMPLEMENTED & VERIFIED`.
+بعد التحقق المحلي:
+
+1. تحويل P8 وP9 إلى `VERIFIED`.
+2. تحديث الحالة العامة إلى `ARCHITECTURE_IMPLEMENTED_AND_VERIFIED`.
 3. تحديث `FARM_BLUEPRINT_PROJECT_CONTEXT.md` بالحالة النهائية.
-4. بدء إنشاء الأسئلة بالترتيب:
+4. بدء تصميم الأسئلة بالترتيب:
 
 ```text
 القسم 3 — بيانات الحيوان وتكوين القطيع
@@ -639,33 +476,64 @@ Total = 69
 القسم 6 — الإعدادات وقواعد التشغيل
 ```
 
-5. لا يعاد إنشاء أسئلة الأقسام 1–2 من الصفر؛ تراجع فقط النقاط الناقصة أو المؤجلة عند الحاجة، مع الحفاظ على الأسئلة والإجابات المعتمدة.
-6. يعود السؤال المؤجل عن **الأنواع الفيزيائية للبطاريات** في مرحلة مراجعة/استكمال Farm Structure، وليس ضمن تنفيذ شجرة الأقسام نفسها.
+5. الأقسام 1–2 لا يعاد بناؤها من الصفر؛ تراجع فقط النقاط الناقصة أو المؤجلة.
+6. يعود السؤال المؤجل عن الأنواع الفيزيائية للبطاريات ضمن مراجعة/استكمال Farm Structure.
 
 ---
 
-# 3. قواعد تنفيذ لا يجوز كسرها
+## 3. قواعد تنفيذ لا يجوز كسرها
 
-1. لا يتم إنشاء أسئلة جديدة أثناء تنفيذ إعادة هيكلة Sections إلا بطلب منفصل واضح.
-2. لا يتم اختراع Requirement وظيفي أثناء التنفيذ؛ إذا ظهر نقص يرجع إلى Architecture Review والمرجع الوظيفي أو يسجل كـOpen Requirement.
+1. لا يتم إنشاء أسئلة جديدة ضمن إعادة هيكلة Sections نفسها.
+2. لا يتم اختراع Requirement وظيفي أثناء التنفيذ.
 3. لا يتم تعديل `تصور_مشروع_الارانب.md` ضمن هذه الخطة.
-4. لا يتم استخدام Rename أو Delete بطريقة تكسر إجابات محفوظة عندما تبدأ مرحلة الحفاظ على البيانات.
-5. في مرحلة التطوير الحالية يعتمد التنفيذ على Fresh Seed بعد `migrate:refresh` فقط ما دام ذلك مسموحًا حسب Project Context.
-6. بعد بدء الإجابات المستقرة تطبق قواعد:
+4. Open Requirements تبقى أسئلة مستقبلية ولا تتحول إلى افتراضات.
+5. Fresh Seed الحالي مسموح فقط خلال مرحلة التطوير الموثقة الحالية.
+6. بعد بدء الاحتفاظ بالإجابات تستخدم القواعد:
 
 ```text
 Stable Section Record
++ Stable section_id
 + Stable seed_key
 + Stable option value
 + preserveAnswers = true
 ```
 
-7. لا تعتبر الخطة نفسها إذنًا مفتوحًا لأي تعديل مستقبلي خارج خطواتها؛ تنفيذ كل مرحلة على GitHub يتم عند الطلب الصريح وفق قاعدة المستودع.
+7. أي تغيير مستقبلي خارج هذه الخطة يحتاج طلبًا صريحًا وفق قاعدة GitHub.
 
 ---
 
-# 4. Current Next Action
+## 4. سجل التنفيذ الحالي
 
-**Next:** `P2 — فحص ما قبل التنفيذ`
+أهم تغييرات GitHub أثناء التنفيذ:
 
-بعد نجاحه تنتقل الخطة إلى تنفيذ `P3 — Section Seeders`.
+```text
+b7631ce75598f8cd7add861f44c4a1ade629845e — إنشاء Animal/Herd Section Seeder
+27039f4f373a04291c4859612b8d70f3a77df1a5 — إنشاء Settings Section Seeder
+7ad4b1a1320cecde704a6e8c587de9932df44125 — إعادة بناء Workflow Sections
+b6e046c697a302f553024856d405e7365596ff89 — إعادة بناء Reports Sections
+06adbd9f0c1b888d6bbdf2f39e8817f5dd811b37 — تحديث QuestionnaireSectionSeeder
+8355e1efcc561a28e1bcb2c1bbf32d03df8e0b5c — حذف HerdSetup legacy seeder
+518219efa2ae4143d8aa47d8f36465ada319b575 — حذف OperationSettings legacy seeder
+b61e2749270f2508565af79b7ac4e84ce86337e9 — Animal/Herd Questions orchestrator
+2395304874800642514766b1d3df22208474ac4b — Workflow Questions orchestrator
+88c1a1a5911df7a818e4b7cca00af03965cee36d — Reports Questions orchestrator
+ddbb5a1062fbc42dfe0270e2015723d23a571170 — Settings Questions orchestrator
+d44724ccf73d68d6457cc4d77234774f69ebff89 — تحديث QuestionnaireQuestionsSeeder
+```
+
+### ملاحظة التحقق
+
+تمت مراجعة بنية الملفات والاستدعاءات من GitHub، لكن **لم يتم تشغيل PHP أو قاعدة البيانات محليًا بواسطة المساعد**. التحقق Runtime ينتظر P8/P9.
+
+---
+
+# 5. Current Next Action
+
+**Next:** `P8 — تشغيل محلي`
+
+```bash
+git pull origin master
+php artisan migrate:refresh --seed
+```
+
+بعد نجاح الأمر ننتقل مباشرة إلى P9 ومراجعة الشجرة الناتجة.
