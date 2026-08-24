@@ -1,77 +1,45 @@
 # Farm Blueprint — Project Context & Working Rules
 
-## 1. تعريف المشروع
+## 1. تعريف المشروع والمراجع
 
-المستودع الأساسي:
+المستودع:
 
 `hanyfreestyle/farm-blueprint.test`
 
-هذا المشروع **ليس نظام إدارة مزرعة الأرانب النهائي**.
+هذا المشروع **Blueprint / أداة تحليل متطلبات قبل التطوير** وليس نظام إدارة المزرعة النهائي.
 
-هو أداة Blueprint / دراسة تحليل متطلبات قبل التطوير، وتحول التصور الوظيفي إلى:
-
-```text
-أقسام
-→ أقسام فرعية
-→ أسئلة
-→ إجابات
-→ مراجعة
-→ قرارات ومتطلبات
-→ Software Requirements / Business Rules
-→ Blueprint قابل للتنفيذ
-```
-
-الهدف من كل سؤال هو الوصول إلى Decision واضح قابل للتحويل إلى Requirement أو Rule، وليس جمع معلومات عامة فقط.
-
----
-
-## 2. المراجع الحية وأولوية المصادر
-
-### المرجع الأعلى للحالة الحالية
-
-`docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`
-
-يجب قراءته أولًا قبل أي عمل على المستودع، وتحديثه مع القرارات المعمارية والتنظيمية المعتمدة وانتقالات التنفيذ المهمة.
-
-### سجل القرار المعماري
-
-`docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
-
-يوثق حدود Data / Workflow / Reports / Settings وأسباب نقل أو دمج الأقسام.
-
-**الحالة:** Architecture Review مكتملة ومعتمدة.
-
-### خطة إعادة الهيكلة
-
-`docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
+المسار:
 
 ```text
-ARCHITECTURE_IMPLEMENTED_AND_VERIFIED
-P0 → P10 = VERIFIED
+تصور وظيفي
+→ Sections / Subsections
+→ Questions
+→ Answers / Review
+→ Decisions / Requirements
+→ Blueprint
+→ النظام النهائي لاحقًا
 ```
 
-تم التحقق محليًا سابقًا من Fresh Build بعد إعادة الهيكلة.
-
-### المرجع الوظيفي الأساسي
-
-`docs/تصور_مشروع_الارانب.md`
-
-هو Source of Reference عند إنشاء أو مراجعة الأسئلة. لا يتم اختراع Requirement غير مدعوم بالمحتوى وكأنه حقيقة.
-
-### أولوية المصادر عند التعارض
+### أولوية المراجع
 
 ```text
 أحدث قرار صريح معتمد من المستخدم
-→ FARM_BLUEPRINT_PROJECT_CONTEXT.md
-→ QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md
+→ docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md
+→ docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md
 → Approved Answers / Questionnaire Guides
 → الكود الحالي
 → السجل التاريخي القديم
 ```
 
+المرجع الوظيفي الأساسي:
+
+`docs/تصور_مشروع_الارانب.md`
+
+يجب قراءته قبل إنشاء أسئلة جديدة، ولا يتم اختراع Requirement غير مدعوم بالمصدر وكأنه حقيقة.
+
 ---
 
-## 3. التقنية ومحرك الأسئلة
+## 2. التقنية ومحرك الأسئلة
 
 - Laravel 12
 - PHP 8.2
@@ -79,7 +47,7 @@ P0 → P10 = VERIFIED
 - MySQL
 - Questionnaire Engine مخصص
 
-`App\Enums\Questionnaire\QuestionType` يدعم:
+Question Types الحالية:
 
 ```text
 text
@@ -92,18 +60,26 @@ multi_choice
 select
 ```
 
-`App\Enums\Questionnaire\QuestionDependencyOperator` يدعم فقط:
+Dependency Operators الحالية فقط:
 
 ```text
 EQUALS
 CONTAINS
 ```
 
-لا يتم اختراع Type أو Operator جديد قبل مراجعة الكود والحاجة الوظيفية واعتماده.
+الموديل:
+
+`App\Models\QuestionnaireQuestion`
+
+خدمة المزامنة:
+
+`App\Services\Questionnaire\QuestionSeederSyncService`
+
+لا يستخدم Type أو Operator جديد دون مراجعة Enums / Models / Engine.
 
 ---
 
-## 4. الهيكل الرئيسي — IMPLEMENTED & VERIFIED
+## 3. الهيكل الرئيسي — IMPLEMENTED & VERIFIED
 
 ```text
 1. إدارة البيانات الأساسية
@@ -114,7 +90,7 @@ CONTAINS
 6. الإعدادات وقواعد التشغيل
 ```
 
-أعداد الـSubsections:
+Subsections:
 
 ```text
 Master Data = 15
@@ -126,18 +102,20 @@ Settings = 13
 Total = 69
 ```
 
-القاعدة المعمارية الإلزامية:
+القاعدة المعمارية:
 
 ```text
 تعريف الكيان / ما هو؟ → Data
 ما الذي حدث فعليًا؟ → Workflow
-ماذا نعرف أو نعرض من الأحداث؟ → Reports / Analytics
-ما القواعد القابلة للضبط التي تتحكم فيما يحدث؟ → Settings
+ماذا نعرف أو نعرض؟ → Reports / Analytics
+ما القواعد القابلة للضبط؟ → Settings
 ```
 
 ---
 
-## 5. القسم الأول — إدارة البيانات الأساسية
+## 4. Master Data — ملخص الحدود المهمة
+
+القسم يحتوي على:
 
 ```text
 الأنشطة التشغيلية
@@ -159,14 +137,14 @@ Total = 69
 
 قواعد مهمة:
 
-- Breed Master Data منفصلة عن Animal Pedigree.
-- قوائم الأسباب Master Data ولا يعاد تعريف قيمها داخل Workflow.
-- `أسباب النقل` موجودة بالفعل وتشمل مثلًا: إعادة توزيع القطيع، انتقال للفطام، انتقال للتسمين، العزل، العودة من العزل، صيانة القفص، وبين البطاريات/العنابر/المزارع.
-- تعريف القائمة / Lifecycle / Uniqueness / Retirement يبقى غالبًا مع Master Data، بينما القاعدة التشغيلية المتغيرة قد تصبح Setting.
+- Breed Master Data ≠ Animal Pedigree.
+- قوائم الأسباب تعرف القيم المرجعية فقط؛ واقعة الاستخدام الفعلية تسجل في Workflow.
+- `أسباب النقل` موجودة بالفعل ولا يعاد تعريفها في 4.2.
+- BreedMetric يعرف المؤشر ووحدته وتعريف القياس واتجاه المقارنة، بينما الأداء الفعلي ينتج من البيانات التشغيلية والتقارير.
 
 ---
 
-## 6. القسم الثاني — هيكل المزرعة
+## 5. Farm Structure — ملخص الحدود المهمة
 
 ```text
 Farm
@@ -178,55 +156,41 @@ Battery
 Cage / Cell
 ```
 
-Subsections:
-
-```text
-بيانات المزرعة
-بيانات العنبر
-بيانات البطارية
-بيانات القفص / العين
-```
-
-قواعد معتمدة مهمة:
-
 ### Cage
 
-- لا Create مستقل للقفص؛ يولد من تكوين Battery.
-- لا Delete مستقل بعد دخوله التاريخ التشغيلي.
-- Cage Code فريد على مستوى النظام.
-- QR مرتبط بهوية القفص.
+- يولد من Battery؛ لا Create مستقل.
+- لا Delete مباشر بعد التاريخ التشغيلي.
+- Code فريد على مستوى النظام.
+- QR مرتبط بالهوية.
 - الهوية والموقع الهيكلي Immutable بعد التفعيل.
-- تغييرات الحالة تتم Actions + History.
-- الإشغال الحالي والأماكن المتاحة ينتجان من حركات التسكين والنقل، لا من حقول يدوية.
-- Housing Eligibility يجمع الحالة المحلية، إتاحة Battery/Barn، السعة، توافق الاستخدام، الصيانة، التطهير، وقواعد Settings.
-- Timeline القفص يمكن أن يعرض التسكين والنقل والخروج والصيانة والتطهير وغيرها من مصادرها الأصلية.
+- Status Changes = Actions + History.
+- Current Occupancy / Available Capacity مشتقان من الحركات.
+- Housing Eligibility يجمع الحالة والسعة والاستخدام والصيانة والتطهير وSettings.
 
 ### Battery
 
 - تتبع Barn واحدًا.
-- Battery Code فريد على مستوى النظام.
-- بنيتها تولد الأقفاص التابعة لها.
-- وجود تاريخ تشغيلي يقفل الهوية الهيكلية التاريخية.
-- توقف/صيانة Battery يؤثر على إتاحة الأقفاص دون تغيير Local Status لكل Cage تلقائيًا.
+- Code فريد على مستوى النظام.
+- بنيتها تولد Cages.
+- التاريخ التشغيلي يقفل الهوية الهيكلية التاريخية.
+- Stop / Maintenance يؤثر على إتاحة الأقفاص دون تغيير Local Status لكل Cage تلقائيًا.
 
-### فصل المسؤوليات
+الفصل:
 
 ```text
 تعريف المواقع → Farm Structure
-التسكين/النقل/الإخلاء والصيانة والتطهير الفعلي → Workflow
+التسكين/النقل/الإخلاء/الصيانة/التطهير الفعلي → Workflow
 قواعد السعة والإتاحة والتطهير → Settings
 عرض الإشغال والسعة → Reports
 ```
 
-### سؤال مؤجل
+سؤال مؤجل لا يمنع التقدم:
 
 > كيف يجب إدارة الأنواع الفيزيائية للبطاريات؟
 
-لا يمنع استمرار بناء بقية الأسئلة.
-
 ---
 
-## 7. القسم الثالث — بيانات الحيوان وتكوين القطيع
+## 6. القسم الثالث — بيانات الحيوان وتكوين القطيع
 
 ```text
 3.1 بيانات وهوية الحيوان
@@ -238,11 +202,11 @@ Subsections:
 
 قواعد عامة:
 
-- Animal Record يستمر مع نفس الحيوان طوال حياته.
+- Animal Record يستمر لنفس الحيوان طوال حياته.
 - الموقع الحالي والوزن الحالي والجاهزية والحالة الإنتاجية المشتقة ليست حقولًا ثابتة تعدل يدويًا.
-- القطيع الافتتاحي يبدأ من أول معلومة موثوقة دون اختراع تاريخ سابق.
+- القطيع الافتتاحي يبدأ من أول معلومة موثوقة دون اختراع تاريخ.
 
-### 7.1 بيانات وهوية الحيوان — IMPLEMENTED & LOCAL SEED VERIFIED
+### 6.1 Animal Identity — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 `database/seeders/Questions/AnimalHerd/AnimalIdentityQuestionsSeeder.php`
@@ -261,9 +225,7 @@ animal.breed_requirement
 animal.birth_information_methods
 ```
 
-الهوية لا تشمل الموقع الحالي أو الوزن الحالي أو الجاهزية أو الحالة الإنتاجية الحالية.
-
-### 7.2 مصدر الحيوان وبداية السجل — IMPLEMENTED & LOCAL SEED VERIFIED
+### 6.2 Animal Source / Record Start — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 `database/seeders/Questions/AnimalHerd/AnimalSourceQuestionsSeeder.php`
@@ -280,12 +242,7 @@ animal.pre_entry_history_policy
 animal.other_source_description_required
 ```
 
-الحدود:
-
-- المصدر يحدد من أين جاء الحيوان وأول معلومة موثوقة.
-- الاستقبال والتقييم والوزن والحجر والتسكين الفعلي → Workflow.
-
-### 7.3 النسب وشجرة العائلة — IMPLEMENTED & LOCAL SEED VERIFIED
+### 6.3 Pedigree / Family Tree — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 `database/seeders/Questions/AnimalHerd/AnimalPedigreeQuestionsSeeder.php`
@@ -305,13 +262,12 @@ animal.genetic_line_usage
 animal.offspring_breed_derivation
 ```
 
-الحدود:
+حدود مهمة:
 
-- Breed ≠ Pedigree.
-- نقل المولود لأم مرضعة لا يغير الأم البيولوجية.
-- عدد الأجيال والتحليل والقرابة والتنبيهات → Reports / Settings.
+- Biological Mother تبقى منفصلة عن Foster Mother.
+- القرابة والتحذير/المنع → Settings / Reports.
 
-### 7.4 القطيع الافتتاحي وتهيئة نقطة البداية — IMPLEMENTED & LOCAL SEED VERIFIED
+### 6.4 Initial Herd Setup — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 `database/seeders/Questions/AnimalHerd/InitialHerdSetupQuestionsSeeder.php`
@@ -332,9 +288,7 @@ animal.opening_baseline_snapshot
 animal.opening_task_evaluation_after_activation
 ```
 
-3.4 يحدد Initialization / Go-live Point للمزرعة القائمة، ولا يحول اللقطة الافتتاحية إلى Status يدوي دائم.
-
-### 7.5 تكوين القطيع الإنتاجي وتنظيم المجموعات — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 6.5 Production Herd / Groups — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 
 Seeder:
 `database/seeders/Questions/AnimalHerd/ProductionHerdGroupsQuestionsSeeder.php`
@@ -357,23 +311,23 @@ production_group.history_policy
 الحدود:
 
 ```text
-نموذج المجموعة وعلاقاتها → 3.5
-العدد المستهدف للإناث لكل ذكر والجاهزية → Settings
+تعريف المجموعة وعلاقاتها → 3.5
+نسبة الإناث لكل ذكر والجاهزية → Settings
 تغيير الذكر أو نقل الأنثى فعليًا → Workflow
 أسباب تغيير الذكر → Master Data
 التلقيح الفعلي وإثبات الأبوة → Workflow / Pedigree
-تقييم الأداء → Reports
+الأداء → Reports
 ```
 
 ---
 
-## 8. القسم الرابع — الحركات ودورة التشغيل الفعلية
+## 7. القسم الرابع — Workflow
 
-Workflow مسؤول عن:
+Workflow يجيب عن:
 
-> كل حدث أو إجراء فعلي يحدث بمرور الوقت ويغير سجل الحيوان أو البطن أو دورة الإنتاج أو موقع الإيواء أو المهمة التشغيلية.
+> ماذا حدث؟ ومتى؟ ولماذا؟ ومن نفذه؟
 
-الشجرة المعتمدة:
+الشجرة:
 
 ```text
 4.1 استقبال الحيوان من الخارج وإعادة الإدخال
@@ -395,21 +349,15 @@ Workflow مسؤول عن:
 4.17 تنفيذ وإدارة المهام التشغيلية
 ```
 
-قواعد فصل مهمة:
+قاعدة الوزن:
 
 ```text
-تسجيل وزن فعلي → Workflow
-موعد/مستهدف/حد الوزن → Settings
-تحليل النمو → Reports
+الوزن الفعلي → Workflow
+موعد الوزن / المستهدف / Threshold → Settings
+منحنيات النمو والمقارنة والتحليل → Reports
 ```
 
-```text
-قواعد توليد المهمة → Settings
-تنفيذ/تأجيل/إلغاء/إغلاق المهمة → Workflow
-عرض مهام اليوم والمتأخرات → Reports / Dashboard
-```
-
-### 8.1 استقبال الحيوان من الخارج وإعادة الإدخال — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 7.1 Animal Intake / Re-entry — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 
 Seeder:
 `database/seeders/Questions/Workflow/AnimalIntakeQuestionsSeeder.php`
@@ -430,37 +378,19 @@ animal_intake.finalization_model
 animal_intake.reentry_process_model
 ```
 
-يغطي:
-
-- الاستقبال الفردي والجماعي مع Individual Records.
-- Weight at Entry كسجل وزن فعلي.
-- Initial Evaluation ونتائجه.
-- Observation / Quarantine Stage عند الحاجة.
-- الفحوص أو الإجراءات الوقائية المنفذة فعليًا دون افتراض Veterinary Module كامل.
-- Final Intake Approval.
-- Re-entry مع الحفاظ على نفس Animal Record.
-
-الحدود:
+حدود 4.1:
 
 ```text
-بيانات المصدر → 3.2
+المصدر → 3.2
 الهوية → 3.1
-موقع التسكين → 4.2
-تفاصيل الوزن العامة → 4.3
-مدة الحجر وإلزامه ومعايير القبول → Settings
-المسار الصحي بعد التحويل → 4.13
+التسكين → 4.2
+تفاصيل سجل الوزن → 4.3
+مدة/إلزام الحجر ومعايير القبول → Settings
+المسار الصحي → 4.13
 الخروج بسبب الرفض → 4.15
-الجاهزية الإنتاجية → Settings + Reports
 ```
 
-الفرق بين 4.1 و4.15:
-
-```text
-4.1 → خطوات الاستقبال عند وصول الحيوان أو عودته
-4.15 → حدث الخروج وربط العودة اللاحقة به تاريخيًا
-```
-
-### 8.2 التسكين والنقل والإخلاء وإدارة الإشغال — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 7.2 Housing / Movement / Vacating / Occupancy — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 
 Seeder:
 `database/seeders/Questions/Workflow/HousingMovementQuestionsSeeder.php`
@@ -482,78 +412,113 @@ housing_movement.time_tracking_model
 housing_movement.occupied_structure_relocation_support
 ```
 
+Dependencies:
+
+```text
+transfer_atomicity
+→ event_types CONTAINS cage_transfer
+
+batch_transfer_scopes
+batch_individual_history
+→ batch_transfer_support EQUALS 1
+```
+
+حدود 4.2:
+
+```text
+تعريف المواقع → Farm Structure
+Housing Eligibility / Capacity Rules → Settings
+الإشغال الحالي → Derived من الحركات
+أسباب النقل → Master Data
+التطهير وتجهيز الموقع → 4.16 + Settings
+الصيانة نفسها → 4.16؛ نقل الحيوانات الناتج عنها → 4.2
+الخروج النهائي → 4.15
+عرض الإشغال وعجز السعة → Reports
+```
+
+### 7.3 Operational Weight / Measurements — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/OperationalMeasurementsQuestionsSeeder.php`
+
+عدد الأسئلة: **9**.
+
+```text
+operational_measurement.subject_types
+operational_measurement.record_fields
+operational_measurement.weight_unit_policy
+operational_measurement.context_types
+operational_measurement.single_source_linking
+operational_measurement.age_handling
+operational_measurement.preweaning_weight_model
+operational_measurement.batch_entry_support
+operational_measurement.batch_individual_records
+```
+
 القرارات التي تغطيها المجموعة:
 
-- أنواع حركات الموقع: تسكين أول، نقل بين الأقفاص، وإخلاء صريح عند الحاجة.
-- بيانات الحركة: الحيوان، النوع، المصدر/الوجهة، وقت الحدوث، وقت التسجيل، السبب، المنفذ، الملاحظات.
-- هل يكفي اختيار Cage ويستنتج النظام Battery/Barn/Farm تلقائيًا.
-- نموذج النقل بين قفصين: Atomic Transfer أو Vacate + Housing مترابطان.
-- منع أكثر من Active Occupancy لنفس الحيوان في نفس اللحظة.
-- دعم النقل الجماعي.
-- دعم نقل كل حيوانات القفص أو جزء محدد منها.
-- الاحتفاظ بسجل حركة فردي لكل حيوان داخل Batch Movement.
-- تحديد أنواع الحركات التي تحتاج سببًا صريحًا.
-- ربط سبب النقل بقائمة `أسباب النقل` في Master Data بدل نص حر.
-- الفرق بين Actual Event Time وRecorded At لأغراض التدقيق.
-- دعم Bulk Relocation عند إخلاء Cage/Battery/Barn مشغول بسبب الإيقاف أو الصيانة.
+- الوزن الفعلي يمكن أن يرتبط بالحيوان الفردي وبالبطن/المواليد قبل التتبع الفردي إذا اعتمد ذلك.
+- سجل الوزن يحفظ Value / Unit / Measured At / Context / Age عند الإمكان / Workflow Reference / Performer / Notes حسب الإجابات.
+- توحيد طريقة التعامل مع وحدات الوزن حتى تكون القيم قابلة للمقارنة.
+- تمييز سياقات الوزن الموثقة في المصدر: Intake، Pregnancy، Lactation، Weaning، Growth، Sorting، Replacement Follow-up، Fattening.
+- عند تسجيل الوزن من Workflow آخر يراجع هل توجد قيمة قياس واحدة مرتبطة بالحدث بدل Duplicate Values.
+- العمر وقت القياس يمكن اشتقاقه من بيانات الميلاد مع حسم التعامل مع العمر التقديري أو المجهول.
+- حسم السؤال المفتوح في المصدر: هل وكيف يتم وزن المواليد قبل الفطام.
+- دعم Batch Weighing كواجهة إدخال عند الحاجة مع بقاء Individual Weight Records.
 
 Dependencies:
 
 ```text
-housing_movement.transfer_atomicity
-→ housing_movement.event_types CONTAINS cage_transfer
+operational_measurement.preweaning_weight_model
+→ operational_measurement.subject_types CONTAINS preweaning_litter
 
-housing_movement.batch_transfer_scopes
-housing_movement.batch_individual_history
-→ housing_movement.batch_transfer_support EQUALS 1
+operational_measurement.batch_individual_records
+→ operational_measurement.batch_entry_support EQUALS 1
 ```
 
-الحدود المعمارية لـ4.2:
+حدود 4.3:
 
 ```text
-تعريف Farm/Barn/Battery/Cage → Farm Structure
-Housing Eligibility Factors نفسها → Farm Structure + Settings، ولا يعاد سؤالها هنا
-السعة وقواعد الجمع وتجاوز السعة → Settings
-الإشغال الحالي / Available Capacity → مشتق من الحركات، لا حقل يدوي
-أسباب النقل وقيمها → Master Data؛ 4.2 يستخدمها فقط
-التنظيف/التطهير وتجهيز القفص بعد الإخلاء → 4.16 + Settings
-الصيانة نفسها → 4.16؛ نقل الحيوانات الناتج عنها → 4.2
-الخروج النهائي من المزرعة → 4.15
-عرض الإشغال وعجز السعة → Reports
+Weight at Entry required/optional → 4.1
+موعد ودورية الوزن حسب المرحلة → Settings 6.9 / 6.10 وغيرها
+Target Weight / Minimum / Maximum / Threshold → Settings
+تفسير النمو والزيادة ومتوسط الزيادة اليومية والمقارنات → Reports 5.5 / 5.10
+وزن الحمل الفعلي → نفس Weight History مع Context للحمل
+وزن الفطام أو النمو أو الفرز أو الإحلال أو التسمين → نفس سجل القياسات مع Context مناسب
+الوزن الحالي للحيوان → Derived من أحدث سجل وزن صالح؛ ليس حقل Edit مستقل
+تفاصيل تعديل/إلغاء قياس خاطئ وسجل التدقيق → سياسة التصحيح العامة في Settings 6.2
 ```
 
-المبدأ الوظيفي من المرجع:
+ملاحظة Scope:
 
-```text
-أرنب معتمد
-→ اختيار موقع صالح
-→ تسكين
-→ إشغال مشتق
-→ نقل عند الحاجة
-→ إغلاق الإشغال السابق وحفظ التاريخ
-→ إخلاء الموقع
-→ تجهيز الموقع لاحقًا في Workflow المواقع
-```
+> المصدر الوظيفي الحالي يوثق **الوزن** كقياس رقمي تشغيلي واضح. لا يتم اختراع أنواع قياسات جسم أخرى من تلقاء المشروع؛ إذا ظهر احتياج موثق لاحقًا يضاف بسؤال مستقل.
 
 ---
 
-## 9. القسم الخامس — التقارير والتحليلات والتنبيهات ومؤشرات الأداء
+## 8. Reports — حدود مختصرة
 
-الشجرة المعتمدة: **15 Subsection** وتشمل Dashboard، القطيع والجاهزية، الخصوبة والحمل، الولادة والرضاعة والفطام، النمو والتسمين، الصحة والنفوق، أداء الحيوانات، النسب والإحلال، الإشغال، الاتجاهات، الصفحات التحليلية، التنبيهات، جودة البيانات، KPIs، وخصائص التقارير.
+الشجرة المعتمدة: **15 Subsection**.
 
-الفصل:
+ذات الصلة بالعمل الحالي:
 
 ```text
-اكتشاف الحالة + العرض + تاريخ التنبيه → Reports
-Threshold / Severity / Priority Rules → Settings
-الإجراء المنفذ نتيجة التنبيه → Workflow
+5.5 تقارير النمو والأوزان والتسمين
+5.10 الاتجاهات والمقارنات والتحليل عبر الزمن
 ```
 
-Open Requirement: صلاحيات ونطاق الاطلاع على التقارير لم يحسم بعد.
+Reports مسؤولة عن:
+
+- منحنيات الوزن والنمو.
+- الزيادة بين القياسات.
+- Average Daily Gain عند اعتماد طريقة الحساب.
+- المقارنة بين الحيوانات/البطون/السلالة/المزرعة حسب Requirements لاحقة.
+- اكتشاف الحالات وعرضها، لا تغيير سجلات القياس الأصلية.
+
+Thresholds / Targets / Periods القابلة للضبط → Settings.
 
 ---
 
-## 10. القسم السادس — الإعدادات وقواعد التشغيل
+## 9. Settings — حدود مختصرة
 
 الشجرة المعتمدة: **13 Subsection**.
 
@@ -563,32 +528,33 @@ Open Requirement: صلاحيات ونطاق الاطلاع على التقاري
 Structural / System Rule ≠ Operational Setting
 ```
 
-Open Requirements الرئيسية:
+Open Requirements تشمل:
 
 - Scope: System / Farm / Barn / Profile.
-- Reusable Profiles.
 - Defaults / Inheritance / Overrides.
 - Effective Date / Versioning.
-- أثر تعديل الإعدادات على العمليات الجارية.
-- Historical Settings Reference / Snapshot.
-- صلاحيات واعتماد تغييرات Settings.
+- Historical Settings Reference.
 - Information / Warning / Block.
 - Override Policy.
-- Sensitive Record Correction.
-- Minimum Audit Trail.
+- Sensitive Record Correction + Audit.
 - الأعمار والأوزان والمدد والفواصل وThresholds وTargets.
 
-لا يفترض المشروع Environmental Control Module أو Veterinary Treatment Module أو Sales/Financial Module كاملًا دون دعم وظيفي صريح.
+للوزن خصوصًا:
+
+```text
+مواعيد الوزن
+دورية الوزن
+المستهدفات
+حدود القبول/التنبيه
+قواعد الجاهزية المبنية على الوزن
+→ Settings
+```
 
 ---
 
-## 11. Question Seeder Sync والحفاظ على الإجابات
+## 10. Question Seeder Sync والحفاظ على الإجابات
 
-الخدمة:
-
-`app/Services/Questionnaire/QuestionSeederSyncService.php`
-
-القواعد:
+المبدأ:
 
 ```text
 Stable Section Record
@@ -600,42 +566,42 @@ Stable Section Record
 
 - لا يغير `seed_key` عند إعادة صياغة نفس القرار.
 - لا تتغير `option.value` لمجرد تعديل Label.
-- المزامنة تستخدم بدل الحذف وإعادة الإنشاء.
-- تغيير غير متوافق مع إجابة محفوظة يجب أن يفشل بوضوح بدل حذف البيانات بصمت.
-- كل Question Seeder جديد في المرحلة الحالية يستخدم `preserveAnswers = true`.
-- لا يستخدم `migrate:refresh --seed` بصورة روتينية على قاعدة بيانات تحتوي إجابات نريد الحفاظ عليها.
+- المزامنة لا تحذف إجابة مستقرة بصمت.
+- أي تغيير غير متوافق مع إجابة محفوظة يجب أن يفشل بوضوح.
+- جميع Question Seeders الجديدة تستخدم `preserveAnswers: true`.
+- لا يستخدم `migrate:refresh --seed` روتينيًا على قاعدة تحتوي إجابات نريد الحفاظ عليها.
 
 ---
 
-## 12. قواعد إنشاء الأسئلة الجديدة
+## 11. قواعد إنشاء الأسئلة وملفات الشرح
 
-قبل أي Question Seeder جديد:
+قبل Question Seeder جديد:
 
 1. قراءة هذا الملف أولًا.
 2. مراجعة الجزء المقابل من `تصور_مشروع_الارانب.md`.
-3. مراجعة Architecture Review وحدود الـSubsection.
-4. مراجعة الأسئلة والأقسام السابقة لمنع التكرار.
-5. مراجعة Enums / Models / Engine قبل افتراض Type أو Operator جديد.
-6. تحويل النقاط غير المحسومة فقط إلى أسئلة تنتج Decisions فعلية.
-7. استخدام Stable `seed_key` وStable Option Values.
-8. استخدام Dependencies عند وجود سبب وظيفي واضح.
+3. مراجعة Architecture Review وحدود Subsection.
+4. مراجعة الأسئلة السابقة لمنع التكرار.
+5. مراجعة Enums / Models / Engine.
+6. تحويل النقاط غير المحسومة فقط إلى Questions تنتج Decisions فعلية.
+7. Stable Keys / Option Values.
+8. Dependencies فقط عند حاجة وظيفية.
 9. تحديد `report_category` و`target_entity` حسب conventions الحالية.
-10. عدم تحويل مثال أو اقتراح في المرجع إلى Requirement نهائي بدون سؤال/قرار.
-11. عدم تضخيم الأسئلة أو إعادة سؤال قرار معماري معتمد.
-12. الحفاظ على `preserveAnswers = true`.
+10. عدم تحويل مثال إلى Requirement نهائي بلا سؤال/قرار.
+11. عدم تضخيم الأسئلة.
+12. `preserveAnswers = true`.
 
-عند إعداد Questionnaire Guide لاحقًا لا تعاد الدراسة من الصفر؛ يعتمد على:
+عند إعداد Questionnaire Guide لاحقًا **لا تعاد الدراسة من الصفر**. يعتمد على:
 
 ```text
-Project Context
+FARM_BLUEPRINT_PROJECT_CONTEXT.md
 + Seeder النهائي
 + الإجابات المسجلة
-+ مراجعة مرجعية سريعة للجزء المقابل من تصور_مشروع_الارانب.md
++ مراجعة سريعة للجزء المقابل من تصور_مشروع_الارانب.md
 ```
 
 ---
 
-## 13. Question Orchestrators الحالية
+## 12. Question Orchestrators الحالية
 
 `QuestionnaireAnimalHerdQuestionsSeeder`:
 
@@ -652,9 +618,10 @@ ProductionHerdGroupsQuestionsSeeder
 ```text
 AnimalIntakeQuestionsSeeder
 HousingMovementQuestionsSeeder
+OperationalMeasurementsQuestionsSeeder
 ```
 
-شجرة الأسئلة الجديدة الحالية:
+شجرة الأسئلة الحالية ذات الصلة:
 
 ```text
 database/seeders/Questions/
@@ -666,14 +633,13 @@ database/seeders/Questions/
 │   └── ProductionHerdGroupsQuestionsSeeder.php
 └── Workflow/
     ├── AnimalIntakeQuestionsSeeder.php
-    └── HousingMovementQuestionsSeeder.php
+    ├── HousingMovementQuestionsSeeder.php
+    └── OperationalMeasurementsQuestionsSeeder.php
 ```
-
-Reports / Settings Orchestrators ما زالت بدون Question Seeders فعلية حتى يبدأ تصميمها.
 
 ---
 
-## 14. حالة التنفيذ الحالية
+## 13. حالة التنفيذ الحالية
 
 ```text
 Architecture → IMPLEMENTED & VERIFIED
@@ -687,6 +653,7 @@ Question Creation → IN PROGRESS
 
 4.1 Animal Intake / Re-entry → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.2 Housing / Movement / Vacating / Occupancy → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.3 Operational Weight / Measurements → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث التطوير المحلي دون فقد الإجابات:
@@ -697,31 +664,27 @@ php artisan db:seed --class=QuestionnaireAnimalHerdQuestionsSeeder
 php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 ```
 
-إذا كان قسم AnimalHerd الحالي قد تم Seed له بالفعل، يشغل فقط Workflow Seeder عند الحاجة.
+إذا كان AnimalHerd قد تم Seed له بالفعل، يشغل Workflow Seeder فقط.
 
-**الخطوة التالية بعد التحقق المحلي أو عند طلب الاستمرار:**
+**التالي بعد 4.3:**
 
-`4.3 الوزن والقياسات التشغيلية`
+`4.4 التلقيح وإدارة المحاولات`
 
 ---
 
-## 15. قاعدة GitHub الإلزامية
+## 14. قاعدة GitHub الإلزامية
 
-المستودع افتراضيًا:
+المستودع افتراضيًا **READ ONLY**.
 
-**READ ONLY**
+أي تعديل / إنشاء / حذف / Commit / Branch / PR / Seeder يحتاج طلبًا صريحًا ومباشرًا من المستخدم في نفس السياق.
 
-يسمح بالقراءة والبحث والتحليل والمراجعة والاقتراح فقط.
-
-لا يتم تعديل أو إنشاء أو حذف ملف أو Commit أو Push أو Branch أو Pull Request أو Seeder إلا بطلب صريح ومباشر من المستخدم.
-
-وجود صلاحية تقنية لا يعني وجود إذن بالتعديل.
+وجود الصلاحية التقنية لا يعني وجود إذن بالتعديل.
 
 `تصور_مشروع_الارانب.md` Reference Only ولا يعدل إلا بطلب صريح.
 
 ---
 
-## 16. المبدأ الأساسي
+## 15. المبدأ الأساسي
 
 هذا المشروع هو:
 
@@ -731,4 +694,4 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 **نظام إدارة المزرعة النهائي.**
 
-كل قرار يجب أن يقلل الافتراضات قبل بناء النظام الحقيقي، مع الحفاظ على اتساق الوثائق والكود وعدم الاعتماد على الذاكرة أو المحادثة وحدها.
+الهدف تقليل الافتراضات وتحويل الإجابات إلى Requirements قابلة للتنفيذ مع الحفاظ على التاريخ والاتساق وعدم الاعتماد على الذاكرة وحدها.
