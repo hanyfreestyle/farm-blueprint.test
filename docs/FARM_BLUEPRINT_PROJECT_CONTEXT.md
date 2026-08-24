@@ -47,15 +47,50 @@
 - نقل موضوع من قسم إلى آخر.
 - إنشاء أسئلة في الأقسام التي خضعت لإعادة الهيكلة.
 - فهم لماذا وضع موضوع في Data أو Workflow أو Reports أو Settings.
-- إعداد خطة التنفيذ النهائية لإعادة الهيكلة.
 
-هذا الملف ليس Implementation Plan؛ الخطوة التالية هي استخراج خطة تنفيذ مستقلة منه.
+هذا الملف ليس Implementation Plan؛ هو مرجع القرار المعماري الذي تستند إليه خطة التنفيذ.
+
+### خطة تنفيذ إعادة الهيكلة
+
+`docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
+
+هي الخطة التنفيذية الرسمية لإعادة هيكلة الأقسام بعد اعتماد Architecture Review.
+
+تستخدم حالات متابعة واضحة:
+
+```text
+PENDING
+IN_PROGRESS
+DONE
+VERIFIED
+WAITING_LOCAL
+```
+
+وتحدد خطوة بخطوة:
+
+- فحص ما قبل التنفيذ.
+- تعديل Section Seeders.
+- ترتيب Main Sections.
+- تجهيز Question Orchestrators للأقسام 3–6.
+- تحديث `QuestionnaireQuestionsSeeder`.
+- مزامنة الوثائق.
+- التشغيل المحلي بـ`migrate:refresh --seed` في مرحلة التطوير الحالية.
+- مراجعة الشجرة الناتجة.
+- إغلاق إعادة الهيكلة وبدء مرحلة إنشاء الأسئلة.
+
+**الحالة الحالية للخطة:**
+
+```text
+P0 — Architecture Review → VERIFIED
+P1 — إنشاء خطة التنفيذ → DONE
+P2 — فحص ما قبل التنفيذ → NEXT / PENDING
+```
 
 ### سجل التنفيذ والتاريخ التقني
 
 `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
 
-يحفظ تاريخ بناء أداة الاستبيان والمراحل والقرارات التقنية السابقة.
+يحفظ تاريخ بناء أداة الاستبيان والمراحل والقرارات التقنية السابقة، ولا يستبدل بخطة إعادة الهيكلة الجديدة.
 
 ### المرجع الوظيفي الأساسي
 
@@ -73,6 +108,8 @@
 → الكود الحالي
 → السجل التاريخي القديم
 ```
+
+خطة التنفيذ تتبع هذه المراجع ولا تستبدلها كمصدر للقرار الوظيفي.
 
 ---
 
@@ -113,11 +150,13 @@
 6. الإعدادات وقواعد التشغيل
 ```
 
-**مهم:** الهيكل المستهدف أصبح معتمدًا معماريًا، لكنه **لم ينفذ بعد** في Section Seeders. الخطوة التالية هي استخراج Implementation Plan من:
+**مهم:** الهيكل المستهدف أصبح معتمدًا معماريًا، لكنه **لم ينفذ بعد** في Section Seeders.
 
-`docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
+تم استخراج خطة التنفيذ الرسمية في:
 
-ثم تنفيذ التعديلات وفق الخطة بدل التعديل المتفرق.
+`docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
+
+والخطوة التالية هي `P2 — فحص ما قبل التنفيذ`، ثم تنفيذ التعديلات وفق الخطة بدل التعديل المتفرق.
 
 ### 4.3 قاعدة الفصل المعماري المعتمدة
 
@@ -957,13 +996,26 @@ Blueprint
 
 `docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
 
-المسار الآن:
+وتم إنشاء خطة التنفيذ الرسمية:
+
+`docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
+
+الحالة الحالية:
+
+```text
+Architecture Review → VERIFIED
+Implementation Plan Created → DONE
+Next → P2 فحص ما قبل التنفيذ
+```
+
+المسار:
 
 ```text
 Architecture Review — COMPLETE
-→ استخراج Implementation Plan واضح
+→ Implementation Plan — CREATED
+→ P2 فحص ما قبل التنفيذ
 → تنفيذ تعديلات Section Seeders
-→ إنشاء/إعادة تنظيم Question Seeder folders وOrchestrators
+→ تجهيز Question Orchestrators للأقسام 3–6
 → تحديث الوثائق
 → migrate:refresh --seed أثناء مرحلة التطوير الحالية
 → مراجعة الشجرة الناتجة
@@ -971,7 +1023,7 @@ Architecture Review — COMPLETE
 → بدء دورة الإجابات الجديدة
 ```
 
-لا يتم تنفيذ تغييرات الأقسام 3–6 بصورة متفرقة من الذاكرة؛ يجب أن تنفذ من الـImplementation Plan المستخرج من سجل المراجعة.
+لا يتم تنفيذ تغييرات الأقسام 3–6 بصورة متفرقة من الذاكرة؛ يتم التنفيذ ومتابعة Status من `QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`.
 
 ---
 
