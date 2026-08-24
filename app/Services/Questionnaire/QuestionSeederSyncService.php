@@ -11,22 +11,22 @@ use RuntimeException;
 class QuestionSeederSyncService
 {
     /**
+     * Canonical parent ownership for structural subsections.
+     *
+     * Keeping this mapping central prevents an older question seeder from
+     * recreating or targeting a structural subsection under Master Data after
+     * the section architecture has been separated. It also keeps section IDs
+     * stable when answers must be preserved later.
+     */
+    private const SECTION_PARENT_OVERRIDES = [
+        'بيانات المزرعة' => 'هيكل المزرعة',
+        'بيانات العنبر' => 'هيكل المزرعة',
+        'بيانات البطارية' => 'هيكل المزرعة',
+        'بيانات القفص / العين' => 'هيكل المزرعة',
+    ];
+
+    /**
      * Synchronize one subsection with the question definitions declared by its Seeder.
-     *
-     * During the current Blueprint design phase use:
-     *   prune: true
-     *   preserveAnswers: false
-     *
-     * This makes the Seeder the source of truth:
-     * - removed questions are deleted;
-     * - their answers/options are removed automatically by database cascade rules;
-     * - when an option is removed from a multi-choice question, only that invalid
-     *   selected value is removed while the remaining valid answer is preserved;
-     * - if no valid multi-choice selections remain, the answer is deleted so the
-     *   question becomes unanswered and can be reviewed again.
-     *
-     * Later, once answers become production/reference data, use preserveAnswers: true
-     * to block destructive structural changes that would invalidate stored answers.
      *
      * @param array<int, array<string, mixed>> $questions
      */
@@ -73,7 +73,6 @@ class QuestionSeederSyncService
                         );
                     }
 
-                    // questionnaire_answers and questionnaire_question_options cascade on question delete.
                     $existingQuestion->delete();
                 }
             }
@@ -91,14 +90,16 @@ class QuestionSeederSyncService
 
     private function resolveSection(string $mainSectionName, string $sectionName): QuestionnaireSection
     {
+        $canonicalMainSectionName = self::SECTION_PARENT_OVERRIDES[$sectionName] ?? $mainSectionName;
+
         $mainSection = QuestionnaireSection::query()
             ->whereNull('parent_id')
-            ->where('name', $mainSectionName)
+            ->where('name', $canonicalMainSectionName)
             ->first();
 
         if (! $mainSection) {
             throw new RuntimeException(
-                "Main section '{$mainSectionName}' was not found. Run QuestionnaireSectionSeeder first."
+                "Main section '{$canonicalMainSectionName}' was not found. Run QuestionnaireSectionSeeder first."
             );
         }
 
@@ -109,7 +110,7 @@ class QuestionSeederSyncService
 
         if (! $section) {
             throw new RuntimeException(
-                "Subsection '{$sectionName}' was not found. Run QuestionnaireSectionSeeder first."
+                "Subsection '{$sectionName}' was not found under '{$canonicalMainSectionName}'. Run QuestionnaireSectionSeeder first."
             );
         }
 
@@ -153,6 +154,7 @@ class QuestionSeederSyncService
 
     /**
      * @param array<string, mixed> $definition
+     * @param array<int, array<string, mixed>> $options
      */
     private function syncQuestion(
         int $sectionId,
@@ -265,7 +267,6 @@ class QuestionSeederSyncService
                 return;
             }
 
-            // Keep the answer and its notes/review metadata; remove only obsolete selections.
             $answer->value = $validValues;
             $answer->save();
 
