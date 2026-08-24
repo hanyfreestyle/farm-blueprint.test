@@ -6,7 +6,7 @@ use App\Models\QuestionnaireQuestion;
 use App\Models\QuestionnaireSection;
 use App\Services\Questionnaire\QuestionnaireFrontendService;
 use App\Services\Questionnaire\QuestionnaireImplementationPrepReportService;
-use Database\Seeders\QuestionnaireFarmQuestionsSeeder;
+use Database\Seeders\QuestionnaireQuestionsSeeder;
 use Database\Seeders\QuestionnaireSectionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -22,7 +22,7 @@ class QuestionnaireImplementationPrepReportTest extends TestCase
         Artisan::call('migrate:fresh', ['--database' => 'sqlite']);
 
         $this->seed(QuestionnaireSectionSeeder::class);
-        $this->seed(QuestionnaireFarmQuestionsSeeder::class);
+        $this->seed(QuestionnaireQuestionsSeeder::class);
     }
 
     public function test_structured_report_lists_questions_with_answers_and_question_keys(): void
