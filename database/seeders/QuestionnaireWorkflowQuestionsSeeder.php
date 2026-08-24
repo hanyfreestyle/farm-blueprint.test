@@ -6,6 +6,7 @@ use Database\Seeders\Questions\Workflow\AnimalIntakeQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\HousingMovementQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\MatingAttemptsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\OperationalMeasurementsQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\PregnancyFollowUpQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireWorkflowQuestionsSeeder extends Seeder
@@ -17,6 +18,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             HousingMovementQuestionsSeeder::class,
             OperationalMeasurementsQuestionsSeeder::class,
             MatingAttemptsQuestionsSeeder::class,
+            PregnancyFollowUpQuestionsSeeder::class,
         ]);
     }
 }
