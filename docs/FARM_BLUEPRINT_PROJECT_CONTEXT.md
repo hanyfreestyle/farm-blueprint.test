@@ -432,7 +432,7 @@ preserveAnswers = true
 
 `3.4 القطيع الافتتاحي وتهيئة نقطة البداية`
 
-### 8.3 — النسب وشجرة العائلة — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 8.3 — النسب وشجرة العائلة — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 
@@ -487,14 +487,82 @@ preserveAnswers = true
 لا تحسم داخله موضوعات مكانها الأقسام الأخرى:
 
 ```text
-عدد الأجيال المعروضة في شجرة العائلة → Reports 5.9
-تقارير الإخوة / الأبناء / انتشار الخطوط → Reports 5.9
+عدد الأجيال المعروضة في شجرة العائلة → Reports
+تقارير الإخوة / الأبناء / انتشار الخطوط → Reports
 درجات القرابة والتحليل قبل التلقيح → Settings / Reports حسب الوظيفة
 Warning / Block / Override للقرابة → Settings 6.2 و6.5
 طريقة تصحيح الأب أو الأم كسجل حساس → Settings 6.2
 تقييم الأب والأم من نتائج الأبناء → Reports 5.7 و5.8
 نقل المواليد بين الأمهات كحدث فعلي → Workflow
 ```
+
+### 8.4 — القطيع الافتتاحي وتهيئة نقطة البداية — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+
+`database/seeders/Questions/AnimalHerd/InitialHerdSetupQuestionsSeeder.php`
+
+عدد الأسئلة: **11**.
+
+المفاتيح المستقرة:
+
+```text
+animal.opening_snapshot_operational_fields
+animal.opening_missing_data_policy
+animal.opening_starting_contexts
+animal.opening_reproductive_contexts
+animal.opening_trusted_prior_history_strategy
+animal.opening_trusted_prior_fact_types
+animal.opening_history_completeness_tracking
+animal.opening_pre_activation_checks
+animal.opening_activation_model
+animal.opening_baseline_snapshot
+animal.opening_task_evaluation_after_activation
+```
+
+القرارات التي تغطيها المجموعة:
+
+- ما المعلومات التشغيلية الحالية التي تثبت كنقطة بداية بدل تحويلها إلى حقول ثابتة في Animal Record.
+- سياسة البيانات الناقصة عند إدخال حيوان موجود قبل النظام.
+- الأوضاع التي يمكن أن يبدأ منها الحيوان: قطيع إنتاجي، دورة تناسلية قائمة، إحلال، نمو، تسمين، ملاحظة/عزل.
+- نقاط البداية للأنثى التي تدخل النظام في منتصف دورة إنتاجية: انتظار جس، حمل، قرب ولادة، رضاعة، رضاعة مع إعادة تلقيح.
+- هل يحتفظ النظام بلقطة البداية فقط أم يسمح بإضافة الحقائق السابقة الموثوقة مع تمييزها كبيانات قبل بدء النظام.
+- أنواع الحقائق السابقة الممكن الاحتفاظ بها: تواريخ/أحداث تناسلية معروفة، عدد الولادات السابقة، الأبناء السابقون، الأوزان التاريخية.
+- كيفية إظهار أن التاريخ قبل بدء النظام غير مكتمل حتى لا يفسر «غير معروف» على أنه «لم يحدث».
+- مراجعات ما قبل الاعتماد: التسكين، عدم ازدواج الموقع، السعة، إتاحة الموقع، توافق الاستخدام، العزل، التنظيم، ونقص البيانات الحرج.
+- هل التهيئة تمر بمسودة → مراجعة → اعتماد أم تدخل التشغيل مباشرة.
+- هل يحفظ الرصيد الافتتاحي كخط أساس تاريخي محسوب من السجلات.
+- هل اعتماد التهيئة يشغل تقييم المهام من الوضع الحالي، مع ترك قواعد المواعيد والأولوية لقسم Settings.
+
+Dependencies:
+
+```text
+animal.opening_reproductive_contexts
+→ animal.opening_starting_contexts CONTAINS female_active_reproductive_cycle
+
+animal.opening_trusted_prior_fact_types
+→ animal.opening_trusted_prior_history_strategy EQUALS snapshot_plus_trusted_prior_facts
+```
+
+يستخدم:
+
+```text
+prune = true
+preserveAnswers = true
+```
+
+### حدود 3.4
+
+```text
+الهوية والسلالة والنسب → تستخدم نتائج 3.1 وMaster Data و3.3 ولا يعاد تعريفها هنا
+التسكين والنقل كأحداث بعد بدء التشغيل → Workflow
+حدود السعة وتوافق التسكين والجاهزية → Settings
+تنفيذ المهمة وتأجيلها وإغلاقها → Workflow
+مواعيد وأولويات توليد المهام → Settings
+عرض الرصيد والجاهزية والتحليلات بعد التشغيل → Reports
+```
+
+3.4 يحدد **Initialization / Go-live Point** للمزرعة القائمة، ولا ينشئ تاريخًا غير معروف ولا يحول اللقطة الافتتاحية إلى Status يدوي دائم.
 
 ---
 
@@ -612,6 +680,7 @@ QuestionnaireSettingsQuestionsSeeder
 AnimalIdentityQuestionsSeeder
 AnimalSourceQuestionsSeeder
 AnimalPedigreeQuestionsSeeder
+InitialHerdSetupQuestionsSeeder
 ```
 
 شجرة AnimalHerd الحالية:
@@ -620,7 +689,8 @@ AnimalPedigreeQuestionsSeeder
 database/seeders/Questions/AnimalHerd/
 ├── AnimalIdentityQuestionsSeeder.php
 ├── AnimalSourceQuestionsSeeder.php
-└── AnimalPedigreeQuestionsSeeder.php
+├── AnimalPedigreeQuestionsSeeder.php
+└── InitialHerdSetupQuestionsSeeder.php
 ```
 
 Workflow / Reports / Settings Orchestrators ما زالت بدون Question Seeders فعلية حتى يبدأ تصميم كل قسم.
@@ -734,7 +804,8 @@ Architecture → IMPLEMENTED & VERIFIED
 Question Creation → IN PROGRESS
 3.1 Animal Identity → IMPLEMENTED & LOCAL SEED VERIFIED
 3.2 Animal Source / Record Start → IMPLEMENTED & LOCAL SEED VERIFIED
-3.3 Animal Pedigree / Family Tree → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+3.3 Animal Pedigree / Family Tree → IMPLEMENTED & LOCAL SEED VERIFIED
+3.4 Initial Herd Setup → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 الخطوة المحلية التالية:
@@ -746,7 +817,7 @@ php artisan db:seed --class=QuestionnaireAnimalHerdQuestionsSeeder
 
 بعد نجاح الـSeeder يكون التالي:
 
-`3.4 القطيع الافتتاحي وتهيئة نقطة البداية`
+`3.5 تكوين القطيع الإنتاجي وتنظيم المجموعات`
 
 ---
 
