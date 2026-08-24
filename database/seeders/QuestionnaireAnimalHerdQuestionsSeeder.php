@@ -6,6 +6,7 @@ use Database\Seeders\Questions\AnimalHerd\AnimalIdentityQuestionsSeeder;
 use Database\Seeders\Questions\AnimalHerd\AnimalPedigreeQuestionsSeeder;
 use Database\Seeders\Questions\AnimalHerd\AnimalSourceQuestionsSeeder;
 use Database\Seeders\Questions\AnimalHerd\InitialHerdSetupQuestionsSeeder;
+use Database\Seeders\Questions\AnimalHerd\ProductionHerdGroupsQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireAnimalHerdQuestionsSeeder extends Seeder
@@ -17,6 +18,7 @@ class QuestionnaireAnimalHerdQuestionsSeeder extends Seeder
             AnimalSourceQuestionsSeeder::class,
             AnimalPedigreeQuestionsSeeder::class,
             InitialHerdSetupQuestionsSeeder::class,
+            ProductionHerdGroupsQuestionsSeeder::class,
         ]);
     }
 }
