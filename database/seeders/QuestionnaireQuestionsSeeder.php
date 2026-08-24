@@ -11,6 +11,10 @@ class QuestionnaireQuestionsSeeder extends Seeder
         $this->call([
             QuestionnaireMasterDataQuestionsSeeder::class,
             QuestionnaireFarmStructureQuestionsSeeder::class,
+            QuestionnaireAnimalHerdQuestionsSeeder::class,
+            QuestionnaireWorkflowQuestionsSeeder::class,
+            QuestionnaireReportsQuestionsSeeder::class,
+            QuestionnaireSettingsQuestionsSeeder::class,
         ]);
     }
 }
