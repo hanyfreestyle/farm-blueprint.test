@@ -2,12 +2,15 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\AnimalHerd\AnimalIdentityQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireAnimalHerdQuestionsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Question seeders will be added here when section 3 question design begins.
+        $this->call([
+            AnimalIdentityQuestionsSeeder::class,
+        ]);
     }
 }
