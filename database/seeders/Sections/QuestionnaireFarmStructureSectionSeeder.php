@@ -55,25 +55,18 @@ MD,
         ];
 
         foreach ($subsections as $subsection) {
-            $section = QuestionnaireSection::query()
-                ->where('parent_id', $mainSection->id)
+            $matches = QuestionnaireSection::query()
+                ->whereNotNull('parent_id')
                 ->where('name', $subsection['name'])
-                ->first();
+                ->get();
 
-            if (! $section) {
-                $matches = QuestionnaireSection::query()
-                    ->whereNotNull('parent_id')
-                    ->where('name', $subsection['name'])
-                    ->get();
-
-                if ($matches->count() > 1) {
-                    throw new RuntimeException(
-                        "Cannot move subsection '{$subsection['name']}' safely because more than one existing subsection has the same name. Resolve duplicates before seeding."
-                    );
-                }
-
-                $section = $matches->first() ?? new QuestionnaireSection();
+            if ($matches->count() > 1) {
+                throw new RuntimeException(
+                    "Cannot seed subsection '{$subsection['name']}' safely because more than one existing subsection has the same name. Resolve duplicates before seeding."
+                );
             }
+
+            $section = $matches->first() ?? new QuestionnaireSection();
 
             // Migration-safe move: reuse the same subsection record and therefore
             // preserve its ID, questions, answers, reviews and other relationships.
