@@ -8,7 +8,7 @@
 
 هذا المشروع **ليس نظام إدارة مزرعة الأرانب النهائي**.
 
-وظيفته بناء Blueprint / دراسة تحليلية تفصيلية قبل تطوير النظام الفعلي، وتحويل التصور ودورة العمل إلى:
+هو أداة Blueprint / دراسة تحليل متطلبات قبل التطوير، وتحول التصور الوظيفي إلى:
 
 ```text
 أقسام
@@ -21,42 +21,31 @@
 → Blueprint قابل للتنفيذ
 ```
 
-الهدف من الأسئلة هو الوصول إلى قرارات تصميمية وتشغيلية موثقة، وليس جمع معلومات عامة فقط.
+الهدف من السؤال هو الوصول إلى Decision واضح قابل للتحويل إلى Requirement أو Rule، وليس جمع معلومات عامة فقط.
 
 ---
 
-## 2. المراجع الحية للمشروع
+## 2. المراجع الحية وأولوية المصادر
 
-### المرجع الأساسي للحالة الحالية
+### المرجع الأعلى للحالة الحالية
 
 `docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`
 
-يجب أن يظل محدثًا مع كل قرار معماري أو تنظيمي معتمد.
+يجب تحديثه مع كل قرار معماري أو تنظيمي معتمد وكل انتقال مهم في حالة التنفيذ.
 
-### سجل مراجعة معمارية الأقسام
+### سجل القرار المعماري
 
 `docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
 
-يسجل أسباب التقسيم، والقرارات المعتمدة، وما تم نقله أو دمجه أو حذفه كقسم مستقل أثناء إعادة تصميم الأقسام.
+يوثق لماذا تم تقسيم الأقسام بهذه الطريقة، وما تم نقله أو دمجه أو حذفه كقسم مستقل، وحدود Data / Workflow / Reports / Settings.
 
-**الحالة الحالية:** Architecture Review للأقسام الستة مكتملة ومعتمدة، وهذه الوثيقة هي المرجع التفصيلي لفهم لماذا تم تقسيم الأقسام بهذه الطريقة قبل إنشاء الأسئلة.
-
-يجب الرجوع إليه عند:
-
-- مراجعة Main Sections أو Subsections.
-- نقل موضوع من قسم إلى آخر.
-- إنشاء أسئلة في الأقسام التي خضعت لإعادة الهيكلة.
-- فهم لماذا وضع موضوع في Data أو Workflow أو Reports أو Settings.
-
-هذا الملف ليس Implementation Plan؛ هو مرجع القرار المعماري الذي تستند إليه خطة التنفيذ.
+**الحالة:** Architecture Review مكتملة ومعتمدة.
 
 ### خطة تنفيذ إعادة الهيكلة
 
 `docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
 
-هي الخطة التنفيذية الرسمية لإعادة هيكلة الأقسام بعد اعتماد Architecture Review.
-
-تستخدم حالات متابعة واضحة:
+تتابع تنفيذ إعادة الهيكلة بحالات:
 
 ```text
 PENDING
@@ -66,50 +55,30 @@ VERIFIED
 WAITING_LOCAL
 ```
 
-وتحدد خطوة بخطوة:
+**الحالة الحالية:** تغييرات GitHub الخاصة بالهيكل وOrchestrators منفذة ومراجعة Static، والخطوة التالية هي التشغيل المحلي `P8` ثم التحقق `P9`.
 
-- فحص ما قبل التنفيذ.
-- تعديل Section Seeders.
-- ترتيب Main Sections.
-- تجهيز Question Orchestrators للأقسام 3–6.
-- تحديث `QuestionnaireQuestionsSeeder`.
-- مزامنة الوثائق.
-- التشغيل المحلي بـ`migrate:refresh --seed` في مرحلة التطوير الحالية.
-- مراجعة الشجرة الناتجة.
-- إغلاق إعادة الهيكلة وبدء مرحلة إنشاء الأسئلة.
-
-**الحالة الحالية للخطة:**
-
-```text
-P0 — Architecture Review → VERIFIED
-P1 — إنشاء خطة التنفيذ → DONE
-P2 — فحص ما قبل التنفيذ → NEXT / PENDING
-```
-
-### سجل التنفيذ والتاريخ التقني
+### السجل التقني التاريخي
 
 `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
 
-يحفظ تاريخ بناء أداة الاستبيان والمراحل والقرارات التقنية السابقة، ولا يستبدل بخطة إعادة الهيكلة الجديدة.
+يبقى سجلًا لتاريخ بناء أداة الاستبيان والمراحل التقنية السابقة، ولا يستبدل بخطة إعادة الهيكلة الجديدة.
 
 ### المرجع الوظيفي الأساسي
 
 `تصور_مشروع_الارانب.md`
 
-هو Source of Reference الوظيفي عند إنشاء أو مراجعة الأسئلة. لا يتم اختراع متطلبات غير مدعومة وكأنها حقائق.
+هو Source of Reference عند إنشاء أو مراجعة الأسئلة. لا يتم اختراع Requirement غير مدعوم بالمحتوى وكأنه حقيقة.
 
 ### أولوية المصادر عند التعارض
 
 ```text
 أحدث قرار صريح معتمد من المستخدم
 → FARM_BLUEPRINT_PROJECT_CONTEXT.md
-→ القرار المعتمد داخل QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md
-→ Approved Answers / Guides عند وجودها
+→ QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md
+→ Approved Answers / Questionnaire Guides
 → الكود الحالي
 → السجل التاريخي القديم
 ```
-
-خطة التنفيذ تتبع هذه المراجع ولا تستبدلها كمصدر للقرار الوظيفي.
 
 ---
 
@@ -124,22 +93,9 @@ P2 — فحص ما قبل التنفيذ → NEXT / PENDING
 
 ---
 
-## 4. حالة الهيكل الرئيسي للدراسة
+## 4. الهيكل الرئيسي — منفذ في GitHub وينتظر التحقق المحلي
 
-### 4.1 الوضع المنفذ حاليًا في Section Seeders
-
-الكود الحالي ما زال يبني:
-
-```text
-1. إدارة البيانات الأساسية
-2. هيكل المزرعة
-3. إعدادات التشغيل ودورة الإنتاج
-4. تكوين وإدخال القطيع
-5. الحركات ودورة التشغيل الفعلية
-6. التقارير والإشعارات ومؤشرات الأداء
-```
-
-### 4.2 الهيكل المستهدف المعتمد — Architecture Review Complete
+تم تعديل Section Seeders لتطابق Architecture المعتمدة:
 
 ```text
 1. إدارة البيانات الأساسية
@@ -150,15 +106,40 @@ P2 — فحص ما قبل التنفيذ → NEXT / PENDING
 6. الإعدادات وقواعد التشغيل
 ```
 
-**مهم:** الهيكل المستهدف أصبح معتمدًا معماريًا، لكنه **لم ينفذ بعد** في Section Seeders.
+الـorchestrator المسؤول:
 
-تم استخراج خطة التنفيذ الرسمية في:
+`database/seeders/QuestionnaireSectionSeeder.php`
 
-`docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
+ويستدعي حاليًا:
 
-والخطوة التالية هي `P2 — فحص ما قبل التنفيذ`، ثم تنفيذ التعديلات وفق الخطة بدل التعديل المتفرق.
+```text
+QuestionnaireMasterDataSectionSeeder
+QuestionnaireFarmStructureSectionSeeder
+QuestionnaireAnimalHerdSectionSeeder
+QuestionnaireWorkflowSectionSeeder
+QuestionnaireReportsSectionSeeder
+QuestionnaireSettingsSectionSeeder
+```
 
-### 4.3 قاعدة الفصل المعماري المعتمدة
+ملفات Legacy التالية حذفت بعد استبدالها:
+
+```text
+QuestionnaireHerdSetupSectionSeeder.php
+QuestionnaireOperationSettingsSectionSeeder.php
+```
+
+**مهم:** هذه الحالة Verified على مستوى ملفات GitHub فقط. نجاح الـRuntime/Database ينتظر:
+
+```bash
+git pull origin master
+php artisan migrate:refresh --seed
+```
+
+ثم مراجعة الشجرة الناتجة.
+
+---
+
+## 5. قاعدة الفصل المعماري
 
 ```text
 What IS it?
@@ -174,11 +155,26 @@ What RULES control what should happen?
 → Settings
 ```
 
+بصياغة عملية:
+
+```text
+تعريف الكيان → Data
+الحدث الفعلي → Workflow
+التحليل أو العرض → Reports
+القاعدة القابلة للضبط → Settings
+```
+
+هذه القاعدة مرجع إلزامي أثناء إنشاء الأسئلة لمنع التكرار بين الأقسام.
+
 ---
 
-## 5. إدارة البيانات الأساسية — Master / Reference Data
+## 6. القسم الأول — إدارة البيانات الأساسية
 
-الشجرة الحالية:
+Seeder:
+
+`database/seeders/Sections/QuestionnaireMasterDataSectionSeeder.php`
+
+الشجرة الحالية: 15 Subsection.
 
 ```text
 إدارة البيانات الأساسية
@@ -199,29 +195,27 @@ What RULES control what should happen?
 └── أنظمة التدفئة
 ```
 
-Seeder المسؤول:
+### علاقة Master Data بـSettings
 
-`database/seeders/Sections/QuestionnaireMasterDataSectionSeeder.php`
-
-`ملفات إعدادات التشغيل` لم تعد Subsection داخل Master Data. يعاد تصميم مفهوم Settings Profile داخل القسم السادس `الإعدادات وقواعد التشغيل`.
-
-### علاقة Master Data بالقسم السادس
-
-يجب مراجعة Master Data كلها كمصدر محتمل لقواعد قابلة للتخصيص، لكن لا ينقل كل Rule منها إلى Settings تلقائيًا.
+لا تنتقل كل Business Rule إلى Settings.
 
 ```text
-تعريف القائمة / Lifecycle / Uniqueness / قيمة هيكلية ثابتة
-→ تبقى Master Data / Structural Rule غالبًا
+تعريف القائمة / Lifecycle / Uniqueness / Initial Values / Retirement
+→ تبقى Master Data غالبًا
 
-قاعدة يراد أن تختلف حسب التشغيل أو النطاق
+قاعدة تشغيل يجب أن تختلف حسب نطاق التطبيق
 → مرشح Operational Setting ويجب حسمه بالأسئلة
 ```
 
-إدارة Master Data نفسها مثل Fixed/Managed List أو Initial Values أو Retirement Policy تبقى مع الـMaster Data ولا تتحول إلى Operational Settings Profile.
+`ملفات إعدادات التشغيل` ليست Subsection داخل Master Data.
 
 ---
 
-## 6. هيكل المزرعة — Farm Structure
+## 7. القسم الثاني — هيكل المزرعة
+
+Seeder:
+
+`database/seeders/Sections/QuestionnaireFarmStructureSectionSeeder.php`
 
 ```text
 هيكل المزرعة
@@ -231,35 +225,38 @@ Seeder المسؤول:
 └── بيانات القفص / العين
 ```
 
-Seeder المسؤول:
-
-`database/seeders/Sections/QuestionnaireFarmStructureSectionSeeder.php`
-
-العلاقة الهيكلية:
+العلاقة:
 
 ```text
 Farm
-  ↓
+↓
 Barn
-  ↓
+↓
 Battery
-  ↓
+↓
 Cage / Cell
 ```
 
 هذه كيانات فعلية وليست Lookup Lists.
 
-### علاقة Farm Structure بالقسم السادس
+### الفصل مع Settings / Workflow / Reports
 
-Farm Structure يحدد وجود الكيان وهويته وعلاقاته الهيكلية، بينما القواعد التشغيلية القابلة للتخصيص مثل السعة التشغيلية أو أهلية التسكين أو التطهير أو فترات الانتظار قد تنتمي إلى Settings إذا ثبت بالأسئلة أنها قابلة للضبط.
+```text
+تعريف Farm/Barn/Battery/Cage → Farm Structure
+التسكين/النقل/الصيانة/التطهير → Workflow
+قواعد السعة والإتاحة والتطهير → Settings
+عرض الإشغال والسعة والحالة الحالية → Reports
+```
 
-لا ينقل إلى Settings أي Structural Rule ثابت لمجرد أنه يسمى Rule.
-
-وجود الكود، نطاق فريدته، حالات Lifecycle، العلاقات الهيكلية وسياسة حذف/تقاعد الكيان تبقى مع Entity نفسه. يمكن فقط مراجعة الجزء القابل للتهيئة من **صيغة توليد الأكواد** داخل Settings إذا ثبت أن التشغيل يحتاج ذلك.
+وجود الكود، Unique Scope، Entity Statuses، العلاقات الهيكلية وسياسة حذف/تقاعد الكيان تبقى مع Entity نفسه.
 
 ---
 
-## 7. القسم الثالث المستهدف — بيانات الحيوان وتكوين القطيع — APPROVED
+## 8. القسم الثالث — بيانات الحيوان وتكوين القطيع
+
+Seeder:
+
+`database/seeders/Sections/QuestionnaireAnimalHerdSectionSeeder.php`
 
 ```text
 بيانات الحيوان وتكوين القطيع
@@ -270,31 +267,34 @@ Farm Structure يحدد وجود الكيان وهويته وعلاقاته ال
 └── تكوين القطيع الإنتاجي وتنظيم المجموعات
 ```
 
-قرارات النقل من الشجرة القديمة:
+قواعد مهمة:
 
-- `الدخول الأول للمزرعة والتقييم الأولي` → **MOVED إلى Workflow**.
-- `تسكين القطيع وإدارة الإشغال` → **MOVED إلى Workflow**.
-- `تحويل إنتاج المزرعة إلى القطيع والإحلال الداخلي` → **MOVED إلى Workflow**.
-- `جاهزية القطيع` → **REMOVED ككتلة واحدة** وموزعة:
-  - قواعد الجاهزية → Settings.
-  - الانتقال/القرار الفعلي → Workflow.
-  - العرض وأسباب عدم الجاهزية → Reports / Dashboard.
+- Animal Record يستمر مع نفس الحيوان طوال حياته.
+- الموقع الحالي والوزن الحالي والجاهزية والحالة الإنتاجية المشتقة لا تعامل كحقول ثابتة تعدل يدويًا.
+- Breed Master Data منفصلة عن Animal Pedigree.
+- القطيع الافتتاحي يبدأ من أول معلومة موثوقة؛ لا يتم اختراع تاريخ غير معروف.
 
-قاعدة مهمة للقطيع الافتتاحي:
+قرارات النقل:
 
-> لا يتم اختراع تاريخ غير معروف؛ يبدأ النظام من أول معلومة موثوقة متاحة.
+```text
+الدخول الأول والتقييم الفعلي → Workflow
+التسكين وإدارة الإشغال → Workflow
+الإحلال الداخلي كحدث فعلي → Workflow
+قواعد الجاهزية → Settings
+عرض الجاهزية وأسباب عدمها → Reports
+```
 
 ---
 
-## 8. القسم الرابع المستهدف — الحركات ودورة التشغيل الفعلية — APPROVED
+## 9. القسم الرابع — الحركات ودورة التشغيل الفعلية
 
-### تعريف Workflow
+Seeder:
+
+`database/seeders/Sections/QuestionnaireWorkflowSectionSeeder.php`
 
 Workflow مسؤول عن **كل حدث أو إجراء فعلي يحدث بمرور الوقت ويغير سجل الحيوان أو البطن أو دورة الإنتاج أو موقع الإيواء أو المهمة التشغيلية**.
 
-لا يقتصر على الدورة التناسلية.
-
-### الشجرة المعتمدة
+الشجرة: 17 Subsection.
 
 ```text
 الحركات ودورة التشغيل الفعلية
@@ -317,11 +317,11 @@ Workflow مسؤول عن **كل حدث أو إجراء فعلي يحدث بمر�
 └── تنفيذ وإدارة المهام التشغيلية
 ```
 
-### قواعد فصل مهمة
+قواعد فصل:
 
 ```text
-تسجيل الوزن الفعلي → Workflow
-موعد/مستهدف/حدود الوزن → Settings
+تسجيل وزن فعلي → Workflow
+موعد/مستهدف/حد الوزن → Settings
 تحليل النمو → Reports
 ```
 
@@ -331,35 +331,15 @@ Workflow مسؤول عن **كل حدث أو إجراء فعلي يحدث بمر�
 عرض مهام اليوم والمتأخرات → Reports / Dashboard
 ```
 
-```text
-تعريف Farm/Barn/Battery/Cage → Farm Structure
-التسكين/النقل/الصيانة/التطهير → Workflow
-قواعد السعة والإتاحة → Settings
-عرض الإشغال والسعة → Reports
-```
-
-حركات المواقع وLifecycle المهام تبقى داخل Workflow ولا تنشأ لها Main Sections مستقلة.
-
 ---
 
-## 9. القسم الخامس المستهدف — التقارير والتحليلات والتنبيهات ومؤشرات الأداء — APPROVED
+## 10. القسم الخامس — التقارير والتحليلات والتنبيهات ومؤشرات الأداء
 
-### تعريف المسؤولية
+Seeder:
 
-القسم يحول البيانات والحركات المسجلة إلى معلومات وتحليل ومؤشرات وتنبيهات تساعد على فهم الوضع الحالي واتجاه الأداء واتخاذ القرار.
+`database/seeders/Sections/QuestionnaireReportsSectionSeeder.php`
 
-```text
-Workflow
-= تسجيل الواقعة
-
-Reports / Analytics
-= فهم الواقعة وتجميعها ومقارنتها واكتشاف معناها
-
-Settings
-= القواعد والأهداف والحدود المستخدمة للحكم عليها
-```
-
-### الشجرة المعتمدة
+الشجرة: 15 Subsection.
 
 ```text
 التقارير والتحليلات والتنبيهات ومؤشرات الأداء
@@ -380,79 +360,48 @@ Settings
 └── خصائص التقارير والتصفية والتصدير
 ```
 
-### قرارات إعادة التنظيم المعتمدة
-
-- `المهام والتنبيهات اليومية` → عرض اليوم يندمج في Dashboard/Alerts؛ تنفيذ المهمة في Workflow.
-- `تقارير القطيع` → تتطور لتشمل الجاهزية.
-- `تقارير الخصوبة والتلقيح` → تتوسع لتشمل الحمل.
-- `تقارير النفوق والصحة` → تتوسع لتشمل العزل.
-- `تقييم أداء الإناث والذكور` → `تحليل أداء الحيوانات الإنتاجية`.
-- المقارنات الزمنية والمكانية → نطاق تحليلي واحد.
-- صفحة الحيوان + صفحة البطن → `الصفحات والسجلات التحليلية`.
-- سجل التنبيهات → يندمج مع الإنذار المبكر مع الحفاظ على التاريخ.
-- `مستويات التنبيه` → **MOVED إلى Settings**.
-- التصفية والتصدير → Cross-cutting Reporting Capability.
-- `التقرير → التنبيه → القرار → الإجراء` → مبدأ معماري وليس Subsection.
-
 ### فصل التنبيهات
 
 ```text
-الحالة التي يجب اكتشافها + تاريخ التنبيه وعرضه
-→ Reports / Analytics
-
-Threshold / Severity / Priority Rules
-→ Settings
-
-الإجراء المنفذ نتيجة التنبيه
-→ Workflow / Related Action
+اكتشاف الحالة + عرض وتاريخ التنبيه → Reports
+Threshold / Severity / Priority Rules → Settings
+الإجراء المنفذ نتيجة التنبيه → Workflow
 ```
 
 ### فصل KPIs
 
 ```text
-ما الـKPI المطلوب وما الذي يقيسه
-→ Reports
-
-Target / Threshold / configurable period عند الحاجة
-→ Settings
+ما KPI المطلوب وما الذي يقيسه → Reports
+Target / Threshold / configurable period → Settings عند الحاجة
 ```
 
-### Open Requirement لاحقًا
+المبدأ المعماري:
 
-صلاحيات ونطاق الاطلاع على التقارير لم تحسم بعد، ويجب تحويلها إلى أسئلة عند بناء `خصائص التقارير` أو جزء الصلاحيات المناسب.
+```text
+Data
+↓
+Information / Analysis
+↓
+Alert عند الحاجة
+↓
+Decision
+↓
+Action
+↓
+Result
+↓
+Data جديدة
+```
 
 ---
 
-## 10. القسم السادس المستهدف — الإعدادات وقواعد التشغيل — APPROVED
+## 11. القسم السادس — الإعدادات وقواعد التشغيل
 
-تم اعتماد أنه آخر Main Section، وتم الانتهاء من Architecture Review الخاصة به.
+Seeder:
 
-### 10.1 منهج استخراج Settings — APPROVED
+`database/seeders/Sections/QuestionnaireSettingsSectionSeeder.php`
 
-يجب مراجعة **الأقسام 1–5 كلها** لاستخراج القواعد المحتمل جعلها قابلة للتخصيص، وليس الأقسام 3–5 فقط.
-
-لكن:
-
-```text
-Structural / System Rule
-≠
-Operational Setting
-```
-
-التمييز:
-
-```text
-Structural / System Rule
-= قاعدة ثابتة ناتجة من تصميم الـBlueprint أو تعريف الكيان
-
-Operational Setting
-= قاعدة تشغيل يراد أن تكون قابلة للضبط أو الاختلاف حسب نطاق التطبيق
-
-Runtime Event / Decision
-= ما حدث فعليًا نتيجة تطبيق القاعدة
-```
-
-### 10.2 الشجرة النهائية المعتمدة
+الشجرة: 13 Subsection.
 
 ```text
 الإعدادات وقواعد التشغيل
@@ -471,344 +420,120 @@ Runtime Event / Decision
 └── إعدادات التقارير وKPIs والأهداف
 ```
 
-### 10.3 6.1 نموذج الإعدادات ونطاق التطبيق
-
-مسؤوليته تعريف Architecture منظومة Settings نفسها.
-
-المبادئ:
+### المبدأ الأساسي
 
 ```text
 Structural / System Rule ≠ Operational Setting
-Operational Settings may have a Scope
-Settings changes must be historically explainable
 ```
 
-ولا يفترض مسبقًا:
+أي Rule من الأقسام 1–5 لا ينتقل إلى Settings إلا إذا كان مطلوبًا أن يكون قابلًا للضبط أو الاختلاف حسب نطاق التشغيل.
+
+### 6.1 — نموذج الإعدادات ونطاق التطبيق
+
+لا يفترض مسبقًا:
 
 - Farm/Barn/Profile Scope النهائي.
 - Reusable Profiles.
 - Defaults / Inheritance.
 - Overrides.
 - Effective Date / Versioning.
-- أثر تعديل Settings على العمليات الجارية.
+- أثر تغيير Settings على العمليات الجارية.
 - Historical Reference / Snapshot.
 - صلاحيات واعتماد تغييرات Settings.
 
-كلها Open Requirements تتحول إلى أسئلة.
+المبدأ المعتمد:
 
-### 10.4 6.2 السياسات العامة والتحكم والتجاوز والتدقيق
+> تغيير الإعدادات لا يجوز أن يجعل الماضي يفسر باستخدام قيمة حالية مختلفة عن السياق الذي حدث فيه.
 
-لا يعيد تعريف Code identity / Unique / Entity statuses / Delete Policies.
+### 6.2 — السياسات العامة والتحكم والتجاوز والتدقيق
 
-يغطي:
+يراجع:
 
-- Rule Enforcement: Information / Warning / Block كمفهوم يحسم بالأسئلة.
-- Hard Constraints التي لا تسمح Override.
+- Information / Warning / Block.
+- Hard Constraints.
 - Override Policy.
 - Action Permission ≠ Override Permission.
 - Sensitive Record Correction.
 - Minimum Audit Trail.
 - الجزء القابل للتهيئة فقط من Code Generation عند الحاجة.
 
-### 10.5 6.3 قواعد تشغيل هيكل المزرعة ومواقع الإيواء
+ولا يعيد تعريف Code Identity أو Unique أو Entity Status أو Delete Policy.
 
-يغطي القواعد القابلة للتخصيص مثل:
+### حدود Scope
 
-- الإتاحة التشغيلية.
-- السعة التشغيلية.
-- التفعيل عندما يكون Setting فعلًا.
-- أثر الصيانة على الإتاحة.
-- إلزام التطهير.
-- شروط إعادة الاستخدام.
-- فترة الانتظار بعد التطهير.
-- تغيير الاستخدام التشغيلي للموقع.
-
-ولا يعيد تعريف Farm/Barn/Battery/Cage أو حالاتها أو Unique Codes.
-
-لا يفترض Environmental Control Module أو Setpoints للتهوية والتبريد والتدفئة بدون دعم وظيفي صريح.
-
-### 10.6 6.4 قواعد التسكين وتنظيم القطيع والجاهزية
-
-يغطي:
-
-- أهلية موقع الإيواء لاستقبال الحيوان.
-- توافق الاستخدام مع المرحلة.
-- الجمع داخل القفص والسعة المسموحة.
-- الفصل حسب الجنس.
-- تنظيم المجموعات الإنتاجية.
-- النسب المستهدفة عند الحاجة.
-- شروط اعتماد الحيوان داخل القطيع الإنتاجي.
-
-### 10.7 6.5 قواعد التلقيح والخصوبة والجاهزية التناسلية
-
-يغطي شروط الجاهزية، العمر/الوزن عند الحاجة، استخدام الذكور، عدد وتكرار وفواصل المحاولات، وتعريف الفشل وحدوده. الأرقام نفسها تحسمها الأسئلة.
-
-### 10.8 6.6 قواعد فحص الحمل والحمل وتجهيز الولادة
-
-يغطي موعد/نافذة الفحص، إعادة الفحص، التأخير، مدة الحمل أو نطاقها، الولادة المتوقعة، تجهيز بيت الولادة، والمتابعة قبل الولادة.
-
-### 10.9 6.7 قواعد الولادة والرضاعة وإعادة التلقيح
-
-يغطي مدة الرضاعة، متابعة البطن، وزن المواليد، الاستعداد للفطام، وإعادة تلقيح الأم أثناء الرضاعة أو التأجيل وإعادة التقييم.
-
-### 10.10 6.8 قواعد الفطام والانتقال للتتبع الفردي
-
-الفطام Boundary بين Litter Tracking وIndividual Animal Tracking، ويغطي قواعد العمر/الوزن، الفطام الجزئي عند اعتماده، توقيت تحديد الجنس، الفصل، والسعة اللازمة للتسكين.
-
-### 10.11 6.9 قواعد النمو والوزن والفرز والإحلال
-
-يغطي برنامج الوزن، الأهداف، مراحل وتوقيت الفرز، التقييم، إعادة التقييم، الترشيح للإحلال والاعتماد النهائي. الأعمار والأوزان الواردة في التصور أمثلة وليست Hardcoded Requirements.
-
-### 10.12 6.10 قواعد التسمين والجاهزية للبيع
-
-يغطي أهداف العمر/الوزن والنمو والمدة القصوى ودورية الوزن والتعامل مع عدم الوصول للهدف وشروط الجاهزية للبيع.
-
-```text
-جاهز للبيع → Setting / Derived Readiness
-تم البيع والخروج → Workflow Event
-```
-
-لا يفترض Sales/Financial Module كاملًا.
-
-### 10.13 6.11 قواعد الصحة والعزل والنفوق والحالات الاستثنائية
-
-يغطي الحالات التي تمنع التشغيل، العزل والمراجعة والعودة، حدود النفوق غير الطبيعية، والأحداث الاستثنائية التي تغير Workflow والمهام.
-
-لا يفترض Veterinary Treatment Module كاملًا.
-
-### 10.14 6.12 قواعد المهام والتنبيهات والمواعيد والأولويات
-
-تم دمج Tasks وAlerts في Subsection واحد على مستوى **قواعد الأتمتة** لتقليل التضخم، مع بقاء الفرق:
-
-```text
-Task = شيء مطلوب تنفيذه
-Alert = حالة تحتاج الانتباه
-```
-
-```text
-قواعد توليد Task/Alert → Settings
-تنفيذ/تأجيل/إلغاء/إغلاق Task → Workflow
-عرض مهام اليوم → Dashboard
-تاريخ Alert ومراجعته وإغلاقه → Reports / Alerts
-```
-
-### 10.15 6.13 إعدادات التقارير وKPIs والأهداف
-
-يغطي Target / Threshold / Benchmark / configurable period / KPI goals / Alert thresholds عند الحاجة.
-
-```text
-Reports: ما الذي نقيسه؟
-Settings: ما القيمة التي نعتبرها جيدة أو سيئة أو تحتاج تدخلًا؟
-```
-
-### 10.16 مصير Subsection القديم للأكواد والحالات
-
-`إعدادات الترقيم والأكواد وقواعد الانتقال بين الحالات` لا يبقى مستقلًا:
-
-```text
-وجود الكود / Unique / Identity → Data / Entity Section
-صيغة التوليد القابلة للتهيئة → 6.2
-الحالات نفسها → Entity Section
-الحدث الذي يغير الحالة → Workflow
-Block / Warning / Override / Audit → 6.2
-```
+- لا يفترض Environmental Control Module كاملًا من وجود التهوية/التبريد/التدفئة كMaster Data.
+- لا يفترض Veterinary Treatment Module كاملًا.
+- لا يفترض Sales/Financial Module كاملًا.
 
 ---
 
-## 11. قاعدة عدم تضخيم الأسئلة
+## 12. قاعدة عدم تضخيم الأسئلة
 
-المناقشة المعمارية أوسع من عدد الأسئلة النهائي. **لا تتحول كل نقطة إلى سؤال مستقل.**
+Architecture Review أوسع من عدد الأسئلة النهائي.
 
 عند إنشاء الأسئلة:
 
-- كل سؤال يجب أن ينتج Decision فعلي يؤثر في التصميم أو التشغيل.
-- يجمع القرار الواحد في سؤال مركزي مناسب عندما يمكن ذلك.
+- كل سؤال يجب أن ينتج Decision فعلي.
+- يجمع القرار الواحد في سؤال مركزي مناسب عند الإمكان.
 - تستخدم Dependencies لإخفاء غير المنطبق.
-- لا يعاد سؤال Architecture تم اعتماده.
+- لا يعاد سؤال قرار معماري معتمد.
 - لا يسأل ما يمكن استنتاجه من إجابة سابقة.
-- لا يقسم القرار الواحد إلى أسئلة صغيرة كثيرة بدون حاجة.
+- لا تتحول كل نقطة في Architecture Review إلى سؤال مستقل.
 
 ---
 
-## 12. Open Requirements الرئيسية التي ستتحول إلى أسئلة
-
-- صلاحيات ونطاق الاطلاع على التقارير.
-- Scope النهائي للإعدادات وعلاقة Farm / Barn / Profile.
-- Reusable Profiles.
-- Inheritance / Overrides.
-- Versioning / Effective Date.
-- أثر تعديل Settings على العمليات الجارية والمهام القائمة.
-- Historical Settings Reference / Snapshot.
-- صلاحيات واعتماد تغييرات Settings.
-- تفاصيل Override Policy.
-- طريقة تصحيح السجلات الحساسة.
-- Minimum Audit حسب نوع العملية.
-- الأعمار، الأوزان، المدد، الفواصل، Thresholds، Targets والقيم التشغيلية الأخرى.
-- أي تفصيل لم يحسمه المرجع أو القرارات السابقة.
-
----
-
-## 13. شجرة Question Seeders — قاعدة إلزامية
-
-يجب أن تعكس شجرة ملفات Question Seeders شجرة Main Sections لتجنب الأسماء التاريخية المضللة.
-
-الوضع المنفذ حاليًا:
-
-```text
-database/seeders/Questions/
-├── Concerns/
-├── MasterData/
-│   ├── OperationalActivitiesQuestionsSeeder.php
-│   ├── ProductionPurposesQuestionsSeeder.php
-│   ├── BreedMetricsQuestionsSeeder.php
-│   ├── BreedDataQuestionsSeeder.php
-│   ├── TransferReasonsQuestionsSeeder.php
-│   ├── MortalityReasonsQuestionsSeeder.php
-│   ├── ExclusionReasonsQuestionsSeeder.php
-│   ├── ExitReasonsQuestionsSeeder.php
-│   ├── MaleChangeReasonsQuestionsSeeder.php
-│   ├── GovernoratesQuestionsSeeder.php
-│   ├── CitiesQuestionsSeeder.php
-│   ├── VentilationSystemsQuestionsSeeder.php
-│   ├── CoolingSystemsQuestionsSeeder.php
-│   └── HeatingSystemsQuestionsSeeder.php
-└── FarmStructure/
-    ├── FarmDataQuestionsSeeder.php
-    ├── BarnDataQuestionsSeeder.php
-    ├── BatteryDataQuestionsSeeder.php
-    └── CageDataQuestionsSeeder.php
-```
-
-عند تنفيذ الأقسام 3–6 تنشأ مجلداتها بأسماء متوافقة مع الشجرة النهائية، ولا تنشأ أسماء مؤقتة مضللة.
-
----
-
-## 14. Orchestrators الحالية للأسئلة
+## 13. Question Seeders وOrchestrators
 
 الـorchestrator العام:
 
 `database/seeders/QuestionnaireQuestionsSeeder.php`
 
-يستدعي حاليًا:
+يستدعي الآن بالترتيب:
 
 ```text
 QuestionnaireMasterDataQuestionsSeeder
 QuestionnaireFarmStructureQuestionsSeeder
+QuestionnaireAnimalHerdQuestionsSeeder
+QuestionnaireWorkflowQuestionsSeeder
+QuestionnaireReportsQuestionsSeeder
+QuestionnaireSettingsQuestionsSeeder
 ```
 
-### Master Data
+### Orchestrators الجديدة
 
-`database/seeders/QuestionnaireMasterDataQuestionsSeeder.php`
+```text
+database/seeders/QuestionnaireAnimalHerdQuestionsSeeder.php
+database/seeders/QuestionnaireWorkflowQuestionsSeeder.php
+database/seeders/QuestionnaireReportsQuestionsSeeder.php
+database/seeders/QuestionnaireSettingsQuestionsSeeder.php
+```
 
-يستدعي Seeders التابعة لـ`Questions/MasterData/` فقط.
+هي فارغة وظيفيًا حاليًا؛ لا توجد Question Seeders جديدة للأقسام 3–6 حتى تبدأ مرحلة تصميم الأسئلة.
 
-### Farm Structure
+### شجرة Questions الحالية فعليًا
 
-`database/seeders/QuestionnaireFarmStructureQuestionsSeeder.php`
+لأن Git لا يحتفظ بالمجلدات الفارغة، `database/seeders/Questions/` يحتوي حاليًا على:
 
-يستدعي:
+```text
+Concerns/
+MasterData/
+FarmStructure/
+```
 
-- `FarmDataQuestionsSeeder`
-- `BarnDataQuestionsSeeder`
-- `BatteryDataQuestionsSeeder`
-- `CageDataQuestionsSeeder`
+ومجلدات:
 
-`QuestionnaireFarmQuestionsSeeder` القديم تم حذفه لتجنب الالتباس.
+```text
+AnimalHerd/
+Workflow/
+Reports/
+Settings/
+```
+
+ستظهر مع أول Question Seeder فعلي لكل قسم.
 
 ---
 
-## 15. طريقة التشغيل الحالية أثناء إعادة البناء
-
-المستخدم يعتمد حاليًا محليًا على:
-
-```bash
-php artisan migrate:refresh --seed
-```
-
-هذا الأمر تدميري ويعيد بناء قاعدة البيانات بالكامل.
-
-تم اعتماده مؤقتًا لأن الإجابات القديمة تم الاستغناء عنها أثناء تنظيف الهيكل قبل بدء دورة إجابات جديدة.
-
-كل Seed كامل يجب أن:
-
-- ينشئ جميع Main Sections بالترتيب المستهدف بعد تنفيذ الخطة.
-- ينشئ Subsections في Parent الصحيح.
-- يزرع كل الأسئلة المعتمدة.
-- لا يعتمد على سجلات متبقية من تشغيل سابق.
-- لا يخفي مجموعة أسئلة بسبب نسيان orchestrator.
-
----
-
-## 16. الانتقال لاحقًا إلى الحفاظ على الإجابات
-
-بمجرد بدء دورة إجابات نريد الاحتفاظ بها، لا يستخدم `migrate:refresh --seed` كطريقة تشغيل عادية على قاعدة البيانات التي تحتوي هذه الإجابات.
-
-المبدأ:
-
-```text
-Stable Section Record
-+ Stable section_id
-+ Stable seed_key
-+ Stable option value
-+ preserveAnswers = true
-```
-
-هوية السؤال:
-
-```text
-section_id + seed_key
-```
-
-هوية Option:
-
-```text
-question_id + value
-```
-
-لا يتغير `seed_key` لمجرد تغيير صياغة السؤال إذا ظل القرار الوظيفي نفسه.
-
-لا تتغير `option.value` لمجرد تعديل Label إذا ظل المعنى نفسه.
-
-أي تغيير تدميري يجعل إجابة موجودة غير صالحة يجب أن يوقف المزامنة برسالة واضحة بدل حذف البيانات بصمت.
-
-إذا احتجنا نقل Subsection مع وجود إجابات، نعيد استخدام نفس Section Record ونغير `parent_id` بدل الحذف وإعادة الإنشاء.
-
----
-
-## 17. المرجع الوظيفي وقواعد إنشاء الأسئلة
-
-قبل إنشاء أسئلة جديدة يجب دائمًا:
-
-1. قراءة هذا الملف أولًا.
-2. مراجعة الجزء المقابل من `تصور_مشروع_الارانب.md`.
-3. مراجعة `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md` لفهم سبب وجود Subsection وحدوده.
-4. مراجعة الأقسام والأسئلة والقرارات الحالية.
-5. تجنب تكرار سؤال أو قرار تم تغطيته.
-6. تحويل النقاط غير المحسومة إلى أسئلة تؤدي إلى قرارات واضحة.
-7. مراجعة الـEnums والـModels والكود قبل افتراض Question Type أو Dependency Operator جديد.
-8. تحديد `seed_key` ثابت وOptions بقيم مستقرة.
-9. تحديد Dependencies فقط عند وجود سبب وظيفي واضح.
-10. تحديد `report_category` و`target_entity` بما يتوافق مع البنية الحالية.
-11. استخدام `QuestionSeederSyncService` بما يحافظ على البيانات عند الانتقال لمرحلة الإجابات المستقرة.
-12. عدم تحويل كل تفصيلة من Architecture Review إلى سؤال مستقل؛ السؤال يجب أن ينتج Decision فعلي.
-
-كل سؤال يجب أن ينتج قرارًا قابلًا للتحويل إلى Requirement أو Rule مثل Field / Relationship / Workflow Rule / Validation / State / Task / Alert / Audit / Configuration Rule.
-
-### قاعدة إضافية عند إنشاء أسئلة Settings
-
-قبل تحويل أي Rule إلى سؤال داخل القسم السادس، يجب مراجعة هل هو:
-
-```text
-Structural / System Rule ثابت
-أم
-Operational Setting قابل للتخصيص
-```
-
-ولا يفترض Inheritance / Override / Versioning / Scope قبل أن تحسمه الأسئلة المختصة.
-
----
-
-## 18. Question Types وDependencies الحالية
+## 14. Question Types وDependencies الحالية
 
 راجع دائمًا:
 
@@ -829,57 +554,124 @@ Operational Setting قابل للتخصيص
 
 `App\Enums\Questionnaire\QuestionDependencyOperator`
 
-الـEngine يدعم حاليًا:
+المتاح حاليًا:
 
 - `EQUALS`
 - `CONTAINS`
 
-لا يتم اختراع Type أو Operator جديد قبل مراجعة الكود والحاجة الوظيفية واعتماده.
+لا يتم اختراع Type أو Dependency Operator جديد قبل مراجعة الكود والحاجة الوظيفية واعتماده.
 
 ---
 
-## 19. Question Seeder Sync
+## 15. Question Seeder Sync والحفاظ على الإجابات
 
 الخدمة الموحدة:
 
 `app/Services/Questionnaire/QuestionSeederSyncService.php`
 
-القواعد:
+المبادئ:
 
 - لكل سؤال `seed_key` ثابت.
-- تتم المزامنة بدل الحذف وإعادة الإنشاء العمياء.
-- يضبط `prune` و`preserveAnswers` حسب مرحلة العمل.
-- عند الحفاظ على الإجابات، أي تغيير غير متوافق يجب أن يفشل بوضوح بدل فقد البيانات.
+- هوية السؤال: `section_id + seed_key`.
+- هوية Option: `question_id + value`.
+- لا يتغير `seed_key` بسبب إعادة صياغة السؤال إذا ظل المعنى نفسه.
+- لا تتغير `option.value` بسبب تغيير Label فقط.
+- تستخدم المزامنة بدل الحذف وإعادة الإنشاء العمياء.
+- بعد بدء الحفاظ على الإجابات، أي تغيير غير متوافق يجب أن يفشل بوضوح بدل حذف البيانات بصمت.
+
+المبدأ لاحقًا:
+
+```text
+Stable Section Record
++ Stable section_id
++ Stable seed_key
++ Stable option value
++ preserveAnswers = true
+```
+
+إذا احتجنا نقل Subsection مع إجابات محفوظة، يعاد استخدام نفس Section Record وتغيير `parent_id` بدل حذفه وإعادة إنشائه.
 
 ---
 
-## 20. قرارات تأسيسية مهمة من الأقسام الحالية
+## 16. التشغيل المحلي الحالي
+
+`DatabaseSeeder.php` يشغّل:
+
+```text
+QuestionnaireSectionSeeder
+↓
+QuestionnaireQuestionsSeeder
+```
+
+وفي مرحلة إعادة البناء الحالية فقط يعتمد المستخدم محليًا على:
+
+```bash
+php artisan migrate:refresh --seed
+```
+
+الأمر تدميري ومسموح مؤقتًا لأن الإجابات القديمة تم الاستغناء عنها قبل دورة الإجابات الجديدة.
+
+بمجرد بدء دورة إجابات نريد الاحتفاظ بها، لا يستخدم `migrate:refresh --seed` كطريقة تشغيل عادية على قاعدة البيانات التي تحتوي هذه الإجابات.
+
+---
+
+## 17. قواعد إنشاء الأسئلة الجديدة
+
+قبل إنشاء أي Question Seeder جديد:
+
+1. قراءة `FARM_BLUEPRINT_PROJECT_CONTEXT.md` أولًا.
+2. مراجعة الجزء المقابل من `تصور_مشروع_الارانب.md`.
+3. مراجعة `QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md` لفهم سبب Subsection وحدوده.
+4. مراجعة الأقسام والأسئلة والإجابات والـGuides الموجودة حاليًا.
+5. تجنب تكرار سؤال أو Decision سبق تغطيته.
+6. تحويل النقاط غير المحسومة إلى أسئلة تؤدي إلى Decisions واضحة.
+7. مراجعة Enums / Models / Engine قبل افتراض Type أو Operator جديد.
+8. استخدام `seed_key` ثابت وOption values مستقرة.
+9. استخدام Dependencies فقط عند وجود سبب وظيفي واضح.
+10. تحديد `report_category` و`target_entity` بما يتوافق مع البنية الحالية.
+11. عدم تحويل مثال أو Open Requirement إلى Requirement نهائي دون سؤال أو قرار صريح.
+12. عدم تضخيم الأسئلة بتحويل كل نقطة معمارية إلى سؤال منفصل.
+
+---
+
+## 18. Open Requirements الرئيسية
+
+تظل أسئلة مستقبلية وليست افتراضات:
+
+- صلاحيات ونطاق الاطلاع على التقارير.
+- Scope النهائي للإعدادات وعلاقة Farm / Barn / Profile.
+- Reusable Profiles.
+- Inheritance / Overrides.
+- Versioning / Effective Date.
+- أثر تعديل Settings على العمليات الجارية والمهام القائمة.
+- Historical Settings Reference / Snapshot.
+- صلاحيات واعتماد تغييرات Settings.
+- تفاصيل Override Policy.
+- طريقة تصحيح السجلات الحساسة.
+- Minimum Audit حسب نوع العملية.
+- الأعمار والأوزان والمدد والفواصل وThresholds وTargets.
+- أي تفصيل لم يحسمه المرجع أو القرارات السابقة.
+
+---
+
+## 19. قرارات تأسيسية من الأقسام 1–2
 
 ### بيانات المزرعة
 
-- جزء من `هيكل المزرعة`.
-- الموقع الوظيفي يدعم المحافظة والمدينة والعنوان والموقع على الخريطة.
-- بيانات الاتصال تدعم التعدد عند الحاجة.
+- المزرعة أعلى مستوى في Farm Structure.
+- بيانات الموقع تدعم المحافظة والمدينة والعنوان والموقع على الخريطة حسب القرارات الحالية.
 - نشاط المزرعة لا يخزن كاختيار مستقل؛ يستنتج من أنشطة العنابر.
 
 ### الأنشطة التشغيلية
 
-Master Data مستقلة، والاتجاه الحالي أن النشاط التشغيلي يرتبط بالعنبر وليس بالمزرعة.
+Master Data مستقلة، والاتجاه الحالي أن النشاط التشغيلي يرتبط بالعنبر وليس بالمزرعة مباشرة.
 
 ### المستخدمون وفريق التشغيل
 
-- عضو التشغيل User لديه Login.
+- User لديه Login.
 - له Roles / Permissions.
 - يمكن ربطه بمزرعة أو أكثر.
-- الورديات والتاريخ المرتبط بها تحسم بالأسئلة عند الوصول للجزء المختص.
-
-### المحافظات والمدن
-
-```text
-Governorate
-    ↓ 1:N
-City
-```
+- تفاصيل الورديات ونطاقاتها تحسم بالأسئلة عند الوصول للجزء المختص.
 
 ### قوائم الأسباب
 
@@ -895,17 +687,17 @@ Master Data مستقلة:
 
 ---
 
-## 21. القفص / العين — الاتجاه الحالي
+## 20. القفص والبطارية — اتجاهات معتمدة حاليًا
 
-القفص جزء من `هيكل المزرعة`.
+### Cage
 
 ```text
 Battery Structure
 → Generate Cages
-→ Cage gets fixed identity
+→ fixed Cage identity
 → Review / Activation
 → Operational Cage
-→ every later change = Action + History Record
+→ later changes = Actions + History
 ```
 
 قواعد حالية:
@@ -913,121 +705,114 @@ Battery Structure
 - لا Create مستقل للقفص.
 - لا Delete مستقل للقفص.
 - Cage Code فريد على مستوى النظام.
-- QR Code يولد من هوية/كود القفص.
+- QR Code يولد من الهوية/الكود.
 - بعد التفعيل تكون الهوية والموقع الهيكلي Immutable.
-- تغييرات الحالة تتم عبر Actions وليس Edit Form.
+- تغييرات الحالة تتم عبر Actions وليس Edit عشوائي.
 - كل Action يسجل History / Audit.
 - الإشغال الحالي ينتج من حركات التسكين والنقل.
 - Cage Master Identity منفصلة عن Cage Operational State.
 
-Seeder الحالي:
+### Battery
 
-`database/seeders/Questions/FarmStructure/CageDataQuestionsSeeder.php`
-
-السؤال المؤجل:
-
-> كيف يجب إدارة الأنواع الفيزيائية للبطاريات؟
-
-يعود له العمل بعد تنفيذ إعادة الهيكلة والعودة لبناء/مراجعة أسئلة Farm Structure.
-
----
-
-## 22. بيانات البطارية — قواعد مهمة
-
-- Battery جزء من Farm Structure ويتبع Barn واحدًا.
+- تتبع Barn واحدًا.
 - Battery Code فريد على مستوى النظام.
-- بنية البطارية تحدد الأقفاص التابعة لها.
+- بنيتها تحدد الأقفاص التابعة لها.
 - الأقفاص تولد بعد اكتمال البنية ومراجعتها.
 - أي تاريخ تشغيلي على Cage يقفل الهوية الهيكلية التاريخية.
 - لا يعاد استخدام هوية/كود Cage تاريخي.
-- إعادة هيكلة Battery بعد وجود تاريخ تشغيلي تتطلب إنهاء الهيكل القديم وإنشاء هيكل جديد عند الحاجة.
-- توقف/صيانة Battery يؤثر على الإتاحة التشغيلية للأقفاص دون تغيير حالاتهم المحلية تلقائيًا.
+- إعادة الهيكلة بعد وجود تاريخ تشغيلي تنهي الهيكل القديم وتستخدم هيكلًا جديدًا عند الحاجة.
+- توقف/صيانة Battery يؤثر على إتاحة الأقفاص دون تغيير حالاتهم المحلية تلقائيًا.
+
+### سؤال مؤجل
+
+> كيف يجب إدارة الأنواع الفيزيائية للبطاريات؟
+
+يعود عند مراجعة/استكمال أسئلة Farm Structure بعد اكتمال التحقق المحلي لإعادة الهيكلة.
 
 ---
 
-## 23. Questionnaire Guides وFinal Requirements
-
-ملفات `docs/questionnaire-guide/` تشرح كيفية تفسير كل سؤال وإجابته لاحقًا وتمنع إعادة تفسير القرار بصورة مختلفة.
-
-عند كتابة المتطلبات النهائية تكون الأولوية:
-
-```text
-Latest agreed decision
-→ Approved Answer
-→ Questionnaire Guide
-→ Final Requirements Input
-```
-
-إذا ظهر تعارض، يسجل ولا يحسم تلقائيًا بدون قرار المستخدم.
-
----
-
-## 24. دورة البيانات النهائية
+## 21. دورة البيانات النهائية
 
 ```text
 تصور_مشروع_الارانب.md
-      ↓
-Architecture Review عند الحاجة
-      ↓
+↓
+Architecture Review
+↓
 Sections / Questions
-      ↓
+↓
 Answers / Review
-      ↓
+↓
 Questionnaire Guides
-      +
-Final Requirements Input
-      +
-Project Context
-      ↓
++ Final Requirements Input
++ Project Context
+↓
 Requirements Agent
-      ↓
+↓
 Software Requirements / Business Rules
-      ↓
+↓
 Blueprint
-      ↓
+↓
 النظام النهائي لاحقًا
 ```
 
 ---
 
-## 25. حالة إعادة الهيكلة والخطوة التالية
+## 22. حالة التنفيذ الحالية والخطوة التالية
 
-تم الانتهاء من **Architecture Review للأقسام الستة** وتوثيقها في:
-
-`docs/QUESTIONNAIRE_SECTION_ARCHITECTURE_REVIEW.md`
-
-وتم إنشاء خطة التنفيذ الرسمية:
-
-`docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
-
-الحالة الحالية:
+### GitHub
 
 ```text
-Architecture Review → VERIFIED
-Implementation Plan Created → DONE
-Next → P2 فحص ما قبل التنفيذ
+P0 Architecture Review → VERIFIED
+P1 Implementation Plan → VERIFIED
+P2 Preflight → VERIFIED
+P3 Section Seeders → VERIFIED
+P4 Main Section Orchestration → VERIFIED
+P5 Question Orchestrators → VERIFIED
+P6 QuestionnaireQuestionsSeeder → VERIFIED
+P7 Documentation Sync → VERIFIED
 ```
 
-المسار:
+تمت مراجعة الملفات والاستدعاءات Static من GitHub، لكن لم يتم تشغيل PHP أو قاعدة البيانات بواسطة المساعد.
+
+### التالي — P8
+
+على بيئة التطوير المحلية:
+
+```bash
+git pull origin master
+php artisan migrate:refresh --seed
+```
+
+### ثم P9
+
+يجب التأكد من:
 
 ```text
-Architecture Review — COMPLETE
-→ Implementation Plan — CREATED
-→ P2 فحص ما قبل التنفيذ
-→ تنفيذ تعديلات Section Seeders
-→ تجهيز Question Orchestrators للأقسام 3–6
-→ تحديث الوثائق
-→ migrate:refresh --seed أثناء مرحلة التطوير الحالية
-→ مراجعة الشجرة الناتجة
-→ بدء إنشاء الأسئلة قسمًا قسمًا
-→ بدء دورة الإجابات الجديدة
+6 Main Sections فقط
+Master Data = 15
+Farm Structure = 4
+Animal / Herd = 5
+Workflow = 17
+Reports = 15
+Settings = 13
+Total Subsections = 69
 ```
 
-لا يتم تنفيذ تغييرات الأقسام 3–6 بصورة متفرقة من الذاكرة؛ يتم التنفيذ ومتابعة Status من `QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`.
+ويجب ألا تظهر Legacy Main Sections:
+
+```text
+إعدادات التشغيل ودورة الإنتاج
+تكوين وإدخال القطيع
+التقارير والإشعارات ومؤشرات الأداء
+```
+
+كما يجب التأكد من بقاء أسئلة MasterData وFarmStructure وعمل الـOrchestrators الجديدة بدون Error.
+
+لا يبدأ P10 وإنشاء أسئلة الأقسام 3–6 قبل نجاح هذا التحقق المحلي.
 
 ---
 
-## 26. قاعدة GitHub الإلزامية
+## 23. قاعدة GitHub الإلزامية
 
 المستودع افتراضيًا:
 
@@ -1041,21 +826,9 @@ Architecture Review — COMPLETE
 
 `تصور_مشروع_الارانب.md` Reference Only ولا يتم تعديله إلا بطلب صريح.
 
-بعد تعديل GitHub بطلب صريح، المسار المحلي المعتاد:
-
-```bash
-git pull origin master
-```
-
-وفي مرحلة إعادة البناء الحالية فقط:
-
-```bash
-php artisan migrate:refresh --seed
-```
-
 ---
 
-## 27. المبدأ الأساسي
+## 24. المبدأ الأساسي
 
 هذا المشروع هو:
 
@@ -1065,4 +838,4 @@ php artisan migrate:refresh --seed
 
 **نظام إدارة المزرعة النهائي.**
 
-كل قرار يجب أن يقلل الافتراضات قبل بناء النظام الحقيقي، مع توثيق سبب التقسيم والقرار وعدم الاعتماد على الذاكرة أو المحادثة وحدها.
+كل قرار يجب أن يقلل الافتراضات قبل بناء النظام الحقيقي، مع الحفاظ على اتساق الوثائق والكود وعدم الاعتماد على الذاكرة أو المحادثة وحدها.
