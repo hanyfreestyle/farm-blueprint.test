@@ -654,6 +654,86 @@ Workflow مسؤول عن كل حدث أو إجراء فعلي يحدث بمرو�
 عرض مهام اليوم والمتأخرات → Reports / Dashboard
 ```
 
+### 9.1 — استقبال الحيوان من الخارج وإعادة الإدخال — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+
+`database/seeders/Questions/Workflow/AnimalIntakeQuestionsSeeder.php`
+
+عدد الأسئلة: **11**.
+
+المفاتيح المستقرة:
+
+```text
+animal_intake.reception_modes
+animal_intake.batch_shared_fields
+animal_intake.entry_weight_policy
+animal_intake.initial_evaluation_required
+animal_intake.initial_evaluation_fields
+animal_intake.initial_decision_outcomes
+animal_intake.temporary_monitoring_stage
+animal_intake.temporary_monitoring_events
+animal_intake.preventive_actions_recording
+animal_intake.finalization_model
+animal_intake.reentry_process_model
+```
+
+القرارات التي تغطيها المجموعة:
+
+- الاستقبال الفردي والاستقبال الجماعي مع بقاء سجل مستقل لكل حيوان.
+- البيانات المشتركة الممكن حفظها على مستوى دفعة / صفقة الاستقبال عند استخدام الاستقبال الجماعي.
+- هل وزن الدخول إلزامي أو اختياري أو غير مرتبط بإكمال الاستقبال، مع حفظ أي وزن فعلي في Weight History لا كحقل ثابت.
+- هل يوجد تقييم أولي مستقل عند الاستقبال وما عناصره الأساسية: الحالة العامة، الإصابات أو الأعراض الظاهرة، حالة الجسم، والملاحظات.
+- النتائج الفعلية الممكنة للتقييم: قبول، ملاحظة، عزل صحي، رفض.
+- دعم مرحلة مؤقتة للملاحظة / الحجر عند انطباق القواعد دون افتراض أنها إلزامية لكل حيوان.
+- أحداث مرحلة الملاحظة / الحجر: البدء، إعادة التقييم، التمديد، الاجتياز، التحويل لمسار صحي، الرفض.
+- هل تسجل الفحوص أو الإجراءات الوقائية التي تم تنفيذها فعليًا قبل الاعتماد دون افتراض وحدة علاجية كاملة.
+- هل إغلاق الاستقبال يحتاج اعتمادًا صريحًا أم يغلق عند تحقق آخر نتيجة مستوفية للشروط.
+- نموذج إعادة إدخال نفس الحيوان مع الحفاظ على نفس Animal Record وعدم إنشاء هوية جديدة.
+
+Dependencies:
+
+```text
+animal_intake.batch_shared_fields
+→ animal_intake.reception_modes CONTAINS batch_reception_with_individual_records
+
+animal_intake.initial_evaluation_fields
+animal_intake.initial_decision_outcomes
+→ animal_intake.initial_evaluation_required EQUALS 1
+
+animal_intake.temporary_monitoring_events
+→ animal_intake.temporary_monitoring_stage EQUALS 1
+```
+
+يستخدم:
+
+```text
+prune = true
+preserveAnswers = true
+```
+
+### حدود 4.1
+
+```text
+مصدر الحيوان وبيانات المصدر الأساسية → 3.2 ولا يعاد تعريفها هنا
+الهوية الثابتة → 3.1
+النقل الداخلي بين مزارع يديرها نفس النظام → حركة نقل، وليس إنشاء حيوان جديد
+موقع التسكين الفعلي وحركات الإشغال → 4.2
+تفاصيل سجل الوزن العام → 4.3
+مدة الحجر وموعد إعادة التقييم وإلزام الحجر حسب المصدر → Settings
+معايير القبول والرفض والقواعد التي تتحكم في القرار → Settings عند كونها قابلة للضبط
+العزل والمتابعة الصحية بعد التحويل للمسار الصحي → 4.13
+الخروج الناتج عن رفض الحيوان → يسجل كحدث خروج في 4.15
+جاهزية الحيوان للتلقيح أو الإنتاج → Settings + Reports، ولا تنتج تلقائيًا من مجرد اعتماد الاستقبال
+```
+
+الفرق مع `4.15 الخروج من المزرعة وإعادة الدخول`:
+
+```text
+4.1 → ما خطوات الاستقبال التي تحدث عند وصول الحيوان أو عودته فعليًا
+4.15 → حدث الخروج نفسه، علاقته بتاريخ الحيوان، وربط أي عودة لاحقة بالخروج السابق دون كسر الهوية
+```
+
 ---
 
 ## 10. القسم الخامس — التقارير والتحليلات والتنبيهات ومؤشرات الأداء
@@ -752,18 +832,27 @@ InitialHerdSetupQuestionsSeeder
 ProductionHerdGroupsQuestionsSeeder
 ```
 
-شجرة AnimalHerd الحالية:
+`QuestionnaireWorkflowQuestionsSeeder` يستدعي حاليًا:
 
 ```text
-database/seeders/Questions/AnimalHerd/
-├── AnimalIdentityQuestionsSeeder.php
-├── AnimalSourceQuestionsSeeder.php
-├── AnimalPedigreeQuestionsSeeder.php
-├── InitialHerdSetupQuestionsSeeder.php
-└── ProductionHerdGroupsQuestionsSeeder.php
+AnimalIntakeQuestionsSeeder
 ```
 
-Workflow / Reports / Settings Orchestrators ما زالت بدون Question Seeders فعلية حتى يبدأ تصميم كل قسم.
+شجرة الأسئلة الجديدة الحالية:
+
+```text
+database/seeders/Questions/
+├── AnimalHerd/
+│   ├── AnimalIdentityQuestionsSeeder.php
+│   ├── AnimalSourceQuestionsSeeder.php
+│   ├── AnimalPedigreeQuestionsSeeder.php
+│   ├── InitialHerdSetupQuestionsSeeder.php
+│   └── ProductionHerdGroupsQuestionsSeeder.php
+└── Workflow/
+    └── AnimalIntakeQuestionsSeeder.php
+```
+
+Reports / Settings Orchestrators ما زالت بدون Question Seeders فعلية حتى يبدأ تصميم كل قسم.
 
 ---
 
@@ -877,6 +966,7 @@ Question Creation → IN PROGRESS
 3.3 Animal Pedigree / Family Tree → IMPLEMENTED & LOCAL SEED VERIFIED
 3.4 Initial Herd Setup → IMPLEMENTED & LOCAL SEED VERIFIED
 3.5 Production Herd / Groups → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.1 Animal Intake / Re-entry → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 الخطوة المحلية التالية:
@@ -884,11 +974,18 @@ Question Creation → IN PROGRESS
 ```bash
 git pull origin master
 php artisan db:seed --class=QuestionnaireAnimalHerdQuestionsSeeder
+php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 ```
 
-بعد نجاح الـSeeder يصبح **القسم الثالث كاملًا من ناحية Question Seeders**، وتبدأ المرحلة التالية من:
+إذا كان 3.5 قد تم تشغيله محليًا بالفعل، يمكن الاكتفاء في هذه الجولة بـ:
 
-`4.1 استقبال الحيوان من الخارج وإعادة الإدخال`
+```bash
+php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
+```
+
+بعد نجاح 4.1 يكون التالي:
+
+`4.2 التسكين والنقل والإخلاء وإدارة الإشغال`
 
 ---
 
