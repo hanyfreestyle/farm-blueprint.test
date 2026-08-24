@@ -45,23 +45,29 @@
 
 `docs/QUESTIONNAIRE_ARCHITECTURE_IMPLEMENTATION_PLAN.md`
 
-تتابع تنفيذ إعادة الهيكلة بحالات:
+هي سجل التنفيذ الرسمي لإعادة هيكلة الأقسام.
+
+**الحالة:**
 
 ```text
-PENDING
-IN_PROGRESS
-DONE
-VERIFIED
-WAITING_LOCAL
+ARCHITECTURE_IMPLEMENTED_AND_VERIFIED
+P0 → P10 = VERIFIED
 ```
 
-**الحالة الحالية:** تغييرات GitHub الخاصة بالهيكل وOrchestrators منفذة ومراجعة Static، والخطوة التالية هي التشغيل المحلي `P8` ثم التحقق `P9`.
+تم تنفيذ تغييرات GitHub، ثم نفذ المستخدم محليًا:
+
+```bash
+git pull origin master
+php artisan migrate:refresh --seed
+```
+
+وفي 2026-08-24 أكد نجاح التشغيل بدون Error.
 
 ### السجل التقني التاريخي
 
 `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
 
-يبقى سجلًا لتاريخ بناء أداة الاستبيان والمراحل التقنية السابقة، ولا يستبدل بخطة إعادة الهيكلة الجديدة.
+يبقى سجلًا لتاريخ بناء أداة الاستبيان والمراحل التقنية السابقة، ولا يستبدل بخطة إعادة الهيكلة.
 
 ### المرجع الوظيفي الأساسي
 
@@ -93,9 +99,9 @@ WAITING_LOCAL
 
 ---
 
-## 4. الهيكل الرئيسي — منفذ في GitHub وينتظر التحقق المحلي
+## 4. الهيكل الرئيسي — IMPLEMENTED & VERIFIED
 
-تم تعديل Section Seeders لتطابق Architecture المعتمدة:
+الهيكل المنفذ حاليًا:
 
 ```text
 1. إدارة البيانات الأساسية
@@ -110,7 +116,7 @@ WAITING_LOCAL
 
 `database/seeders/QuestionnaireSectionSeeder.php`
 
-ويستدعي حاليًا:
+ويستدعي:
 
 ```text
 QuestionnaireMasterDataSectionSeeder
@@ -128,14 +134,25 @@ QuestionnaireHerdSetupSectionSeeder.php
 QuestionnaireOperationSettingsSectionSeeder.php
 ```
 
-**مهم:** هذه الحالة Verified على مستوى ملفات GitHub فقط. نجاح الـRuntime/Database ينتظر:
+أعداد الـSubsections المنفذة:
 
-```bash
-git pull origin master
-php artisan migrate:refresh --seed
+```text
+Master Data = 15
+Farm Structure = 4
+Animal / Herd = 5
+Workflow = 17
+Reports = 15
+Settings = 13
+Total = 69
 ```
 
-ثم مراجعة الشجرة الناتجة.
+Legacy Main Sections التالية لم تعد جزءًا من Fresh Seed:
+
+```text
+إعدادات التشغيل ودورة الإنتاج
+تكوين وإدخال القطيع
+التقارير والإشعارات ومؤشرات الأداء
+```
 
 ---
 
@@ -174,7 +191,7 @@ Seeder:
 
 `database/seeders/Sections/QuestionnaireMasterDataSectionSeeder.php`
 
-الشجرة الحالية: 15 Subsection.
+الشجرة: 15 Subsection.
 
 ```text
 إدارة البيانات الأساسية
@@ -283,6 +300,8 @@ Seeder:
 قواعد الجاهزية → Settings
 عرض الجاهزية وأسباب عدمها → Reports
 ```
+
+**الحالة الحالية:** هذا هو أول قسم جديد جاهز لبدء إنشاء الأسئلة.
 
 ---
 
@@ -520,7 +539,7 @@ MasterData/
 FarmStructure/
 ```
 
-ومجلدات:
+والمجلدات التالية ستظهر مع أول Question Seeder فعلي لكل قسم:
 
 ```text
 AnimalHerd/
@@ -528,8 +547,6 @@ Workflow/
 Reports/
 Settings/
 ```
-
-ستظهر مع أول Question Seeder فعلي لكل قسم.
 
 ---
 
@@ -579,7 +596,7 @@ Settings/
 - تستخدم المزامنة بدل الحذف وإعادة الإنشاء العمياء.
 - بعد بدء الحفاظ على الإجابات، أي تغيير غير متوافق يجب أن يفشل بوضوح بدل حذف البيانات بصمت.
 
-المبدأ لاحقًا:
+المبدأ عند بدء دورة الإجابات المستقرة:
 
 ```text
 Stable Section Record
@@ -603,15 +620,15 @@ QuestionnaireSectionSeeder
 QuestionnaireQuestionsSeeder
 ```
 
-وفي مرحلة إعادة البناء الحالية فقط يعتمد المستخدم محليًا على:
+تم التحقق من إعادة الهيكلة بنجاح محليًا باستخدام:
 
 ```bash
 php artisan migrate:refresh --seed
 ```
 
-الأمر تدميري ومسموح مؤقتًا لأن الإجابات القديمة تم الاستغناء عنها قبل دورة الإجابات الجديدة.
+هذا الأمر تدميري، وكان مسموحًا أثناء مرحلة تنظيف وإعادة بناء الهيكل لأن الإجابات القديمة تم الاستغناء عنها.
 
-بمجرد بدء دورة إجابات نريد الاحتفاظ بها، لا يستخدم `migrate:refresh --seed` كطريقة تشغيل عادية على قاعدة البيانات التي تحتوي هذه الإجابات.
+**من الآن:** عند بدء تسجيل إجابات جديدة نريد الحفاظ عليها، لا يستخدم `migrate:refresh --seed` كطريقة تشغيل عادية على قاعدة البيانات التي تحتوي هذه الإجابات.
 
 ---
 
@@ -631,6 +648,7 @@ php artisan migrate:refresh --seed
 10. تحديد `report_category` و`target_entity` بما يتوافق مع البنية الحالية.
 11. عدم تحويل مثال أو Open Requirement إلى Requirement نهائي دون سؤال أو قرار صريح.
 12. عدم تضخيم الأسئلة بتحويل كل نقطة معمارية إلى سؤال منفصل.
+13. عند بدء دورة الإجابات المستقرة تستخدم `preserveAnswers = true` ولا يتم اللجوء إلى Fresh destructive seed بصورة روتينية.
 
 ---
 
@@ -727,7 +745,7 @@ Battery Structure
 
 > كيف يجب إدارة الأنواع الفيزيائية للبطاريات؟
 
-يعود عند مراجعة/استكمال أسئلة Farm Structure بعد اكتمال التحقق المحلي لإعادة الهيكلة.
+يعود عند مراجعة/استكمال أسئلة Farm Structure، ولا يمنع بدء أسئلة القسم الثالث.
 
 ---
 
@@ -759,7 +777,7 @@ Blueprint
 
 ## 22. حالة التنفيذ الحالية والخطوة التالية
 
-### GitHub
+إعادة هيكلة Questionnaire Sections انتهت بالكامل:
 
 ```text
 P0 Architecture Review → VERIFIED
@@ -770,45 +788,35 @@ P4 Main Section Orchestration → VERIFIED
 P5 Question Orchestrators → VERIFIED
 P6 QuestionnaireQuestionsSeeder → VERIFIED
 P7 Documentation Sync → VERIFIED
+P8 Local migrate:refresh --seed → VERIFIED
+P9 Post-seed verification → VERIFIED
+P10 Close restructure / open questions phase → VERIFIED
 ```
 
-تمت مراجعة الملفات والاستدعاءات Static من GitHub، لكن لم يتم تشغيل PHP أو قاعدة البيانات بواسطة المساعد.
-
-### التالي — P8
-
-على بيئة التطوير المحلية:
-
-```bash
-git pull origin master
-php artisan migrate:refresh --seed
-```
-
-### ثم P9
-
-يجب التأكد من:
+الحالة الحالية:
 
 ```text
-6 Main Sections فقط
-Master Data = 15
-Farm Structure = 4
-Animal / Herd = 5
-Workflow = 17
-Reports = 15
-Settings = 13
-Total Subsections = 69
+Architecture → IMPLEMENTED & VERIFIED
+Question creation → READY
 ```
 
-ويجب ألا تظهر Legacy Main Sections:
+### ترتيب المرحلة الجديدة
 
 ```text
-إعدادات التشغيل ودورة الإنتاج
-تكوين وإدخال القطيع
-التقارير والإشعارات ومؤشرات الأداء
+القسم 3 — بيانات الحيوان وتكوين القطيع
+↓
+القسم 4 — الحركات ودورة التشغيل الفعلية
+↓
+القسم 5 — التقارير والتحليلات والتنبيهات ومؤشرات الأداء
+↓
+القسم 6 — الإعدادات وقواعد التشغيل
 ```
 
-كما يجب التأكد من بقاء أسئلة MasterData وFarmStructure وعمل الـOrchestrators الجديدة بدون Error.
+البداية التالية:
 
-لا يبدأ P10 وإنشاء أسئلة الأقسام 3–6 قبل نجاح هذا التحقق المحلي.
+`3.1 بيانات وهوية الحيوان`
+
+قبل إنشاء أسئلته يجب الرجوع للمرجع الوظيفي والأسئلة الحالية والـEnums/Models حسب القواعد أعلاه.
 
 ---
 
