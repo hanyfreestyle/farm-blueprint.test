@@ -176,6 +176,8 @@ Seeder المسؤول:
 → مرشح Operational Setting ويجب حسمه بالأسئلة
 ```
 
+إدارة Master Data نفسها مثل Fixed/Managed List أو Initial Values أو Retirement Policy تبقى مع الـMaster Data ولا تتحول إلى Operational Settings Profile.
+
 ---
 
 ## 6. هيكل المزرعة — Farm Structure
@@ -211,6 +213,8 @@ Cage / Cell
 Farm Structure يحدد وجود الكيان وهويته وعلاقاته الهيكلية، بينما القواعد التشغيلية القابلة للتخصيص مثل السعة التشغيلية أو أهلية التسكين أو التطهير أو فترات الانتظار قد تنتمي إلى Settings إذا ثبت بالأسئلة أنها قابلة للضبط.
 
 لا ينقل إلى Settings أي Structural Rule ثابت لمجرد أنه يسمى Rule.
+
+وجود الكود، نطاق فريدته، حالات Lifecycle، العلاقات الهيكلية وسياسة حذف/تقاعد الكيان تبقى مع Entity نفسه. يمكن فقط مراجعة الجزء القابل للتهيئة من **صيغة توليد الأكواد** داخل Settings إذا ثبت أن التشغيل يحتاج ذلك.
 
 ---
 
@@ -482,10 +486,60 @@ Settings changes must be historically explainable
 
 هذا يثبت وجود حاجة لمراجعة نموذج Settings نفسه، لكنه **لا يحسم Scope أو Profile Architecture مسبقًا**.
 
-### 10.6 بقية الشجرة الأولية — TO REVIEW
+### 10.6 6.2 السياسات العامة والتحكم والتجاوز والتدقيق — APPROVED
+
+تم اعتماد الاسم:
+
+`السياسات العامة والتحكم والتجاوز والتدقيق`
+
+مسؤوليته تحديد الإطار العام لكيفية **تطبيق القواعد القابلة للتطبيق، والتجاوز عند السماح به، وتصحيح السجلات الحساسة، والتدقيق**، وليس إعادة تعريف خصائص كل Entity.
+
+الحدود المعتمدة:
 
 ```text
-6.2 السياسات العامة والأكواد والحالات وقواعد التجاوز
+Code identity / Unique scope / Entity statuses / Delete policy
+→ تبقى مع Entity نفسه
+
+Configurable code generation format عند الحاجة
+→ يمكن مراجعته داخل 6.2
+
+Rule enforcement / Override / Correction / Audit
+→ 6.2
+```
+
+مفهوم مستويات تطبيق القواعد الذي يجب أن تحسمه الأسئلة:
+
+```text
+Information
+Warning
+Block
+```
+
+مع بقاء بعض القواعد Hard System Constraints لا تسمح Override.
+
+6.2 يجب أن يغطي كأسئلة مستقبلية:
+
+- ما القواعد القابلة للتجاوز؟
+- من يملك Override Permission؟
+- هل يلزم Reason أو Approval؟
+- كيف يسجل Override تاريخيًا؟
+- كيف تصحح السجلات التشغيلية الحساسة: Edit / Correction / Cancel / Replacement / Lock؟
+- ما Minimum Audit Trail المطلوب؟
+- هل صيغة توليد Code معينة تحتاج Configuration؟
+
+قاعدة صلاحيات مهمة:
+
+```text
+Permission to perform an Action
+≠
+Permission to override an applicable rule
+```
+
+إدارة Master Data نفسها مثل Fixed/Managed Lists وInitial Values وRetirement Policy لا تنتقل إلى 6.2.
+
+### 10.7 بقية الشجرة الأولية — TO REVIEW
+
+```text
 6.3 قواعد تشغيل هيكل المزرعة ومواقع الإيواء
 6.4 قواعد التسكين وتنظيم القطيع والجاهزية
 6.5 قواعد التلقيح والجاهزية التناسلية
@@ -500,7 +554,7 @@ Settings changes must be historically explainable
 6.14 إعدادات التقارير وKPIs والأهداف
 ```
 
-هذه القائمة **غير معتمدة بعد** باستثناء 6.1، ويمكن دمج أو إعادة تسمية أو استبعاد أي نطاق عند المراجعة إذا اتضح أنه Structural Rule وليس Operational Setting.
+هذه القائمة **غير معتمدة بعد**، ويمكن دمج أو إعادة تسمية أو استبعاد أي نطاق عند المراجعة إذا اتضح أنه Structural Rule وليس Operational Setting.
 
 ---
 
@@ -660,6 +714,8 @@ Operational Setting قابل للتخصيص
 ```
 
 ولا يفترض Inheritance / Override / Versioning / Scope قبل أن تحسمه أسئلة 6.1.
+
+بالنسبة لـ6.2 لا تعاد أسئلة Code identity أو Unique أو Entity Status أو Delete Policy؛ بل تركز الأسئلة على Enforcement / Override / Correction / Audit وعلى الجزء القابل للتهيئة فقط من Code Generation عند الحاجة.
 
 ---
 
@@ -868,7 +924,8 @@ Blueprint
 - الأقسام 3 و4 و5 معتمدة معماريًا.
 - القسم 6 معتمد جزئيًا.
 - `6.1 نموذج الإعدادات ونطاق التطبيق` معتمد.
-- Subsections 6.2 وما بعدها ما زالت تحت المراجعة.
+- `6.2 السياسات العامة والتحكم والتجاوز والتدقيق` معتمد.
+- Subsections 6.3 وما بعدها ما زالت تحت المراجعة.
 
 لا تستخرج Implementation Plan النهائية قبل اكتمال مراجعة بقية القسم السادس.
 
