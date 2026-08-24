@@ -6,7 +6,7 @@ use App\Models\QuestionnaireAnswer;
 use App\Models\QuestionnaireQuestion;
 use App\Models\QuestionnaireSection;
 use App\Services\Questionnaire\QuestionnaireFrontendService;
-use Database\Seeders\QuestionnaireFarmQuestionsSeeder;
+use Database\Seeders\QuestionnaireQuestionsSeeder;
 use Database\Seeders\QuestionnaireSectionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -23,7 +23,7 @@ class QuestionnaireFrontendPilotTest extends TestCase
         Artisan::call('migrate:fresh', ['--database' => 'sqlite']);
 
         $this->seed(QuestionnaireSectionSeeder::class);
-        $this->seed(QuestionnaireFarmQuestionsSeeder::class);
+        $this->seed(QuestionnaireQuestionsSeeder::class);
     }
 
     public function test_arabic_only_home_works_and_locale_switch_is_not_shown(): void
