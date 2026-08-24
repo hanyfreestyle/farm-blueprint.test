@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Questions\AnimalHerd\AnimalIdentityQuestionsSeeder;
+use Database\Seeders\Questions\AnimalHerd\AnimalSourceQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireAnimalHerdQuestionsSeeder extends Seeder
@@ -11,6 +12,7 @@ class QuestionnaireAnimalHerdQuestionsSeeder extends Seeder
     {
         $this->call([
             AnimalIdentityQuestionsSeeder::class,
+            AnimalSourceQuestionsSeeder::class,
         ]);
     }
 }
