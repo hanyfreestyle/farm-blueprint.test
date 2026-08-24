@@ -19,8 +19,7 @@ class DatabaseSeeder extends Seeder
             AdminUserSeeder::class,
             UploadFilterSeeder::class,
             QuestionnaireSectionSeeder::class,
-            QuestionnaireMasterDataQuestionsSeeder::class,
-            QuestionnaireFarmStructureQuestionsSeeder::class,
+            QuestionnaireQuestionsSeeder::class,
         ]);
     }
 }
