@@ -21,7 +21,7 @@
 → Blueprint قابل للتنفيذ
 ```
 
-الهدف من السؤال هو الوصول إلى Decision واضح قابل للتحويل إلى Requirement أو Rule، وليس جمع معلومات عامة فقط.
+الهدف من كل سؤال هو الوصول إلى Decision واضح قابل للتحويل إلى Requirement أو Rule، وليس جمع معلومات عامة فقط.
 
 ---
 
@@ -54,14 +54,14 @@ ARCHITECTURE_IMPLEMENTED_AND_VERIFIED
 P0 → P10 = VERIFIED
 ```
 
-تم تنفيذ تغييرات GitHub، ثم نفذ المستخدم محليًا:
+نفذ المستخدم محليًا بنجاح:
 
 ```bash
 git pull origin master
 php artisan migrate:refresh --seed
 ```
 
-وفي 2026-08-24 أكد نجاح التشغيل بدون Error.
+وأكد نجاح التشغيل بدون Error في 2026-08-25.
 
 ### السجل التقني التاريخي
 
@@ -101,8 +101,6 @@ php artisan migrate:refresh --seed
 
 ## 4. الهيكل الرئيسي — IMPLEMENTED & VERIFIED
 
-الهيكل المنفذ حاليًا:
-
 ```text
 1. إدارة البيانات الأساسية
 2. هيكل المزرعة
@@ -127,14 +125,7 @@ QuestionnaireReportsSectionSeeder
 QuestionnaireSettingsSectionSeeder
 ```
 
-ملفات Legacy التالية حذفت بعد استبدالها:
-
-```text
-QuestionnaireHerdSetupSectionSeeder.php
-QuestionnaireOperationSettingsSectionSeeder.php
-```
-
-أعداد الـSubsections المنفذة:
+أعداد الـSubsections:
 
 ```text
 Master Data = 15
@@ -190,8 +181,6 @@ What RULES control what should happen?
 Seeder:
 
 `database/seeders/Sections/QuestionnaireMasterDataSectionSeeder.php`
-
-الشجرة: 15 Subsection.
 
 ```text
 إدارة البيانات الأساسية
@@ -254,9 +243,7 @@ Battery
 Cage / Cell
 ```
 
-هذه كيانات فعلية وليست Lookup Lists.
-
-### الفصل مع Settings / Workflow / Reports
+الفصل:
 
 ```text
 تعريف Farm/Barn/Battery/Cage → Farm Structure
@@ -266,6 +253,45 @@ Cage / Cell
 ```
 
 وجود الكود، Unique Scope، Entity Statuses، العلاقات الهيكلية وسياسة حذف/تقاعد الكيان تبقى مع Entity نفسه.
+
+### اتجاهات مهمة حالية
+
+#### Cage
+
+```text
+Battery Structure
+→ Generate Cages
+→ fixed Cage identity
+→ Review / Activation
+→ Operational Cage
+→ later changes = Actions + History
+```
+
+- لا Create مستقل للقفص.
+- لا Delete مستقل للقفص.
+- Cage Code فريد على مستوى النظام.
+- QR Code يولد من الهوية/الكود.
+- بعد التفعيل تكون الهوية والموقع الهيكلي Immutable.
+- تغييرات الحالة تتم عبر Actions وليس Edit عشوائي.
+- كل Action يسجل History / Audit.
+- الإشغال الحالي ينتج من حركات التسكين والنقل.
+
+#### Battery
+
+- تتبع Barn واحدًا.
+- Battery Code فريد على مستوى النظام.
+- بنيتها تحدد الأقفاص التابعة لها.
+- الأقفاص تولد بعد اكتمال البنية ومراجعتها.
+- أي تاريخ تشغيلي على Cage يقفل الهوية الهيكلية التاريخية.
+- لا يعاد استخدام هوية/كود Cage تاريخي.
+- إعادة الهيكلة بعد وجود تاريخ تشغيلي تنهي الهيكل القديم وتستخدم هيكلًا جديدًا عند الحاجة.
+- توقف/صيانة Battery يؤثر على إتاحة الأقفاص دون تغيير حالاتهم المحلية تلقائيًا.
+
+### سؤال مؤجل
+
+> كيف يجب إدارة الأنواع الفيزيائية للبطاريات؟
+
+يعود عند مراجعة/استكمال أسئلة Farm Structure، ولا يمنع العمل الحالي على القسم الثالث.
 
 ---
 
@@ -277,11 +303,11 @@ Seeder:
 
 ```text
 بيانات الحيوان وتكوين القطيع
-├── بيانات وهوية الحيوان
-├── مصدر الحيوان وبداية السجل
-├── النسب وشجرة العائلة
-├── القطيع الافتتاحي وتهيئة نقطة البداية
-└── تكوين القطيع الإنتاجي وتنظيم المجموعات
+├── 3.1 بيانات وهوية الحيوان
+├── 3.2 مصدر الحيوان وبداية السجل
+├── 3.3 النسب وشجرة العائلة
+├── 3.4 القطيع الافتتاحي وتهيئة نقطة البداية
+└── 3.5 تكوين القطيع الإنتاجي وتنظيم المجموعات
 ```
 
 قواعد مهمة:
@@ -301,7 +327,75 @@ Seeder:
 عرض الجاهزية وأسباب عدمها → Reports
 ```
 
-**الحالة الحالية:** هذا هو أول قسم جديد جاهز لبدء إنشاء الأسئلة.
+### 8.1 — بيانات وهوية الحيوان — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+تم إنشاء:
+
+`database/seeders/Questions/AnimalHerd/AnimalIdentityQuestionsSeeder.php`
+
+وتم ربطه بـ:
+
+`database/seeders/QuestionnaireAnimalHerdQuestionsSeeder.php`
+
+عدد الأسئلة: **9**.
+
+المفاتيح المستقرة:
+
+```text
+animal.identity_fields
+animal.internal_code_strategy
+animal.internal_code_unique_scope
+animal.internal_code_lifetime
+animal.external_identifier_cardinality
+animal.external_identifier_types
+animal.temporary_unknown_sex
+animal.breed_requirement
+animal.birth_information_methods
+```
+
+الـDependencies:
+
+```text
+internal code questions
+→ animal.identity_fields CONTAINS internal_code
+
+external identifier questions
+→ animal.identity_fields CONTAINS external_identifiers
+
+unknown sex question
+→ animal.identity_fields CONTAINS sex
+
+breed requirement
+→ animal.identity_fields CONTAINS breed
+
+birth information methods
+→ animal.identity_fields CONTAINS birth_information
+```
+
+تم استخدام:
+
+```text
+prune = true
+preserveAnswers = true
+```
+
+حتى تصبح المزامنة آمنة عند بدء الإجابة على هذه المجموعة.
+
+### حدود 3.1
+
+يبقى خارج 3.1:
+
+```text
+مصدر الحيوان وتاريخ الدخول → 3.2
+الأب / الأم / البطن / شجرة العائلة → 3.3
+الوزن الفعلي → Workflow / Weight History
+الموقع الحالي → مشتق من حركات التسكين والنقل
+الحالة الإنتاجية والصحية الحالية → مشتقة من Workflow
+الجاهزية → Settings + Reports
+شكل الكود ومكوناته القابلة للتهيئة → Settings 6.2
+```
+
+**الخطوة التالية:** Pull ثم تشغيل Seeder الخاص بالقسم الثالث ومراجعة ظهور الأسئلة والـDependencies قبل الانتقال إلى 3.2.
 
 ---
 
@@ -379,7 +473,7 @@ Seeder:
 └── خصائص التقارير والتصفية والتصدير
 ```
 
-### فصل التنبيهات
+الفصل:
 
 ```text
 اكتشاف الحالة + عرض وتاريخ التنبيه → Reports
@@ -387,29 +481,9 @@ Threshold / Severity / Priority Rules → Settings
 الإجراء المنفذ نتيجة التنبيه → Workflow
 ```
 
-### فصل KPIs
-
 ```text
 ما KPI المطلوب وما الذي يقيسه → Reports
 Target / Threshold / configurable period → Settings عند الحاجة
-```
-
-المبدأ المعماري:
-
-```text
-Data
-↓
-Information / Analysis
-↓
-Alert عند الحاجة
-↓
-Decision
-↓
-Action
-↓
-Result
-↓
-Data جديدة
 ```
 
 ---
@@ -439,7 +513,7 @@ Seeder:
 └── إعدادات التقارير وKPIs والأهداف
 ```
 
-### المبدأ الأساسي
+المبدأ الأساسي:
 
 ```text
 Structural / System Rule ≠ Operational Setting
@@ -447,9 +521,7 @@ Structural / System Rule ≠ Operational Setting
 
 أي Rule من الأقسام 1–5 لا ينتقل إلى Settings إلا إذا كان مطلوبًا أن يكون قابلًا للضبط أو الاختلاف حسب نطاق التشغيل.
 
-### 6.1 — نموذج الإعدادات ونطاق التطبيق
-
-لا يفترض مسبقًا:
+Open Requirements المهمة داخل Settings تشمل:
 
 - Farm/Barn/Profile Scope النهائي.
 - Reusable Profiles.
@@ -459,30 +531,13 @@ Structural / System Rule ≠ Operational Setting
 - أثر تغيير Settings على العمليات الجارية.
 - Historical Reference / Snapshot.
 - صلاحيات واعتماد تغييرات Settings.
-
-المبدأ المعتمد:
-
-> تغيير الإعدادات لا يجوز أن يجعل الماضي يفسر باستخدام قيمة حالية مختلفة عن السياق الذي حدث فيه.
-
-### 6.2 — السياسات العامة والتحكم والتجاوز والتدقيق
-
-يراجع:
-
 - Information / Warning / Block.
 - Hard Constraints.
 - Override Policy.
-- Action Permission ≠ Override Permission.
 - Sensitive Record Correction.
 - Minimum Audit Trail.
-- الجزء القابل للتهيئة فقط من Code Generation عند الحاجة.
 
-ولا يعيد تعريف Code Identity أو Unique أو Entity Status أو Delete Policy.
-
-### حدود Scope
-
-- لا يفترض Environmental Control Module كاملًا من وجود التهوية/التبريد/التدفئة كMaster Data.
-- لا يفترض Veterinary Treatment Module كاملًا.
-- لا يفترض Sales/Financial Module كاملًا.
+ولا يفترض المشروع من تلقاء نفسه Environmental Control Module أو Veterinary Treatment Module أو Sales/Financial Module كاملًا.
 
 ---
 
@@ -507,7 +562,7 @@ Architecture Review أوسع من عدد الأسئلة النهائي.
 
 `database/seeders/QuestionnaireQuestionsSeeder.php`
 
-يستدعي الآن بالترتيب:
+يستدعي بالترتيب:
 
 ```text
 QuestionnaireMasterDataQuestionsSeeder
@@ -518,45 +573,30 @@ QuestionnaireReportsQuestionsSeeder
 QuestionnaireSettingsQuestionsSeeder
 ```
 
-### Orchestrators الجديدة
+### الحالة الحالية
 
 ```text
-database/seeders/QuestionnaireAnimalHerdQuestionsSeeder.php
-database/seeders/QuestionnaireWorkflowQuestionsSeeder.php
-database/seeders/QuestionnaireReportsQuestionsSeeder.php
-database/seeders/QuestionnaireSettingsQuestionsSeeder.php
+Questions/
+├── Concerns/
+├── MasterData/
+├── FarmStructure/
+└── AnimalHerd/
+    └── AnimalIdentityQuestionsSeeder.php
 ```
 
-هي فارغة وظيفيًا حاليًا؛ لا توجد Question Seeders جديدة للأقسام 3–6 حتى تبدأ مرحلة تصميم الأسئلة.
-
-### شجرة Questions الحالية فعليًا
-
-لأن Git لا يحتفظ بالمجلدات الفارغة، `database/seeders/Questions/` يحتوي حاليًا على:
+`QuestionnaireAnimalHerdQuestionsSeeder` يستدعي حاليًا:
 
 ```text
-Concerns/
-MasterData/
-FarmStructure/
+AnimalIdentityQuestionsSeeder
 ```
 
-والمجلدات التالية ستظهر مع أول Question Seeder فعلي لكل قسم:
-
-```text
-AnimalHerd/
-Workflow/
-Reports/
-Settings/
-```
+أما Orchestrators الخاصة بـWorkflow / Reports / Settings فما زالت بدون Question Seeders فعلية حتى تبدأ مرحلة تصميم أسئلة كل قسم.
 
 ---
 
 ## 14. Question Types وDependencies الحالية
 
-راجع دائمًا:
-
-`App\Enums\Questionnaire\QuestionType`
-
-الأنواع الحالية:
+`App\Enums\Questionnaire\QuestionType` يدعم:
 
 - `text`
 - `textarea`
@@ -567,11 +607,7 @@ Settings/
 - `multi_choice`
 - `select`
 
-راجع أيضًا:
-
-`App\Enums\Questionnaire\QuestionDependencyOperator`
-
-المتاح حاليًا:
+`App\Enums\Questionnaire\QuestionDependencyOperator` يدعم:
 
 - `EQUALS`
 - `CONTAINS`
@@ -594,9 +630,9 @@ Settings/
 - لا يتغير `seed_key` بسبب إعادة صياغة السؤال إذا ظل المعنى نفسه.
 - لا تتغير `option.value` بسبب تغيير Label فقط.
 - تستخدم المزامنة بدل الحذف وإعادة الإنشاء العمياء.
-- بعد بدء الحفاظ على الإجابات، أي تغيير غير متوافق يجب أن يفشل بوضوح بدل حذف البيانات بصمت.
+- أي تغيير غير متوافق مع إجابة محفوظة يجب أن يفشل بوضوح بدل حذف البيانات بصمت.
 
-المبدأ عند بدء دورة الإجابات المستقرة:
+المبدأ:
 
 ```text
 Stable Section Record
@@ -620,15 +656,11 @@ QuestionnaireSectionSeeder
 QuestionnaireQuestionsSeeder
 ```
 
-تم التحقق من إعادة الهيكلة بنجاح محليًا باستخدام:
+تم استخدام `migrate:refresh --seed` فقط خلال مرحلة إعادة البناء لأن الإجابات القديمة تم الاستغناء عنها.
 
-```bash
-php artisan migrate:refresh --seed
-```
+**من الآن:** بمجرد بدء تسجيل إجابات جديدة نريد الحفاظ عليها، لا يستخدم `migrate:refresh --seed` كطريقة تشغيل عادية على قاعدة البيانات التي تحتوي هذه الإجابات.
 
-هذا الأمر تدميري، وكان مسموحًا أثناء مرحلة تنظيف وإعادة بناء الهيكل لأن الإجابات القديمة تم الاستغناء عنها.
-
-**من الآن:** عند بدء تسجيل إجابات جديدة نريد الحفاظ عليها، لا يستخدم `migrate:refresh --seed` كطريقة تشغيل عادية على قاعدة البيانات التي تحتوي هذه الإجابات.
+لإضافة Question Seeder جديد إلى قاعدة التطوير الحالية يفضل تشغيل Seeder المستهدف بدل إعادة بناء القاعدة كلها متى كان ذلك كافيًا.
 
 ---
 
@@ -648,7 +680,7 @@ php artisan migrate:refresh --seed
 10. تحديد `report_category` و`target_entity` بما يتوافق مع البنية الحالية.
 11. عدم تحويل مثال أو Open Requirement إلى Requirement نهائي دون سؤال أو قرار صريح.
 12. عدم تضخيم الأسئلة بتحويل كل نقطة معمارية إلى سؤال منفصل.
-13. عند بدء دورة الإجابات المستقرة تستخدم `preserveAnswers = true` ولا يتم اللجوء إلى Fresh destructive seed بصورة روتينية.
+13. استخدام `preserveAnswers = true` بمجرد بدء مرحلة الأسئلة المستقرة.
 
 ---
 
@@ -672,84 +704,7 @@ php artisan migrate:refresh --seed
 
 ---
 
-## 19. قرارات تأسيسية من الأقسام 1–2
-
-### بيانات المزرعة
-
-- المزرعة أعلى مستوى في Farm Structure.
-- بيانات الموقع تدعم المحافظة والمدينة والعنوان والموقع على الخريطة حسب القرارات الحالية.
-- نشاط المزرعة لا يخزن كاختيار مستقل؛ يستنتج من أنشطة العنابر.
-
-### الأنشطة التشغيلية
-
-Master Data مستقلة، والاتجاه الحالي أن النشاط التشغيلي يرتبط بالعنبر وليس بالمزرعة مباشرة.
-
-### المستخدمون وفريق التشغيل
-
-- User لديه Login.
-- له Roles / Permissions.
-- يمكن ربطه بمزرعة أو أكثر.
-- تفاصيل الورديات ونطاقاتها تحسم بالأسئلة عند الوصول للجزء المختص.
-
-### قوائم الأسباب
-
-Master Data مستقلة:
-
-- أسباب النقل.
-- أسباب النفوق.
-- أسباب الاستبعاد.
-- أسباب الخروج.
-- أسباب تغيير الذكر.
-
-القيم التاريخية لا تحذف بطريقة تكسر السجلات السابقة.
-
----
-
-## 20. القفص والبطارية — اتجاهات معتمدة حاليًا
-
-### Cage
-
-```text
-Battery Structure
-→ Generate Cages
-→ fixed Cage identity
-→ Review / Activation
-→ Operational Cage
-→ later changes = Actions + History
-```
-
-قواعد حالية:
-
-- لا Create مستقل للقفص.
-- لا Delete مستقل للقفص.
-- Cage Code فريد على مستوى النظام.
-- QR Code يولد من الهوية/الكود.
-- بعد التفعيل تكون الهوية والموقع الهيكلي Immutable.
-- تغييرات الحالة تتم عبر Actions وليس Edit عشوائي.
-- كل Action يسجل History / Audit.
-- الإشغال الحالي ينتج من حركات التسكين والنقل.
-- Cage Master Identity منفصلة عن Cage Operational State.
-
-### Battery
-
-- تتبع Barn واحدًا.
-- Battery Code فريد على مستوى النظام.
-- بنيتها تحدد الأقفاص التابعة لها.
-- الأقفاص تولد بعد اكتمال البنية ومراجعتها.
-- أي تاريخ تشغيلي على Cage يقفل الهوية الهيكلية التاريخية.
-- لا يعاد استخدام هوية/كود Cage تاريخي.
-- إعادة الهيكلة بعد وجود تاريخ تشغيلي تنهي الهيكل القديم وتستخدم هيكلًا جديدًا عند الحاجة.
-- توقف/صيانة Battery يؤثر على إتاحة الأقفاص دون تغيير حالاتهم المحلية تلقائيًا.
-
-### سؤال مؤجل
-
-> كيف يجب إدارة الأنواع الفيزيائية للبطاريات؟
-
-يعود عند مراجعة/استكمال أسئلة Farm Structure، ولا يمنع بدء أسئلة القسم الثالث.
-
----
-
-## 21. دورة البيانات النهائية
+## 19. دورة البيانات النهائية
 
 ```text
 تصور_مشروع_الارانب.md
@@ -775,52 +730,28 @@ Blueprint
 
 ---
 
-## 22. حالة التنفيذ الحالية والخطوة التالية
-
-إعادة هيكلة Questionnaire Sections انتهت بالكامل:
-
-```text
-P0 Architecture Review → VERIFIED
-P1 Implementation Plan → VERIFIED
-P2 Preflight → VERIFIED
-P3 Section Seeders → VERIFIED
-P4 Main Section Orchestration → VERIFIED
-P5 Question Orchestrators → VERIFIED
-P6 QuestionnaireQuestionsSeeder → VERIFIED
-P7 Documentation Sync → VERIFIED
-P8 Local migrate:refresh --seed → VERIFIED
-P9 Post-seed verification → VERIFIED
-P10 Close restructure / open questions phase → VERIFIED
-```
-
-الحالة الحالية:
+## 20. حالة التنفيذ الحالية والخطوة التالية
 
 ```text
 Architecture → IMPLEMENTED & VERIFIED
-Question creation → READY
+Question Creation → IN PROGRESS
+3.1 Animal Identity → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
-### ترتيب المرحلة الجديدة
+الخطوة المحلية التالية:
 
-```text
-القسم 3 — بيانات الحيوان وتكوين القطيع
-↓
-القسم 4 — الحركات ودورة التشغيل الفعلية
-↓
-القسم 5 — التقارير والتحليلات والتنبيهات ومؤشرات الأداء
-↓
-القسم 6 — الإعدادات وقواعد التشغيل
+```bash
+git pull origin master
+php artisan db:seed --class=QuestionnaireAnimalHerdQuestionsSeeder
 ```
 
-البداية التالية:
+بعد نجاح الـSeeder ومراجعة ظهور الأسئلة والـDependencies، تصبح 3.1 جاهزة للإجابة، ثم يبدأ تصميم:
 
-`3.1 بيانات وهوية الحيوان`
-
-قبل إنشاء أسئلته يجب الرجوع للمرجع الوظيفي والأسئلة الحالية والـEnums/Models حسب القواعد أعلاه.
+`3.2 مصدر الحيوان وبداية السجل`
 
 ---
 
-## 23. قاعدة GitHub الإلزامية
+## 21. قاعدة GitHub الإلزامية
 
 المستودع افتراضيًا:
 
@@ -836,7 +767,7 @@ Question creation → READY
 
 ---
 
-## 24. المبدأ الأساسي
+## 22. المبدأ الأساسي
 
 هذا المشروع هو:
 
