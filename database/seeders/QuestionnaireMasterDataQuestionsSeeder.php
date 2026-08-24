@@ -2,15 +2,12 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Questions\FarmStructure\BarnDataQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\BatteryDataQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\BreedDataQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\BreedMetricsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\CitiesQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\CoolingSystemsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\ExclusionReasonsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\ExitReasonsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\FarmDataQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\GovernoratesQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\HeatingSystemsQuestionsSeeder;
 use Database\Seeders\Questions\FarmStructure\MaleChangeReasonsQuestionsSeeder;
@@ -30,19 +27,12 @@ class QuestionnaireMasterDataQuestionsSeeder extends Seeder
          *
          *   php artisan migrate:refresh --seed
          *
-         * Therefore this orchestrator must explicitly call every approved
-         * Master Data question seeder that is expected to exist after a fresh
-         * rebuild. Do not rely on questions left over from a previous database.
-         *
-         * CageDataQuestionsSeeder is intentionally excluded for now because
-         * the cage questionnaire is being redesigned around the new structural
-         * and action-based operating model.
+         * This orchestrator owns reference/master-data question groups only.
+         * Structural entities (Farm, Barn, Battery and later Cage) are seeded
+         * through QuestionnaireFarmStructureQuestionsSeeder.
          */
         $this->call([
-            FarmDataQuestionsSeeder::class,
             OperationalActivitiesQuestionsSeeder::class,
-            BarnDataQuestionsSeeder::class,
-            BatteryDataQuestionsSeeder::class,
             ProductionPurposesQuestionsSeeder::class,
             BreedMetricsQuestionsSeeder::class,
             BreedDataQuestionsSeeder::class,
