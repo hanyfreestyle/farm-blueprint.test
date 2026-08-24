@@ -496,7 +496,7 @@ Warning / Block / Override للقرابة → Settings 6.2 و6.5
 نقل المواليد بين الأمهات كحدث فعلي → Workflow
 ```
 
-### 8.4 — القطيع الافتتاحي وتهيئة نقطة البداية — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 8.4 — القطيع الافتتاحي وتهيئة نقطة البداية — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 
@@ -563,6 +563,74 @@ preserveAnswers = true
 ```
 
 3.4 يحدد **Initialization / Go-live Point** للمزرعة القائمة، ولا ينشئ تاريخًا غير معروف ولا يحول اللقطة الافتتاحية إلى Status يدوي دائم.
+
+### 8.5 — تكوين القطيع الإنتاجي وتنظيم المجموعات — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+
+`database/seeders/Questions/AnimalHerd/ProductionHerdGroupsQuestionsSeeder.php`
+
+عدد الأسئلة: **10**.
+
+المفاتيح المستقرة:
+
+```text
+production_herd.organization_methods
+production_group.record_fields
+production_group.code_policy
+production_group.female_membership_model
+production_group.primary_male_model
+production_group.primary_male_assignment_scope
+production_group.alternate_male_model
+production_group.statuses
+production_group.assignment_vs_mating
+production_group.history_policy
+```
+
+القرارات التي تغطيها المجموعة:
+
+- هل القطيع يدعم الإدارة الفردية فقط أم مفهوم المجموعات الإنتاجية أيضًا؛ ويمكن اختيار الطريقتين معًا.
+- بيانات وعلاقات المجموعة: الاسم، الكود، الذكر الأساسي، الإناث، تاريخ التكوين، الحالة، الملاحظات.
+- عند استخدام كود للمجموعة: طريقة إنشائه ونطاق فريدته.
+- هل عضوية الأنثى في المجموعة اختيارية أو إلزامية، وهل يسمح بأكثر من مجموعة نشطة في الوقت نفسه.
+- هل المجموعة تتطلب ذكرًا أساسيًا ثابتًا أم تسمح أن تكون بدونه أو لا تستخدم ذكرًا ثابتًا أصلًا.
+- هل يمكن للذكر الأساسي الارتباط بأكثر من مجموعة نشطة.
+- هل يوجد ذكر بديل ثابت اختياري أم يتم اختياره وقت الحاجة.
+- حالات دورة حياة المجموعة: نشطة / متوقفة / تم حلها.
+- الفصل بين تخصيص الذكر والإناث تنظيميًا وبين التلقيح الفعلي وإثبات الأبوة.
+- هل يحتفظ النظام بالتكوين الحالي فقط أم بتاريخ كامل لتغير الذكر والإناث والحالة عبر الزمن.
+
+Dependencies:
+
+```text
+أسئلة production_group العامة
+→ production_herd.organization_methods CONTAINS production_groups
+
+production_group.code_policy
+→ production_group.record_fields CONTAINS group_code
+```
+
+يستخدم:
+
+```text
+prune = true
+preserveAnswers = true
+```
+
+### حدود 3.5
+
+```text
+العدد المستهدف للإناث لكل ذكر والحد الأقصى والتنبيهات → Settings
+جاهزية الذكر والأنثى للاستخدام الإنتاجي → Settings + Reports
+فحص القرابة وقاعدة Warning / Block / Override → Settings / Reports
+تغيير الذكر أو نقل أنثى بين المجموعات كحدث فعلي → Workflow
+أسباب تغيير الذكر → Master Data موجودة بالفعل
+التلقيح الفعلي والذكر المستخدم → Workflow
+إثبات الأبوة → من سجل التلقيح الفعلي / Pedigree وليس من مجرد المجموعة
+تقييم أداء المجموعة والأفراد → Reports
+```
+
+3.5 يحدد **نموذج تنظيم القطيع والكيان والعلاقات الأساسية فقط**، ولا يحول المجموعة إلى سجل تلقيح أو Settings Profile.
 
 ---
 
@@ -681,6 +749,7 @@ AnimalIdentityQuestionsSeeder
 AnimalSourceQuestionsSeeder
 AnimalPedigreeQuestionsSeeder
 InitialHerdSetupQuestionsSeeder
+ProductionHerdGroupsQuestionsSeeder
 ```
 
 شجرة AnimalHerd الحالية:
@@ -690,7 +759,8 @@ database/seeders/Questions/AnimalHerd/
 ├── AnimalIdentityQuestionsSeeder.php
 ├── AnimalSourceQuestionsSeeder.php
 ├── AnimalPedigreeQuestionsSeeder.php
-└── InitialHerdSetupQuestionsSeeder.php
+├── InitialHerdSetupQuestionsSeeder.php
+└── ProductionHerdGroupsQuestionsSeeder.php
 ```
 
 Workflow / Reports / Settings Orchestrators ما زالت بدون Question Seeders فعلية حتى يبدأ تصميم كل قسم.
@@ -805,7 +875,8 @@ Question Creation → IN PROGRESS
 3.1 Animal Identity → IMPLEMENTED & LOCAL SEED VERIFIED
 3.2 Animal Source / Record Start → IMPLEMENTED & LOCAL SEED VERIFIED
 3.3 Animal Pedigree / Family Tree → IMPLEMENTED & LOCAL SEED VERIFIED
-3.4 Initial Herd Setup → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+3.4 Initial Herd Setup → IMPLEMENTED & LOCAL SEED VERIFIED
+3.5 Production Herd / Groups → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 الخطوة المحلية التالية:
@@ -815,9 +886,9 @@ git pull origin master
 php artisan db:seed --class=QuestionnaireAnimalHerdQuestionsSeeder
 ```
 
-بعد نجاح الـSeeder يكون التالي:
+بعد نجاح الـSeeder يصبح **القسم الثالث كاملًا من ناحية Question Seeders**، وتبدأ المرحلة التالية من:
 
-`3.5 تكوين القطيع الإنتاجي وتنظيم المجموعات`
+`4.1 استقبال الحيوان من الخارج وإعادة الإدخال`
 
 ---
 
