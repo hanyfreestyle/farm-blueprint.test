@@ -6,7 +6,7 @@ use App\Models\QuestionnaireQuestion;
 use App\Models\QuestionnaireSection;
 use App\Services\Questionnaire\QuestionnaireFrontendService;
 use App\Services\Questionnaire\QuestionnaireTechnicalReportService;
-use Database\Seeders\QuestionnaireFarmQuestionsSeeder;
+use Database\Seeders\QuestionnaireQuestionsSeeder;
 use Database\Seeders\QuestionnaireSectionSeeder;
 use Illuminate\Support\Facades\Artisan;
 use Tests\TestCase;
@@ -22,7 +22,7 @@ class QuestionnaireTechnicalReportPilotTest extends TestCase
         Artisan::call('migrate:fresh', ['--database' => 'sqlite']);
 
         $this->seed(QuestionnaireSectionSeeder::class);
-        $this->seed(QuestionnaireFarmQuestionsSeeder::class);
+        $this->seed(QuestionnaireQuestionsSeeder::class);
     }
 
     public function test_master_report_includes_all_main_sections_and_subsections(): void
