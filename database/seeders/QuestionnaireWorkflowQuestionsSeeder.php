@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\Questions\Workflow\AnimalIntakeQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\HousingMovementQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\MatingAttemptsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\OperationalMeasurementsQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
@@ -15,6 +16,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             AnimalIntakeQuestionsSeeder::class,
             HousingMovementQuestionsSeeder::class,
             OperationalMeasurementsQuestionsSeeder::class,
+            MatingAttemptsQuestionsSeeder::class,
         ]);
     }
 }
