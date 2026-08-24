@@ -2,20 +2,20 @@
 
 namespace Database\Seeders;
 
-use Database\Seeders\Questions\FarmStructure\BreedDataQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\BreedMetricsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\CitiesQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\CoolingSystemsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\ExclusionReasonsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\ExitReasonsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\GovernoratesQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\HeatingSystemsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\MaleChangeReasonsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\MortalityReasonsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\OperationalActivitiesQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\ProductionPurposesQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\TransferReasonsQuestionsSeeder;
-use Database\Seeders\Questions\FarmStructure\VentilationSystemsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\BreedDataQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\BreedMetricsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\CitiesQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\CoolingSystemsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\ExclusionReasonsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\ExitReasonsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\GovernoratesQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\HeatingSystemsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\MaleChangeReasonsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\MortalityReasonsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\OperationalActivitiesQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\ProductionPurposesQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\TransferReasonsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\VentilationSystemsQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireMasterDataQuestionsSeeder extends Seeder
@@ -28,8 +28,9 @@ class QuestionnaireMasterDataQuestionsSeeder extends Seeder
          *   php artisan migrate:refresh --seed
          *
          * This orchestrator owns reference/master-data question groups only.
-         * Structural entities (Farm, Barn, Battery and later Cage) are seeded
-         * through QuestionnaireFarmStructureQuestionsSeeder.
+         * Structural entities are seeded through QuestionnaireFarmStructureQuestionsSeeder.
+         * Operation settings belong to their own main section and are intentionally
+         * not represented as a Master Data subsection here.
          */
         $this->call([
             OperationalActivitiesQuestionsSeeder::class,
