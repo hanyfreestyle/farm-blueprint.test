@@ -3,453 +3,405 @@
 namespace Database\Seeders\Questions\FarmStructure;
 
 use App\Enums\Questionnaire\QuestionType;
-use App\Models\QuestionnaireQuestion;
-use App\Models\QuestionnaireSection;
+use App\Services\Questionnaire\QuestionSeederSyncService;
 use Illuminate\Database\Seeder;
-use Illuminate\Support\Facades\DB;
-use RuntimeException;
 
-class CageDataQuestionsSeeder extends Seeder {
-  public function run(): void {
-    DB::transaction(function (): void {
-      $mainSection = QuestionnaireSection::query()
-        ->whereNull('parent_id')
-        ->where('name', 'إدخال البيانات الأساسية للمزرعة')
-        ->first();
-
-      if (!$mainSection) {
-        throw new RuntimeException(
-          'Main questionnaire section "إدخال البيانات الأساسية للمزرعة" was not found. Run the section seeders first.'
-        );
-      }
-
-      $subsection = QuestionnaireSection::query()
-        ->where('parent_id', $mainSection->id)
-        ->where('name', 'بيانات القفص / العين')
-        ->first();
-
-      if (!$subsection) {
-        throw new RuntimeException(
-          'Questionnaire subsection "بيانات القفص / العين" was not found. Run the section seeders first.'
-        );
-      }
-
-      $questions = [
-
-        /*
-        |--------------------------------------------------------------------------
-        | 1. Cage fields
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'ما البيانات التي يجب أن يحتوي عليها ملف القفص / العين؟',
-          'help_text' => 'حدد البيانات الأساسية التي ترى ضرورة تسجيلها لكل قفص أو عين.',
-          'type' => QuestionType::from('multi_choice'),
-          'is_required' => true,
-          'sort_order' => 1,
-          'report_category' => 'field',
-          'target_entity' => 'cage',
-          'options' => [
-            ['label' => 'كود القفص / العين', 'value' => 'code', 'sort_order' => 1],
-            ['label' => 'البطارية التابع لها', 'value' => 'battery', 'sort_order' => 2],
-            ['label' => 'رقم الدور / الصف', 'value' => 'row_number', 'sort_order' => 3],
-            ['label' => 'ترتيب العين داخل الدور / الصف', 'value' => 'position_in_row', 'sort_order' => 4],
-            ['label' => 'نوع القفص الفعلي', 'value' => 'physical_type', 'sort_order' => 5],
-            ['label' => 'الاستخدام الحالي للقفص', 'value' => 'current_usage', 'sort_order' => 6],
-            ['label' => 'السعة القصوى', 'value' => 'capacity', 'sort_order' => 7],
-            ['label' => 'الحالة التشغيلية', 'value' => 'status', 'sort_order' => 8],
-            ['label' => 'تاريخ بدء الاستخدام', 'value' => 'started_at', 'sort_order' => 9],
-            ['label' => 'الأبعاد / المواصفات', 'value' => 'dimensions', 'sort_order' => 10],
-            ['label' => 'ملاحظات', 'value' => 'notes', 'sort_order' => 11],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 2. Cage code
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'كيف تريد إنشاء كود القفص / العين؟',
-          'help_text' => 'الكود يجب أن يكون واضحًا وفريدًا ويمكن للعامل استخدامه ميدانيًا عند التسكين أو النقل.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 2,
-          'report_category' => 'numbering_rule',
-          'target_entity' => 'cage',
-          'options' => [
-            ['label' => 'يتم توليده تلقائيًا من كود البطارية والترتيب', 'value' => 'automatic_from_battery', 'sort_order' => 1],
-            ['label' => 'يتم إدخاله يدويًا', 'value' => 'manual', 'sort_order' => 2],
-            ['label' => 'يدعم الطريقتين مع ضمان عدم التكرار', 'value' => 'both', 'sort_order' => 3],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 3. Physical cage types
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل نحتاج إلى فصل نوع القفص الفعلي عن استخدامه الحالي؟',
-          'help_text' => 'نوع القفص يصف التصميم أو المقاس والتجهيزات، بينما الاستخدام الحالي يصف الغرض التشغيلي مثل أنثى أو ذكر أو تسمين.',
-          'type' => QuestionType::from('yes_no'),
-          'is_required' => true,
-          'sort_order' => 3,
-          'report_category' => 'architecture_rule',
-          'target_entity' => 'cage',
-          'options' => [],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 4. Cage physical types
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'ما أنواع القفص الفعلية التي يجب أن يدعمها النظام؟',
-          'help_text' => 'اختر الأنواع التي تختلف فعليًا في التصميم أو المقاس أو التجهيز، وليس مجرد الاستخدام التشغيلي.',
-          'type' => QuestionType::from('multi_choice'),
-          'is_required' => false,
-          'sort_order' => 4,
-          'report_category' => 'lookup_values',
-          'target_entity' => 'cage_type',
-          'options' => [
-            ['label' => 'قفص فردي', 'value' => 'individual', 'sort_order' => 1],
-            ['label' => 'قفص جماعي', 'value' => 'group', 'sort_order' => 2],
-            ['label' => 'قفص مجهز لبيت ولادة', 'value' => 'maternity_ready', 'sort_order' => 3],
-            ['label' => 'تصميم آخر', 'value' => 'other', 'sort_order' => 4],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 5. Cage type management
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل أنواع القفص الفعلية ثابتة أم قابلة للإدارة؟',
-          'help_text' => 'حدد هل يتم تمثيل أنواع القفص كقيم ثابتة أم كقائمة يستطيع المدير إضافتها وتعديلها.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => false,
-          'sort_order' => 5,
-          'report_category' => 'value_management',
-          'target_entity' => 'cage_type',
-          'options' => [
-            ['label' => 'قيم ثابتة داخل النظام', 'value' => 'fixed', 'sort_order' => 1],
-            ['label' => 'قابلة للإضافة والتعديل من لوحة التحكم', 'value' => 'managed', 'sort_order' => 2],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 6. Cage usages
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'ما الاستخدامات التشغيلية التي يمكن تخصيص القفص لها؟',
-          'help_text' => 'حدد الاستخدامات الحالية التي يجب أن يستطيع النظام تمييزها لكل قفص.',
-          'type' => QuestionType::from('multi_choice'),
-          'is_required' => true,
-          'sort_order' => 6,
-          'report_category' => 'lookup_values',
-          'target_entity' => 'cage_usage',
-          'options' => [
-            ['label' => 'أنثى إنتاج', 'value' => 'production_female', 'sort_order' => 1],
-            ['label' => 'ذكر', 'value' => 'male', 'sort_order' => 2],
-            ['label' => 'فطام', 'value' => 'weaning', 'sort_order' => 3],
-            ['label' => 'تسمين', 'value' => 'fattening', 'sort_order' => 4],
-            ['label' => 'عزل / حجر', 'value' => 'quarantine', 'sort_order' => 5],
-            ['label' => 'استخدام آخر', 'value' => 'other', 'sort_order' => 6],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 7. Cage usage management
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل استخدامات الأقفاص ثابتة أم قابلة للإدارة؟',
-          'help_text' => 'حدد هل قائمة الاستخدامات تظل ثابتة أم يستطيع المدير إضافة استخدامات جديدة وتعديلها.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 7,
-          'report_category' => 'value_management',
-          'target_entity' => 'cage_usage',
-          'options' => [
-            ['label' => 'قيم ثابتة داخل النظام', 'value' => 'fixed', 'sort_order' => 1],
-            ['label' => 'قابلة للإضافة والتعديل من لوحة التحكم', 'value' => 'managed', 'sort_order' => 2],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 8. Usage change/history
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل يمكن تغيير استخدام القفص بمرور الوقت؟',
-          'help_text' => 'هذا القرار يحدد هل يكفي حفظ الاستخدام الحالي أم يجب الاحتفاظ بتاريخ تغير استخدام القفص.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 8,
-          'report_category' => 'workflow_rule',
-          'target_entity' => 'cage',
-          'options' => [
-            ['label' => 'الاستخدام ثابت عادة ولا يتغير', 'value' => 'fixed_usage', 'sort_order' => 1],
-            ['label' => 'يمكن تغييره مع حفظ الاستخدام الحالي فقط', 'value' => 'changeable_current_only', 'sort_order' => 2],
-            ['label' => 'يمكن تغييره ويجب الاحتفاظ بتاريخ التغييرات', 'value' => 'changeable_with_history', 'sort_order' => 3],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 9. Capacity
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'كيف تريد تحديد السعة القصوى للقفص؟',
-          'help_text' => 'ليست كل الأقفاص فردية؛ أقفاص الفطام أو التسمين قد تحتوي مجموعة من الأرانب.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 9,
-          'report_category' => 'field_rule',
-          'target_entity' => 'cage',
-          'options' => [
-            ['label' => 'تُحدد يدويًا لكل قفص', 'value' => 'manual_per_cage', 'sort_order' => 1],
-            ['label' => 'تأتي كقيمة افتراضية من نوع / استخدام القفص مع إمكانية تعديلها', 'value' => 'default_by_type_editable', 'sort_order' => 2],
-            ['label' => 'جميع الأقفاص فردية والسعة دائمًا 1', 'value' => 'always_one', 'sort_order' => 3],
-            ['label' => 'تحتاج إلى قاعدة أخرى حسب التشغيل', 'value' => 'other_rule', 'sort_order' => 4],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 10. Occupancy calculation
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل يجب أن يحسب النظام عدد الأرانب الحالي والأماكن المتاحة في القفص تلقائيًا؟',
-          'help_text' => 'المقترح أن يتم حساب الإشغال من سجلات التسكين والحركات بدل إدخال العدد الحالي يدويًا.',
-          'type' => QuestionType::from('yes_no'),
-          'is_required' => true,
-          'sort_order' => 10,
-          'report_category' => 'calculation_rule',
-          'target_entity' => 'cage',
-          'options' => [],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 11. Cage statuses
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'ما الحالات التشغيلية التي يمكن أن يكون عليها القفص؟',
-          'help_text' => 'حالة القفص منفصلة عن نوعه واستخدامه الحالي.',
-          'type' => QuestionType::from('multi_choice'),
-          'is_required' => true,
-          'sort_order' => 11,
-          'report_category' => 'lookup_values',
-          'target_entity' => 'cage_status',
-          'options' => [
-            ['label' => 'متاح', 'value' => 'available', 'sort_order' => 1],
-            ['label' => 'مشغول', 'value' => 'occupied', 'sort_order' => 2],
-            ['label' => 'محجوز', 'value' => 'reserved', 'sort_order' => 3],
-            ['label' => 'تحت الصيانة', 'value' => 'maintenance', 'sort_order' => 4],
-            ['label' => 'معطل', 'value' => 'disabled', 'sort_order' => 5],
-            ['label' => 'خارج الخدمة', 'value' => 'out_of_service', 'sort_order' => 6],
-            ['label' => 'أخرى', 'value' => 'other', 'sort_order' => 7],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 12. Status management
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل حالات القفص ثابتة أم قابلة للإدارة؟',
-          'help_text' => 'حدد هل يتم تمثيل الحالات كقيم ثابتة أم كقائمة يمكن إدارتها من لوحة التحكم.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 12,
-          'report_category' => 'value_management',
-          'target_entity' => 'cage_status',
-          'options' => [
-            ['label' => 'قيم ثابتة داخل النظام', 'value' => 'fixed', 'sort_order' => 1],
-            ['label' => 'قابلة للإضافة والتعديل من لوحة التحكم', 'value' => 'managed', 'sort_order' => 2],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 13. Group housing rules
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل يجب أن يطبق النظام قواعد على عدد ونوع الأرانب المسموح بتسكينها معًا داخل القفص؟',
-          'help_text' => 'مثل منع تجاوز السعة أو منع جمع حالات أو فئات لا يسمح التشغيل بجمعها معًا.',
-          'type' => QuestionType::from('yes_no'),
-          'is_required' => true,
-          'sort_order' => 13,
-          'report_category' => 'business_rule',
-          'target_entity' => 'cage_occupancy',
-          'options' => [],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 14. Adult animal occupancy
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'كيف تريد التعامل مع تسكين الذكور والإناث البالغة؟',
-          'help_text' => 'حدد القاعدة التشغيلية العامة، ويمكن لاحقًا إضافة استثناءات إذا احتاجها الواقع.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 14,
-          'report_category' => 'business_rule',
-          'target_entity' => 'cage_occupancy',
-          'options' => [
-            ['label' => 'كل ذكر أو أنثى بالغة في قفص منفرد', 'value' => 'single_adult_per_cage', 'sort_order' => 1],
-            ['label' => 'قد يسمح بأكثر من حيوان بالغ حسب نوع / استخدام القفص', 'value' => 'depends_on_cage_usage', 'sort_order' => 2],
-            ['label' => 'تحتاج القاعدة إلى مراجعة قبل الاعتماد', 'value' => 'needs_review', 'sort_order' => 3],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 15. Nest box handling
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'كيف يجب التعامل مع بيت الولادة بالنسبة لقفص الأنثى؟',
-          'help_text' => 'المصدر يفرق بين كون بيت الولادة جزءًا ثابتًا من القفص وبين تركيبه كجزء من تجهيز الأنثى قبل الولادة.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 15,
-          'report_category' => 'workflow_rule',
-          'target_entity' => 'nest_box',
-          'options' => [
-            ['label' => 'جزء ثابت من القفص', 'value' => 'fixed_part_of_cage', 'sort_order' => 1],
-            ['label' => 'يتم تركيبه وإزالته حسب مرحلة الحمل / الولادة', 'value' => 'workflow_installed', 'sort_order' => 2],
-            ['label' => 'لا نحتاج إلى تتبعه في النظام', 'value' => 'not_tracked', 'sort_order' => 3],
-            ['label' => 'يحتاج الأمر إلى مراجعة', 'value' => 'needs_review', 'sort_order' => 4],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 16. Dimensions/specifications
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل توجد مواصفات للقفص تستحق التسجيل مثل الأبعاد أو التجهيزات؟',
-          'help_text' => 'اختر نعم إذا كانت هذه المواصفات تؤثر فعليًا على التشغيل أو السعة أو نوع الاستخدام.',
-          'type' => QuestionType::from('yes_no'),
-          'is_required' => false,
-          'sort_order' => 16,
-          'report_category' => 'field_rule',
-          'target_entity' => 'cage',
-          'options' => [],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 17. Cleaning / disinfection workflow
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'ماذا يحدث للقفص بعد خروجه من الإشغال وقبل استخدامه مرة أخرى؟',
-          'help_text' => 'حدد هل يصبح القفص متاحًا مباشرة أم توجد عملية تنظيف / تعقيم يجب تسجيلها أو تنفيذها أولًا.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => true,
-          'sort_order' => 17,
-          'report_category' => 'workflow_rule',
-          'target_entity' => 'cage',
-          'options' => [
-            ['label' => 'يصبح متاحًا مباشرة', 'value' => 'available_immediately', 'sort_order' => 1],
-            ['label' => 'التنظيف / التعقيم إجراء اختياري يمكن تسجيله', 'value' => 'optional_cleaning', 'sort_order' => 2],
-            ['label' => 'يجب تنفيذ التنظيف / التعقيم قبل أن يصبح القفص متاحًا', 'value' => 'required_before_available', 'sort_order' => 3],
-            ['label' => 'تحتاج العملية إلى مراجعة', 'value' => 'needs_review', 'sort_order' => 4],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 18. QR / Barcode
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل تحتاج الأقفاص مستقبلًا إلى كود مرئي للوصول السريع إلى بياناتها؟',
-          'help_text' => 'مثل وضع QR Code أو Barcode على القفص ليستخدمه العامل للوصول إلى سجله مباشرة.',
-          'type' => QuestionType::from('single_choice'),
-          'is_required' => false,
-          'sort_order' => 18,
-          'report_category' => 'ui_requirement',
-          'target_entity' => 'cage',
-          'options' => [
-            ['label' => 'لا نحتاج ذلك حاليًا', 'value' => 'none', 'sort_order' => 1],
-            ['label' => 'QR Code', 'value' => 'qr_code', 'sort_order' => 2],
-            ['label' => 'Barcode', 'value' => 'barcode', 'sort_order' => 3],
-            ['label' => 'دعم الطريقتين', 'value' => 'both', 'sort_order' => 4],
-          ],
-        ],
-
-        /*
-        |--------------------------------------------------------------------------
-        | 19. Additional requirements
-        |--------------------------------------------------------------------------
-        */
-        [
-          'title' => 'هل توجد بيانات أو قواعد أو متطلبات أخرى تخص القفص / العين ولم نتطرق إليها؟',
-          'help_text' => 'اكتب أي ملاحظة أو متطلب إضافي يحتاج إلى مراجعة قبل اعتماد التصميم الفني.',
-          'type' => QuestionType::from('textarea'),
-          'is_required' => false,
-          'sort_order' => 19,
-          'report_category' => 'manual_review',
-          'target_entity' => 'cage',
-          'options' => [],
-        ],
-      ];
-
-      foreach ($questions as $questionData) {
-        $options = $questionData['options'] ?? [];
-        unset($questionData['options']);
-
-        $question = QuestionnaireQuestion::query()->updateOrCreate(
-          [
-            'section_id' => $subsection->id,
-            'title' => $questionData['title'],
-          ],
-          $questionData,
-        );
-
-        $optionValues = collect($options)
-          ->pluck('value')
-          ->all();
-
-        if ($optionValues !== []) {
-          $question->options()
-            ->whereNotIn('value', $optionValues)
-            ->delete();
-        } else {
-          $question->options()->delete();
-        }
-
-        foreach ($options as $optionData) {
-          $question->options()->updateOrCreate(
+class CageDataQuestionsSeeder extends Seeder
+{
+    public function run(): void
+    {
+        $questions = [
             [
-              'value' => $optionData['value'],
+                'seed_key' => 'cage.record_fields',
+                'title' => 'ما البيانات والمعلومات التي يجب أن يعرضها ملف القفص / العين؟',
+                'help_text' => 'المقصود هنا ما يجب أن يظهر في سجل القفص سواء كان بيانات هوية ثابتة أو معلومات تشغيلية مشتقة. لا يعني اختيار المعلومة أنها حقل قابل للتعديل اليدوي.',
+                'type' => QuestionType::MULTI_CHOICE,
+                'is_required' => true,
+                'sort_order' => 1,
+                'report_category' => 'field',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'كود القفص / العين', 'value' => 'code'],
+                    ['label' => 'QR Code', 'value' => 'qr_code'],
+                    ['label' => 'البطارية التابعة لها', 'value' => 'battery'],
+                    ['label' => 'الموقع الهيكلي داخل البطارية', 'value' => 'structural_position'],
+                    ['label' => 'النوع / المواصفات الفيزيائية إن وجدت', 'value' => 'physical_profile'],
+                    ['label' => 'الاستخدام التشغيلي الحالي', 'value' => 'current_usage'],
+                    ['label' => 'السعة القصوى', 'value' => 'capacity'],
+                    ['label' => 'الحالة التشغيلية المحلية الحالية', 'value' => 'local_status'],
+                    ['label' => 'تاريخ التفعيل / بدء التشغيل', 'value' => 'activated_at'],
+                    ['label' => 'عدد الحيوانات الحالي', 'value' => 'current_occupancy'],
+                    ['label' => 'الأماكن المتاحة', 'value' => 'available_capacity'],
+                    ['label' => 'الإتاحة الفعلية للتسكين', 'value' => 'housing_eligibility'],
+                    ['label' => 'جاهزية التطهير / إعادة الاستخدام', 'value' => 'sanitation_readiness'],
+                    ['label' => 'آخر إجراء تشغيلي', 'value' => 'last_action'],
+                    ['label' => 'ملاحظات', 'value' => 'notes'],
+                ],
             ],
             [
-              'label' => $optionData['label'],
-              'sort_order' => $optionData['sort_order'],
+                'seed_key' => 'cage.creation_source',
+                'title' => 'هل يجب أن يكون إنشاء القفص / العين ناتجًا حصريًا من تكوين البطارية دون وجود أمر «إضافة قفص» مستقل؟',
+                'help_text' => 'هذا يثبت أن البطارية وتكوينها الهيكلي هما مصدر إنشاء الأقفاص، وأن المستخدم لا ينشئ قفصًا منفردًا خارج هذا التسلسل.',
+                'type' => QuestionType::YES_NO,
+                'is_required' => true,
+                'sort_order' => 2,
+                'report_category' => 'architecture_rule',
+                'target_entity' => 'cage',
+                'options' => [],
             ],
-          );
-        }
-      }
-    });
-  }
+            [
+                'seed_key' => 'cage.direct_delete_policy',
+                'title' => 'هل يجب منع حذف القفص مباشرة من شاشة الأقفاص لأن دورة حياته تدار من خلال البطارية والتاريخ التشغيلي؟',
+                'help_text' => 'المنع هنا يخص Delete مباشر للقفص. تصحيح تكوين البطارية وإعادة توليد أقفاص غير مستخدمة قبل وجود تاريخ تشغيلي يظل عملية على مستوى البطارية وفق القرارات المعتمدة هناك.',
+                'type' => QuestionType::YES_NO,
+                'is_required' => true,
+                'sort_order' => 3,
+                'report_category' => 'lifecycle_rule',
+                'target_entity' => 'cage',
+                'options' => [],
+            ],
+            [
+                'seed_key' => 'cage.code_unique_scope',
+                'title' => 'ما نطاق عدم تكرار كود القفص / العين؟',
+                'help_text' => 'الكود هو الهوية التشغيلية التي سيستخدمها العامل ويعتمد عليها QR Code، لذلك يجب تحديد نطاق فريدته صراحة.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 4,
+                'report_category' => 'validation_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'فريد داخل البطارية فقط', 'value' => 'unique_within_battery'],
+                    ['label' => 'فريد داخل المزرعة فقط', 'value' => 'unique_within_farm'],
+                    ['label' => 'فريد على مستوى النظام بالكامل', 'value' => 'globally_unique'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.qr_code_strategy',
+                'title' => 'كيف يجب التعامل مع QR Code الخاص بالقفص / العين؟',
+                'help_text' => 'الهدف أن يكون لكل قفص تعريف مرئي دائم يستخدم للوصول مباشرة إلى سجله التشغيلي، وليس QR خاصًا بالحيوان الموجود داخله.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 5,
+                'report_category' => 'identification_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'QR Code إلزامي ويولد تلقائيًا من هوية / كود القفص', 'value' => 'required_generated_from_cage_identity'],
+                    ['label' => 'QR Code اختياري ويمكن توليده عند الحاجة', 'value' => 'optional_generated'],
+                    ['label' => 'لا نحتاج QR Code', 'value' => 'not_required'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.activation_model',
+                'title' => 'كيف يدخل القفص المولد فعليًا إلى التشغيل؟',
+                'help_text' => 'توليد القفص من البطارية يثبت وجوده الهيكلي، بينما التفعيل هو الحدث الذي يسمح بدخوله إلى دورة التشغيل الفعلية.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 6,
+                'report_category' => 'workflow_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'يتطلب Action تفعيل صريح يسجل في التاريخ', 'value' => 'explicit_activation_action'],
+                    ['label' => 'يعتبر مفعّلًا تلقائيًا بمجرد توليده', 'value' => 'automatic_on_generation'],
+                    ['label' => 'تحدد طريقة التفعيل من إعدادات التشغيل', 'value' => 'from_operational_settings'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.identity_lock_after_activation',
+                'title' => 'بعد تفعيل القفص، هل يجب قفل بيانات هويته الأساسية ومنع تعديلها مباشرة؟',
+                'help_text' => 'المقصود حماية الهوية والموقع الهيكلي الذي ستشير إليه الحركات والسجلات التاريخية، بحيث لا تتحول صفحة القفص إلى Edit Form يغير الماضي.',
+                'type' => QuestionType::YES_NO,
+                'is_required' => true,
+                'sort_order' => 7,
+                'report_category' => 'lifecycle_rule',
+                'target_entity' => 'cage',
+                'options' => [],
+            ],
+            [
+                'seed_key' => 'cage.immutable_identity_fields',
+                'title' => 'ما بيانات القفص التي يجب اعتبارها جزءًا من الهوية الثابتة بعد التفعيل؟',
+                'help_text' => 'هذه البيانات لا تعدل مباشرة بعد دخول القفص التشغيل؛ أي تغيير مادي حقيقي يعالج وفق قواعد إعادة تكوين البطارية وحماية التاريخ.',
+                'type' => QuestionType::MULTI_CHOICE,
+                'is_required' => true,
+                'sort_order' => 8,
+                'report_category' => 'lifecycle_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'كود القفص', 'value' => 'code'],
+                    ['label' => 'البطارية التابعة لها', 'value' => 'battery'],
+                    ['label' => 'الموقع الهيكلي داخل البطارية', 'value' => 'structural_position'],
+                    ['label' => 'معرفات الجانب / المستوى / الموضع الناتجة من التكوين', 'value' => 'structural_coordinates'],
+                    ['label' => 'هوية QR المرتبطة بالقفص', 'value' => 'qr_identity'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.status_transition_method',
+                'title' => 'كيف يجب تغيير الحالة التشغيلية للقفص بعد التفعيل؟',
+                'help_text' => 'المطلوب حسم ما إذا كانت الحالة قيمة تعدل مباشرة أم نتيجة لإجراء تشغيلي مسجل له صلاحيات وتاريخ.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 9,
+                'report_category' => 'workflow_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'من خلال Actions واضحة فقط، وكل Action ينشئ سجلًا تاريخيًا', 'value' => 'actions_with_history_only'],
+                    ['label' => 'يمكن تعديل الحالة مباشرة من قائمة مع تسجيل آخر قيمة فقط', 'value' => 'direct_edit_current_only'],
+                    ['label' => 'يدعم الطريقتين', 'value' => 'both'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.operational_statuses',
+                'title' => 'ما الحالات المحلية التي نحتاجها لدورة حياة القفص نفسه بعيدًا عن الإشغال والتطهير؟',
+                'help_text' => 'لا تضع «مشغول» أو «فارغ» هنا؛ الإشغال مشتق من الحيوانات والحركات. ولا تضع «بانتظار التطهير» كحالة عمرية للقفص إذا كانت جاهزية التطهير Workflow مستقلًا.',
+                'type' => QuestionType::MULTI_CHOICE,
+                'is_required' => true,
+                'sort_order' => 10,
+                'report_category' => 'lookup_values',
+                'target_entity' => 'cage_status',
+                'options' => [
+                    ['label' => 'نشط', 'value' => 'active'],
+                    ['label' => 'متوقف', 'value' => 'stopped'],
+                    ['label' => 'تحت الصيانة', 'value' => 'maintenance'],
+                    ['label' => 'خارج الخدمة نهائيًا / متقاعد', 'value' => 'retired'],
+                    ['label' => 'أخرى', 'value' => 'other'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.operational_status_management',
+                'title' => 'هل حالات دورة حياة القفص ثابتة داخل النظام أم قابلة للإضافة والتعديل؟',
+                'help_text' => 'هذه حالات Lifecycle لها قواعد وانتقالات، وليست مجرد قائمة وصفية.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 11,
+                'report_category' => 'value_management',
+                'target_entity' => 'cage_status',
+                'options' => [
+                    ['label' => 'قيم ثابتة داخل النظام', 'value' => 'fixed'],
+                    ['label' => 'قابلة للإضافة والتعديل من لوحة التحكم', 'value' => 'managed'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.supported_actions',
+                'title' => 'ما الإجراءات التشغيلية التي يجب أن يدعمها ملف القفص كـActions مسجلة؟',
+                'help_text' => 'اختيار Action يعني أن المستخدم ينفذ أمرًا واضحًا، ثم يتحقق النظام من الصلاحيات والقواعد ويسجل الحدث ونتيجته في تاريخ القفص.',
+                'type' => QuestionType::MULTI_CHOICE,
+                'is_required' => true,
+                'sort_order' => 12,
+                'report_category' => 'workflow_rule',
+                'target_entity' => 'cage_action',
+                'options' => [
+                    ['label' => 'تفعيل القفص', 'value' => 'activate'],
+                    ['label' => 'إيقاف القفص', 'value' => 'stop'],
+                    ['label' => 'إعادة القفص للتشغيل', 'value' => 'return_to_service'],
+                    ['label' => 'بدء الصيانة', 'value' => 'start_maintenance'],
+                    ['label' => 'إنهاء الصيانة', 'value' => 'complete_maintenance'],
+                    ['label' => 'إخراج القفص نهائيًا من الخدمة', 'value' => 'retire'],
+                    ['label' => 'بدء التطهير', 'value' => 'start_sanitation'],
+                    ['label' => 'إتمام التطهير', 'value' => 'complete_sanitation'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.action_audit_fields',
+                'title' => 'ما البيانات التي يجب تسجيلها مع كل Action يغيّر وضع القفص؟',
+                'help_text' => 'هذه البيانات تكوّن Audit Trail واضحًا يشرح ماذا حدث ومن نفذه ومتى ولماذا، بدل الاكتفاء بالقيمة الحالية.',
+                'type' => QuestionType::MULTI_CHOICE,
+                'is_required' => true,
+                'sort_order' => 13,
+                'report_category' => 'audit_rule',
+                'target_entity' => 'cage_action',
+                'options' => [
+                    ['label' => 'نوع الإجراء', 'value' => 'action_type'],
+                    ['label' => 'الحالة السابقة', 'value' => 'from_status'],
+                    ['label' => 'الحالة الناتجة', 'value' => 'to_status'],
+                    ['label' => 'تاريخ ووقت التنفيذ', 'value' => 'performed_at'],
+                    ['label' => 'المستخدم المنفذ', 'value' => 'performed_by'],
+                    ['label' => 'السبب / Trigger', 'value' => 'reason'],
+                    ['label' => 'ملاحظات', 'value' => 'notes'],
+                    ['label' => 'مرجع العملية الأصلية إذا كان الإجراء ناتجًا من Bulk Action', 'value' => 'parent_operation_reference'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.action_permission_rule',
+                'title' => 'هل يجب أن تخضع Actions القفص لصلاحيات مستقلة بدل السماح لأي مستخدم بتغيير وضعه؟',
+                'help_text' => 'يمكن أن تختلف صلاحية مشاهدة القفص عن صلاحية إيقافه أو إدخاله صيانة أو إعادته للتشغيل.',
+                'type' => QuestionType::YES_NO,
+                'is_required' => true,
+                'sort_order' => 14,
+                'report_category' => 'permission_rule',
+                'target_entity' => 'cage_action',
+                'options' => [],
+            ],
+            [
+                'seed_key' => 'cage.current_state_source',
+                'title' => 'ما مصدر الحالة التشغيلية الحالية المعروضة للقفص؟',
+                'help_text' => 'يمكن تخزين Snapshot حالي للأداء، لكن لا يجب أن يصبح قابلًا للتعديل بمعزل عن الأحداث التي صنعت الحالة.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 15,
+                'report_category' => 'architecture_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'نتيجة آخر Action / Transition صحيح مع الاحتفاظ بالتاريخ الكامل', 'value' => 'derived_from_action_history'],
+                    ['label' => 'قيمة حالية مستقلة تعدل مباشرة دون الاعتماد على التاريخ', 'value' => 'independent_current_value'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.physical_profile_strategy',
+                'title' => 'كيف يجب تمثيل الاختلافات الفيزيائية بين الأقفاص إن وجدت؟',
+                'help_text' => 'الهدف الفصل بين تصميم القفص نفسه وبين استخدامه التشغيلي. إذا كانت كل أقفاص البطارية متطابقة، لا نحتاج تكرار نوع فيزيائي مستقل على كل قفص.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 16,
+                'report_category' => 'architecture_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'لا يوجد نوع فيزيائي مستقل للقفص؛ خصائصه تأتي من تكوين / نوع البطارية', 'value' => 'inherit_from_battery_structure'],
+                    ['label' => 'لكل قفص نوع فيزيائي مستقل من Master Data قابلة للإدارة', 'value' => 'managed_cage_physical_type'],
+                    ['label' => 'تسجل مواصفات فيزيائية مباشرة لكل قفص دون قائمة أنواع مستقلة', 'value' => 'per_cage_physical_specs'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.operational_usage_model',
+                'title' => 'كيف يجب تمثيل الاستخدام التشغيلي الحالي للقفص؟',
+                'help_text' => 'الاستخدام يصف الغرض الحالي مثل أنثى إنتاج أو ذكر أو فطام أو تسمين أو عزل، وهو مفهوم مختلف عن هوية القفص وموقعه الفيزيائي.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 17,
+                'report_category' => 'architecture_rule',
+                'target_entity' => 'cage_usage',
+                'options' => [
+                    ['label' => 'لا يوجد استخدام مستقل؛ القفص يرث نشاط البطارية فقط', 'value' => 'inherit_battery_activity_only'],
+                    ['label' => 'للقفص استخدام تشغيلي واحد من قائمة قابلة للإدارة ومقيد بما تسمح به البطارية / العنبر', 'value' => 'managed_usage_constrained_by_parent'],
+                    ['label' => 'الاستخدام يستنتج فقط من الحيوان الموجود ولا يخزن كقرار تشغيلي مستقل', 'value' => 'derived_from_occupant_only'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.usage_change_policy',
+                'title' => 'إذا كان للقفص استخدام تشغيلي مستقل، كيف يسمح بتغييره بعد بدء التشغيل؟',
+                'help_text' => 'تغيير الاستخدام لا يجب أن يطمس التاريخ أو يسمح بتعارض مع حيوان موجود أو تطهير أو صيانة أو قواعد الجاهزية.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 18,
+                'report_category' => 'workflow_rule',
+                'target_entity' => 'cage_usage',
+                'options' => [
+                    ['label' => 'لا يسمح بتغييره بعد التفعيل', 'value' => 'fixed_after_activation'],
+                    ['label' => 'يسمح بتغييره من خلال Action فقط عندما يكون القفص فارغًا', 'value' => 'action_when_empty'],
+                    ['label' => 'يسمح من خلال Action فقط عندما يكون فارغًا وجاهزًا فعليًا لإعادة الاستخدام وفق إعدادات التشغيل، مع حفظ التاريخ', 'value' => 'action_when_empty_and_ready_with_history'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.capacity_strategy',
+                'title' => 'كيف يجب تحديد السعة القصوى للقفص / العين؟',
+                'help_text' => 'المرجع لا يفترض أن كل الأقفاص فردية؛ أقفاص الفطام أو التسمين قد تستوعب مجموعة، لذلك نحتاج مصدرًا واحدًا واضحًا للسعة.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 19,
+                'report_category' => 'capacity_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'قيمة محددة لكل قفص عند التأسيس / قبل التفعيل', 'value' => 'per_cage_value'],
+                    ['label' => 'تأتي من النوع / الملف الفيزيائي للقفص مع إمكانية Override قبل التفعيل', 'value' => 'from_physical_profile_with_pre_activation_override'],
+                    ['label' => 'تحدد من الاستخدام التشغيلي أو إعدادات التشغيل', 'value' => 'from_usage_or_operational_settings'],
+                    ['label' => 'كل الأقفاص فردية والسعة دائمًا 1', 'value' => 'always_one'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.occupancy_source',
+                'title' => 'هل يجب حساب عدد الحيوانات الحالي والأماكن المتاحة تلقائيًا من حركات التسكين والنقل بدل إدخالها يدويًا؟',
+                'help_text' => 'القفص هو الموقع الفعلي للحيوان؛ لذلك الإشغال الحالي يجب أن يعكس الحركات المسجلة حتى لا توجد قيمة يدوية تناقض الواقع.',
+                'type' => QuestionType::YES_NO,
+                'is_required' => true,
+                'sort_order' => 20,
+                'report_category' => 'calculation_rule',
+                'target_entity' => 'cage_occupancy',
+                'options' => [],
+            ],
+            [
+                'seed_key' => 'cage.housing_eligibility_factors',
+                'title' => 'ما العوامل التي يجب أن تدخل في حساب هل القفص مؤهل فعليًا لتسكين حيوان جديد الآن؟',
+                'help_text' => 'الإتاحة الفعلية أوسع من كون القفص فارغًا أو نشطًا محليًا؛ يجب أن تجمع كل الموانع التشغيلية ذات الصلة.',
+                'type' => QuestionType::MULTI_CHOICE,
+                'is_required' => true,
+                'sort_order' => 21,
+                'report_category' => 'business_rule',
+                'target_entity' => 'cage_occupancy',
+                'options' => [
+                    ['label' => 'الحالة المحلية للقفص تسمح بالتشغيل', 'value' => 'local_status_allows_operation'],
+                    ['label' => 'البطارية متاحة تشغيليًا', 'value' => 'battery_effectively_available'],
+                    ['label' => 'العنبر متاح تشغيليًا', 'value' => 'barn_effectively_available'],
+                    ['label' => 'وجود سعة متاحة', 'value' => 'capacity_available'],
+                    ['label' => 'الاستخدام التشغيلي متوافق مع الحيوان / العملية', 'value' => 'usage_compatible'],
+                    ['label' => 'عدم وجود صيانة مانعة', 'value' => 'no_maintenance_block'],
+                    ['label' => 'استيفاء التطهير وفترة الانتظار إن كانت مطلوبة', 'value' => 'sanitation_ready'],
+                    ['label' => 'استيفاء قواعد ملف إعدادات التشغيل المرتبط بالعنبر', 'value' => 'operational_settings_allow_housing'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.nest_box_handling',
+                'title' => 'كيف يجب التعامل مع بيت الولادة بالنسبة لقفص الأنثى؟',
+                'help_text' => 'إذا كان بيت الولادة يركب ويزال حسب مرحلة الحمل، فالأفضل تمثيله كحدث وتجهيز تشغيلي بدل اعتباره صفة ثابتة للقفص.',
+                'type' => QuestionType::SINGLE_CHOICE,
+                'is_required' => true,
+                'sort_order' => 22,
+                'report_category' => 'workflow_rule',
+                'target_entity' => 'nest_box',
+                'options' => [
+                    ['label' => 'جزء فيزيائي ثابت من القفص', 'value' => 'fixed_part_of_cage'],
+                    ['label' => 'تجهيز يركب ويزال من خلال Workflow تجهيز الولادة مع تسجيل الأحداث', 'value' => 'workflow_installed_and_removed'],
+                    ['label' => 'لا نحتاج تتبع بيت الولادة داخل النظام', 'value' => 'not_tracked'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.history_timeline',
+                'title' => 'هل يجب أن يعرض ملف القفص Timeline موحدًا لتاريخه التشغيلي بدل عرض الحالة الحالية فقط؟',
+                'help_text' => 'الـTimeline يجمع أحداث التفعيل وتغير الحالة والتسكين والخروج والنقل والصيانة والتطهير وغيرها مع الحفاظ على مصدر كل حدث.',
+                'type' => QuestionType::YES_NO,
+                'is_required' => true,
+                'sort_order' => 23,
+                'report_category' => 'history_rule',
+                'target_entity' => 'cage',
+                'options' => [],
+            ],
+            [
+                'seed_key' => 'cage.history_event_types',
+                'title' => 'ما أنواع الأحداث التي يجب أن تظهر في Timeline القفص؟',
+                'help_text' => 'الهدف توفير سجل تشغيلي متكامل للقفص دون تكرار البيانات داخل كيان القفص نفسه؛ كل حدث يحتفظ بمرجعه إلى العملية الأصلية.',
+                'type' => QuestionType::MULTI_CHOICE,
+                'is_required' => true,
+                'sort_order' => 24,
+                'report_category' => 'history_rule',
+                'target_entity' => 'cage',
+                'options' => [
+                    ['label' => 'التوليد / الإنشاء من البطارية', 'value' => 'generated'],
+                    ['label' => 'التفعيل', 'value' => 'activated'],
+                    ['label' => 'تغيرات الحالة التشغيلية', 'value' => 'status_transitions'],
+                    ['label' => 'تسكين الحيوانات', 'value' => 'housing'],
+                    ['label' => 'خروج / نقل الحيوانات', 'value' => 'animal_movements'],
+                    ['label' => 'تغير الاستخدام التشغيلي', 'value' => 'usage_changes'],
+                    ['label' => 'الصيانة', 'value' => 'maintenance'],
+                    ['label' => 'التطهير', 'value' => 'sanitation'],
+                    ['label' => 'الإخراج النهائي من الخدمة', 'value' => 'retirement'],
+                ],
+            ],
+            [
+                'seed_key' => 'cage.additional_requirements',
+                'title' => 'هل توجد قاعدة أو متطلب آخر يخص القفص / العين ولم تغطه الأسئلة السابقة؟',
+                'help_text' => 'اكتب فقط نقطة تحتاج دراسة لاحقة. أي Requirement مهم يظهر هنا يجب تحويله إلى سؤال مستقل قبل اعتماد القسم نهائيًا.',
+                'type' => QuestionType::TEXTAREA,
+                'is_required' => false,
+                'sort_order' => 25,
+                'report_category' => 'manual_review',
+                'target_entity' => 'cage',
+                'options' => [],
+            ],
+        ];
+
+        app(QuestionSeederSyncService::class)->sync(
+            mainSectionName: 'هيكل المزرعة',
+            sectionName: 'بيانات القفص / العين',
+            questions: $questions,
+            prune: true,
+            preserveAnswers: true,
+        );
+    }
 }
