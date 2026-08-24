@@ -29,29 +29,38 @@
 
 ## 3. الهيكل المنطقي للدراسة
 
-الأقسام الرئيسية الحالية:
+الأقسام الرئيسية الحالية بالترتيب المعتمد:
 
-1. إدارة البيانات الأساسية — Master Data / Foundation.
-2. إعدادات التشغيل — Operation Settings.
-3. تكوين وإدخال القطيع — Herd Setup.
-4. الحركات ودورة التشغيل — Workflow.
-5. التقارير والإشعارات ومؤشرات الأداء — Reports.
+1. إدارة البيانات الأساسية — Master / Reference Data.
+2. هيكل المزرعة — Farm Structure.
+3. إعدادات التشغيل ودورة الإنتاج — Operation Settings.
+4. تكوين وإدخال القطيع — Herd Setup.
+5. الحركات ودورة التشغيل الفعلية — Workflow.
+6. التقارير والإشعارات ومؤشرات الأداء — Reports.
 
-القسم الأول يمثل الـFoundation الذي تعتمد عليه بقية أجزاء النظام.
+الفرق الأساسي بين أول قسمين:
+
+```text
+Master / Reference Data
+= قوائم وتعريفات مرجعية يعاد استخدامها داخل النظام
+
+Farm Structure
+= كيانات فعلية تمثل المزرعة ومواقع التشغيل داخلها
+```
 
 ---
 
-## 4. هيكل إدارة البيانات الأساسية المعتمد حاليًا
+## 4. إدارة البيانات الأساسية وهيكل المزرعة
+
+### 4.1 إدارة البيانات الأساسية — Master / Reference Data
 
 ```text
 إدارة البيانات الأساسية
 │
-├── بيانات المزرعة
 ├── الأنشطة التشغيلية
 ├── ملفات إعدادات التشغيل
-├── بيانات العنبر
-├── بيانات البطارية
-├── بيانات القفص / العين
+├── الأغراض الإنتاجية
+├── مؤشرات السلالات
 ├── بيانات السلالات
 ├── المستخدمون وفريق التشغيل
 ├── أسباب النقل
@@ -60,30 +69,62 @@
 ├── أسباب الخروج
 ├── أسباب تغيير الذكر
 ├── المحافظات
-└── المدن
+├── المدن
+├── أنظمة التهوية
+├── أنظمة التبريد
+└── أنظمة التدفئة
 ```
 
 Seeder المسؤول:
 
 `database/seeders/Sections/QuestionnaireMasterDataSectionSeeder.php`
 
-تم تصميمه للحفاظ على هوية القسم القديم عند الانتقال من:
+هذا القسم لا يضم الكيانات الفيزيائية الفعلية للمزرعة.
 
-`إدخال البيانات الأساسية للمزرعة`
+### 4.2 هيكل المزرعة — Farm Structure
 
-إلى:
+```text
+هيكل المزرعة
+│
+├── بيانات المزرعة
+├── بيانات العنبر
+├── بيانات البطارية
+└── بيانات القفص / العين
+```
 
-`إدارة البيانات الأساسية`
+Seeder المسؤول:
 
-كما يعيد استخدام القسم الفرعي القديم:
+`database/seeders/Sections/QuestionnaireFarmStructureSectionSeeder.php`
 
-`أنشطة المزرعة`
+العلاقة الهيكلية الأساسية:
 
-ويغير اسمه إلى:
+```text
+Farm
+  ↓
+Barn
+  ↓
+Battery
+  ↓
+Cage / Cell
+```
 
-`الأنشطة التشغيلية`
+هذه الكيانات تمثل مواقع فعلية وليست Lookup Lists.
 
-بدل إنشاء Section جديد مكرر، وذلك للحفاظ على الـID والعلاقات المرتبطة به قدر الإمكان.
+### قاعدة الحفاظ على الهوية عند إعادة التنظيم
+
+إذا كان Subsection هيكلي موجودًا بالفعل تحت Parent قديم، لا يتم حذفه وإعادة إنشائه.
+
+يجب إعادة استخدام **نفس سجل `questionnaire_sections`** وتغيير `parent_id` فقط، بحيث نحافظ قدر الإمكان على:
+
+```text
+Section ID
+    ↓
+Question IDs
+    ↓
+Answers / Reviews / Relationships
+```
+
+`QuestionnaireFarmStructureSectionSeeder` مصمم للبحث عن القسم الموجود وإعادة استخدامه، ويوقف التنفيذ إذا وجد أكثر من سجل بنفس الاسم بدل اختيار سجل عشوائيًا.
 
 ---
 
@@ -97,10 +138,12 @@ Seeder المسؤول:
 
 `QuestionnaireSectionSeeder`
 
+الترتيب الرئيسي canonical يتم تثبيته في `QuestionnaireSectionSeeder` بعد تشغيل Seeders الأقسام.
+
 كل Section Seeder مسؤول عن:
 
 - القسم الرئيسي.
-- وصفه وترتيبه.
+- وصفه.
 - الأقسام الفرعية.
 - وصف كل قسم فرعي وترتيبه.
 
@@ -109,6 +152,12 @@ Seeder المسؤول:
 ---
 
 ## 6. بيانات المزرعة — قرارات تأسيسية
+
+`بيانات المزرعة` أصبحت جزءًا من:
+
+`هيكل المزرعة`
+
+وليست Master Data مرجعية.
 
 عند بناء أسئلة بيانات المزرعة يجب وجود سؤالين أساسيين على الأقل:
 
@@ -176,22 +225,7 @@ Seeder المسؤول:
 - حجر / عزل.
 - متعدد الاستخدام.
 
-ويجب تحويل القرارات المتعلقة بنشاط العنبر إلى أسئلة صريحة في قسم `بيانات العنبر`، مثل:
-
-- هل يجب أن يكون لكل عنبر نشاط تشغيلي محدد؟
-- هل يمكن للعنبر الواحد أن يرتبط بأكثر من نشاط؟
-
-بناءً على الإجابات يمكن أن يصبح التصميم النهائي مثل:
-
-```text
-Barn → Activity
-```
-
-أو:
-
-```text
-Barn ↔ Activities
-```
+ويجب تحويل القرارات المتعلقة بنشاط العنبر إلى أسئلة صريحة في قسم `بيانات العنبر`.
 
 أما نشاط المزرعة فيستنتج من أنشطة عنابرها ولا يخزن كاختيار مستقل متعارض مع الواقع التشغيلي.
 
@@ -215,14 +249,7 @@ Operational Settings Profile
 
 يمكن إنشاء أكثر من ملف إعدادات تشغيل، ويُستخدم ملف مناسب مع العنبر.
 
-يجب أن تتحول القرارات الأساسية مثل:
-
-- هل اختيار ملف إعدادات للعنبر إلزامي؟
-- هل يمكن استخدام نفس ملف الإعدادات لأكثر من عنبر؟
-- هل يمكن تغيير الملف بعد بدء التشغيل؟
-- كيف نحافظ على تاريخ الإعدادات المستخدمة؟
-
-إلى **أسئلة صريحة** في القسم المناسب حتى تظهر كRequirements في التقرير والـBlueprint النهائي.
+القرارات التفصيلية تحسم بأسئلة صريحة حتى تظهر كRequirements في التقرير والـBlueprint النهائي.
 
 ---
 
@@ -245,7 +272,7 @@ Operational Settings Profile
 
 ## 10. المحافظات والمدن
 
-المحافظات والمدن Master Data مستقلة وتم وضعها في آخر ترتيب قسم إدارة البيانات الأساسية.
+المحافظات والمدن Master Data مستقلة.
 
 ```text
 Governorate
@@ -275,17 +302,6 @@ City
 - العلاقات تعتمد على IDs / Foreign Keys.
 - لا تعتمد على `code` كهوية للعلاقة.
 
-الحد الأدنى المقترح لاحقًا:
-
-```text
-id
-name JSON / translatable
-is_active
-sort_order
-created_at
-updated_at
-```
-
 وجود `is_active` يسمح بإيقاف قيمة بدون حذفها وكسر السجل التاريخي.
 
 ---
@@ -301,24 +317,6 @@ name_ar
 name_en
 ```
 
-النمط:
-
-```json
-{
-    "ar": "الإسكندرية",
-    "en": "Alexandria"
-}
-```
-
-ينطبق على أمثلة مثل:
-
-- الأنشطة التشغيلية.
-- المحافظات.
-- المدن.
-- السلالات.
-- أسباب النقل والنفوق والاستبعاد والخروج وتغيير الذكر.
-- أي Master Data مشابه لاحقًا.
-
 الأرقام والتواريخ والـIDs والإحداثيات والقيم التقنية لا تحتاج ترجمة.
 
 ---
@@ -330,17 +328,6 @@ name_en
 **IDs + Foreign Keys**
 
 ولا تعتمد على الأكواد النصية.
-
-أمثلة:
-
-```text
-cities.governorate_id
-barn.activity_id حسب التصميم النهائي
-barn.settings_profile_id حسب التصميم النهائي
-mortality_record.mortality_reason_id
-transfer_record.transfer_reason_id
-exclusion_record.exclusion_reason_id
-```
 
 يمكن وجود Code لأغراض تشغيلية، لكنه ليس أساس الربط بين الجداول.
 
@@ -380,28 +367,20 @@ exclusion_record.exclusion_reason_id
 - Audit / History Rule.
 - Configuration Rule.
 
-### قاعدة إلزامية
-
 **أي Requirement أساسي يجب أن يكون ممثلًا بسؤال صريح داخل الاستبيان، حتى إذا كانت الإجابة تبدو بديهية أو كان اتجاه القرار معروفًا مسبقًا.**
-
-السبب أن الإجابة هي المرجع الرسمي الذي ستعتمد عليه التقارير والـBlueprint النهائي.
 
 يمكن اعتبار الأسئلة نوعين:
 
-1. Discovery Question — لاكتشاف قرار غير محسوم.
-2. Confirmation Question — لتثبيت Requirement معروف الاتجاه داخل المخرجات الرسمية.
+1. Discovery Question.
+2. Confirmation Question.
 
-لا يحذف السؤال لمجرد أن إجابته بديهية؛ يحذف فقط إذا كان لا ينتج Requirement / Rule / Relationship / Field / Workflow Decision مفيد، أو إذا اكتشفنا أنه موضوع في الكيان أو القسم الخطأ ويجب نقله إلى مكانه الصحيح.
+لا يحذف السؤال لمجرد أن إجابته بديهية؛ يحذف فقط إذا كان لا ينتج قرارًا مفيدًا أو إذا كان موضوعًا في القسم الخطأ.
 
 ---
 
 ## 16. Question Types
 
-يجب مراجعة:
-
-`App\Enums\Questionnaire\QuestionType`
-
-الأنواع الحالية:
+الأنواع الحالية في `App\Enums\Questionnaire\QuestionType`:
 
 - `text`
 - `textarea`
@@ -423,38 +402,21 @@ exclusion_record.exclusion_reason_id
 - EQUALS
 - CONTAINS
 
-لكن قاعدة العمل الحالية:
+القاعدة الحالية:
 
 > إذا كان السؤال معتمدًا، يظهر دائمًا. وإذا لم نعد نحتاجه، نحذفه من Seeder بدل إخفائه بشرط Dependency.
 
-لا تستخدم Dependencies في Seeders الجديدة إلا إذا قرر المستخدم صراحة وجود حالة استثنائية تحتاج ذلك.
+لا تستخدم Dependencies جديدة إلا إذا كان لها مبرر وظيفي واضح وتم اعتمادها.
 
 ---
 
 ## 18. Question Seeder Sync
 
-تم اعتماد نظام موحد لمزامنة الأسئلة بدل كتابة منطق الحذف والتحديث داخل كل Seeder.
-
-الخدمة:
+الخدمة الموحدة:
 
 `app/Services/Questionnaire/QuestionSeederSyncService.php`
 
-### seed_key
-
-لكل سؤال Identifier ثابت:
-
-`seed_key`
-
-مثال:
-
-```text
-farm.fields
-farm.required_fields
-farm.code_strategy
-farm.delete_policy
-```
-
-`seed_key` خاص بهوية السؤال داخل الـBlueprint / Seeders فقط، وليس Code للعلاقات في نظام المزرعة النهائي.
+لكل سؤال `seed_key` ثابت.
 
 هوية السؤال تعتمد على:
 
@@ -462,17 +424,7 @@ farm.delete_policy
 section_id + seed_key
 ```
 
-وليس:
-
-```text
-section_id + sort_order
-```
-
-وبالتالي يمكن تغيير ترتيب السؤال أو صياغته بدون تغيير هويته أو نقل إجابة سؤال إلى سؤال آخر بسبب تغيير الترتيب.
-
-### Options
-
-هوية Option داخل السؤال تعتمد على:
+وهوية Option تعتمد على:
 
 ```text
 question_id + value
@@ -480,117 +432,84 @@ question_id + value
 
 ويتم استخدام `updateOrCreate` بدل الحذف وإعادة الإنشاء العمياء.
 
+### Canonical Parent Routing
+
+الكيانات التالية مملوكة لقسم `هيكل المزرعة`:
+
+- بيانات المزرعة.
+- بيانات العنبر.
+- بيانات البطارية.
+- بيانات القفص / العين.
+
+`QuestionSeederSyncService` يحتوي Canonical Parent Mapping لهذه الأقسام حتى لا يستطيع Seeder قديم توجيهها إلى Master Data أو إنشاء مسار متعارض.
+
 ---
 
 ## 19. أوضاع المزامنة والتعامل مع الإجابات
 
-`QuestionSeederSyncService` يدعم مرحلتين:
-
-### مرحلة التصميم الحالية
-
-Seeders الحالية تستخدم:
+`QuestionSeederSyncService` يدعم:
 
 ```text
-prune = true
-preserveAnswers = false
+prune
+preserveAnswers
 ```
 
-المعنى:
+### أثناء مرحلة إعادة البناء الحالية
 
-- Seeder هو Source of Truth للقسم.
-- السؤال المحذوف من تعريفات Seeder يحذف من قاعدة البيانات.
-- Answer وOptions التابعة للسؤال المحذوف تحذف تلقائيًا بسبب Cascade.
-- إعادة ترتيب الأسئلة لا تكسر الهوية لأن الربط بـ`seed_key`.
+المستخدم يعتمد حاليًا محليًا على:
 
-### عند حذف Option من سؤال
-
-يتم التعامل حسب نوع السؤال:
-
-#### Multi Choice
-
-إذا كانت الإجابة مثلًا:
-
-```json
-["name", "activities", "phones"]
+```bash
+php artisan migrate:refresh --seed
 ```
 
-ثم تم حذف Option:
+وهذا يعني أن قاعدة بيانات التطوير تعاد بناؤها بالكامل، وبالتالي **الإجابات الحالية لا تعتبر محفوظة عبر هذا الأمر**.
+
+مع ذلك يجب كتابة Seeders من الآن بصورة مستقرة حتى لا نضطر لإعادة تصميمها عندما تصبح الإجابات مهمة.
+
+### عند بدء الحفاظ على الإجابات لاحقًا
+
+نتوقف عن استخدام `migrate:refresh --seed` كطريقة تشغيل عادية على قاعدة البيانات التي تحتوي الإجابات المهمة.
+
+ويصبح المبدأ:
 
 ```text
-activities
+Stable Section Record
++ Stable seed_key
++ Stable option value
++ preserveAnswers = true
 ```
 
-فالنتيجة تصبح:
+أي تغيير تدميري يجعل إجابة موجودة غير صالحة يجب أن يوقف الـSync برسالة واضحة بدل حذف البيانات.
 
-```json
-["name", "phones"]
-```
+### نقل الأقسام بعد وجود إجابات
 
-أي يتم حذف الاختيار الملغي فقط مع الحفاظ على بقية الإجابة وملاحظاتها وحالة المراجعة.
+النقل المسموح به هو تغيير `parent_id` لنفس Section record مع الحفاظ على الـID.
 
-إذا لم يتبق أي اختيار صالح بعد المزامنة، تحذف الإجابة ويصبح السؤال Unanswered ليعاد حسمه.
-
-#### Single Choice / Select
-
-إذا كانت القيمة المختارة نفسها قد ألغيت، لا يمكن الاحتفاظ بإجابة صحيحة؛ لذلك تحذف الإجابة في مرحلة التصميم الحالية.
-
-#### تغيير Question Type
-
-إذا تغير نوع السؤال بشكل يجعل الإجابة الحالية غير صالحة، تحذف الإجابة في مرحلة التصميم الحالية.
-
-### عند حذف السؤال بالكامل
-
-العلاقة الحالية هي:
+غير المسموح:
 
 ```text
-questionnaire_answers.question_id → cascadeOnDelete
-questionnaire_question_options.question_id → cascadeOnDelete
+Delete subsection
+→ Create new subsection
+→ Recreate questions
 ```
 
-لذلك حذف السؤال من Seeder مع `prune = true` يؤدي إلى:
-
-```text
-Question deleted
-    ↓
-Answer deleted automatically
-Options deleted automatically
-```
-
-ولا يحتاج كل Seeder إلى كتابة كود حذف خاص.
-
-### مرحلة الاستقرار لاحقًا
-
-عند وجود إجابات يجب اعتبارها بيانات مرجعية مهمة، نستخدم:
-
-```text
-preserveAnswers = true
-```
-
-وعندها أي تغيير تدميري يجعل إجابة موجودة غير صالحة يوقف الـSync برسالة واضحة بدل حذف أو تعديل البيانات.
+لأن ذلك يغير الهوية ويعرض الإجابات والعلاقات للخطر.
 
 ---
 
 ## 20. شكل Question Seeder
 
-كل Seeder يكون في الأساس مجرد تعريف للأسئلة:
+كل Seeder يكون في الأساس تعريفًا للأسئلة ثم يستخدم `QuestionSeederSyncService`.
+
+مثال canonical لبيانات المزرعة:
 
 ```php
-$questions = [
-    [
-        'seed_key' => 'farm.fields',
-        'title' => '...',
-        'type' => QuestionType::MULTI_CHOICE,
-        'sort_order' => 1,
-        'options' => [...],
-    ],
-];
-
 app(QuestionSeederSyncService::class)->sync(
-    mainSectionName: 'إدارة البيانات الأساسية',
+    mainSectionName: 'هيكل المزرعة',
     sectionName: 'بيانات المزرعة',
     questions: $questions,
     prune: true,
-    preserveAnswers: false,
+    preserveAnswers: true, // عند مرحلة تثبيت الإجابات
 );
 ```
 
@@ -598,52 +517,49 @@ app(QuestionSeederSyncService::class)->sync(
 
 ---
 
-## 21. الحالة الحالية لأسئلة المزرعة
+## 21. Orchestrators الحالية للأسئلة
 
-`FarmDataQuestionsSeeder` يستخدم نظام Sync الجديد.
+تم فصل Seeders الأسئلة إلى مجموعتين واضحتين:
 
-تم حذف السؤال:
+### Reference / Master Data
 
-`هل يمكن ربط المزرعة بأكثر من نشاط في نفس الوقت؟`
+`database/seeders/QuestionnaireMasterDataQuestionsSeeder.php`
 
-لأن النشاط لم يعد علاقة مباشرة بالمزرعة.
+يستدعي الأسئلة المرجعية المعتمدة فقط.
 
-كما تم حذف Option النشاط من:
+### Farm Structure
 
-- سؤال بيانات ملف المزرعة.
-- سؤال البيانات الإلزامية عند إنشاء المزرعة.
+`database/seeders/QuestionnaireFarmStructureQuestionsSeeder.php`
 
-الأسئلة الحالية للمزرعة عددها 10، وتستمر بقية الأسئلة باستخدام نفس `seed_key` مع إعادة ترتيب `sort_order` بصورة متصلة.
+يستدعي حاليًا:
 
-`QuestionnaireFarmQuestionsSeeder` يعمل حاليًا في Review Mode ويستدعي أسئلة `بيانات المزرعة` فقط.
+- `FarmDataQuestionsSeeder`
+- `BarnDataQuestionsSeeder`
+- `BatteryDataQuestionsSeeder`
 
-`DatabaseSeeder` يستدعي:
+ولا يستدعي `CageDataQuestionsSeeder` القديم لأن أسئلة القفص قيد إعادة البناء وفق النموذج الجديد.
+
+يوجد مؤقتًا:
 
 `QuestionnaireFarmQuestionsSeeder`
 
-وبالتالي reset + seed ينشئ الأقسام وأسئلة المزرعة الحالية تلقائيًا.
-
-السؤال القديم الخاص بتطبيق الإعدادات على مستوى المزرعة محذوف؛ الإعدادات مرتبطة بالعنابر وملفات إعدادات التشغيل.
+كـCompatibility Wrapper للاختبارات أو الأوامر القديمة، ويستدعي المجموعتين معًا. لا يستخدم كمرجع معماري جديد.
 
 ---
 
 ## 22. إعادة بناء قاعدة البيانات أثناء مرحلة التطوير
 
-الأوامر التالية **تدميرية** وتحذف البيانات الحالية، وتستخدم فقط عندما يكون المقصود إعادة بناء بيئة التطوير من الصفر:
-
-```bash
-php artisan migrate:fresh --seed
-```
-
-أو:
+طريقة العمل المحلية الحالية المعتمدة من المستخدم هي:
 
 ```bash
 php artisan migrate:refresh --seed
 ```
 
-في مرحلة التصميم، إذا كان الهدف فقط تجربة تعديل Question Seeder مع الاحتفاظ ببقية البيانات، لا نحتاج Reset كامل؛ يكفي تشغيل Seeder الأقسام عند تغير الهيكل ثم Seeder الأسئلة المطلوب.
+الأمر **تدميري** ويعيد بناء قاعدة البيانات من الصفر، لذلك يستخدم الآن فقط لأن المستخدم قرر أن إعادة الإجابة مقبولة أثناء إعادة تنظيم الدراسة.
 
-لا يستخدم `fresh` أو `refresh` عندما نريد اختبار هل الـSync حافظ على الإجابات الحالية، لأنهما سيمسحان قاعدة البيانات أصلًا ولن نكون قد اختبرنا المزامنة على بيانات موجودة.
+`DatabaseSeeder` يجب أن يبني الحالة الكاملة المتوقعة من الصفر وألا يعتمد على أسئلة أو Sections باقية من تشغيل سابق.
+
+عندما تصبح الإجابات الحالية بيانات يجب الحفاظ عليها، لا يستخدم `refresh` أو `fresh` عليها، ويتم الانتقال إلى تشغيل Seeders المزامنة بصورة محافظة مع `preserveAnswers = true` حسب القسم.
 
 ---
 
@@ -729,12 +645,13 @@ Blueprint
 
 ```bash
 git status
+git pull origin master
 ```
 
-ثم:
+ثم في مرحلة إعادة البناء الحالية:
 
 ```bash
-git pull origin master
+php artisan migrate:refresh --seed
 ```
 
 يفضل سحب تعديلات المرحلة معًا بعد اكتمالها، مع الانتباه لأي تعديلات Local غير محفوظة.
@@ -759,20 +676,6 @@ git pull origin master
 
 تم اعتماد طبقة تفسير مستقلة بين الأسئلة والإجابات وبين وكيل كتابة الـRequirements.
 
-هيكل الأدلة:
-
-```text
-docs/questionnaire-guide/
-├── 01-master-data.md
-├── 02-operation-settings.md
-├── 03-herd-setup.md
-├── 04-workflow.md
-├── 05-reports.md
-└── REQUIREMENTS_CONFLICTS.md
-```
-
-### وظيفة ملفات Guide
-
 ملفات `questionnaire-guide`:
 
 - تشرح معنى الأسئلة وحدود تفسيرها.
@@ -780,6 +683,12 @@ docs/questionnaire-guide/
 - لا تكرر الإجابات الفعلية حتى لا يصبح لدينا مصدران للحقيقة.
 - توضح ما الذي يجب أن ينتج من الإجابة من Requirements / Rules / Relationships / Validation.
 - توضح ما الذي لا يجوز استنتاجه من السؤال.
+
+### ملاحظة تنظيمية بعد فصل Farm Structure
+
+تم فصل Farm / Barn / Battery / Cage في بنية الـSections والـQuestion Seeder Orchestrators.
+
+ملفات Guide التاريخية التي كانت تحت `questionnaire-guide/master-data/` لا يتم حذفها أو نقلها بصورة عمياء. يعاد تنظيمها في خطوة توثيقية مستقلة مع الحفاظ على المحتوى والروابط، بعد التأكد من نجاح بنية الأقسام الجديدة.
 
 ### Question Key في التقارير
 
@@ -799,38 +708,15 @@ Exported Answers
 Requirements Agent
 ```
 
-### نوعا التصدير
+### Final Requirements Input
 
-يوجد فرق بين:
+الـFinal Requirements Input:
 
-1. **Study / Implementation Preparation Report**
-   - مخصص للدراسة والمراجعة.
-   - يمكن أن يحتوي أسئلة مفتوحة وملاحظات وعناصر مراجعة.
-   - الملف الحالي: `rabbit-farm-implementation-prep-report.md`.
-
-2. **Final Requirements Input**
-   - مخصص لتغذية وكيل كتابة الـRequirements بعد اكتمال الدراسة.
-   - الملف: `rabbit-farm-final-requirements-input.md`.
-   - يستبعد أسئلة `manual_review`.
-   - يستبعد أسئلة `*.additional_requirements` لأنها أدوات مرحلة الدراسة.
-   - لا يعتمد سؤالًا نهائيًا بلا إجابة.
-   - لا يعتمد سؤالًا نهائيًا بلا `Question Key`.
-   - لا يعتمد إجابة عليها مراجعة غير محسومة.
-
-### قاعدة الأسئلة المفتوحة
-
-الأسئلة مثل:
-
-```text
-farm.additional_requirements
-barn.additional_requirements
-```
-
-وظيفتها جمع ملاحظات أثناء الدراسة فقط.
-
-إذا ظهرت فيها نقطة مهمة، يجب تحويلها إلى سؤال حقيقي مستقل له `Question Key` ثم الإجابة عليه قبل إنهاء الدراسة.
-
-لا تحول إجابة السؤال المفتوح مباشرة إلى Requirement نهائي، ولا يراجعها وكيل كتابة الـRequirements بعد انتهاء مرحلة الدراسة.
+- يستبعد أسئلة `manual_review`.
+- يستبعد أسئلة `*.additional_requirements` كمدخل مباشر للـRequirements.
+- لا يعتمد سؤالًا نهائيًا بلا إجابة.
+- لا يعتمد سؤالًا نهائيًا بلا `Question Key`.
+- لا يعتمد إجابة عليها مراجعة غير محسومة.
 
 ### المصادر المسموح بها لوكيل كتابة الـRequirements
 
@@ -838,12 +724,10 @@ barn.additional_requirements
 
 1. `docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`.
 2. ملف Guide الخاص بالقسم داخل `docs/questionnaire-guide/`.
-3. `rabbit-farm-final-requirements-input.md`.
+3. Final Requirements Input.
 4. `docs/questionnaire-guide/REQUIREMENTS_CONFLICTS.md`.
 
 **لا يستخدم `تصور_مشروع_الارانب.md` في مرحلة كتابة الـRequirements النهائية.**
-
-دور `تصور_مشروع_الارانب.md` ينتهي عند استخدامه كمرجع وظيفي لبناء ومراجعة أسئلة الدراسة. بعد ذلك تكون الأسئلة المعتمدة وإجاباتها وأدلة تفسيرها هي مصدر القرارات النهائية.
 
 ### قاعدة التعارضات
 
@@ -856,16 +740,6 @@ barn.additional_requirements
 - يوضح Question Keys المتعارضة والأثر والقرار المطلوب.
 - يستمر في الأجزاء غير المتأثرة.
 - بعد قرار المستخدم يصحح الـRequirement المتأثر ويتحقق من زوال التعارض ثم يحذف الملاحظة المفتوحة.
-
-أكواد التعارضات:
-
-```text
-RQ-CF-MD-0001   Master Data
-RQ-CF-OPS-0001  Operation Settings
-RQ-CF-HERD-0001 Herd Setup
-RQ-CF-WF-0001   Workflow
-RQ-CF-RPT-0001  Reports
-```
 
 ### مسار البيانات النهائي
 
