@@ -244,36 +244,27 @@ class PregnancyFollowUpQuestionsSeeder extends Seeder
 
         $resultCategories = $questions->get('pregnancy_check.result_categories');
 
-        if ($resultCategories) {
-            $dependencies = [
-                'pregnancy_check.uncertain_result_flow' => 'uncertain',
-                'pregnancy_check.positive_result_flow' => 'positive',
-                'pregnancy_check.negative_result_flow' => 'negative',
-            ];
-
-            foreach ($dependencies as $dependentSeedKey => $dependencyValue) {
-                $dependentQuestion = $questions->get($dependentSeedKey);
-
-                if (! $dependentQuestion) {
-                    continue;
-                }
-
-                $dependentQuestion->forceFill([
-                    'depends_on_question_id' => $resultCategories->id,
-                    'dependency_operator' => QuestionDependencyOperator::CONTAINS,
-                    'dependency_value' => $dependencyValue,
-                ])->save();
-            }
+        if (! $resultCategories) {
+            return;
         }
 
-        $followupTypes = $questions->get('pregnancy.followup_event_types');
-        $followupFields = $questions->get('pregnancy.followup_event_record_fields');
+        $dependencies = [
+            'pregnancy_check.uncertain_result_flow' => 'uncertain',
+            'pregnancy_check.positive_result_flow' => 'positive',
+            'pregnancy_check.negative_result_flow' => 'negative',
+        ];
 
-        if ($followupTypes && $followupFields) {
-            $followupFields->forceFill([
-                'depends_on_question_id' => $followupTypes->id,
+        foreach ($dependencies as $dependentSeedKey => $dependencyValue) {
+            $dependentQuestion = $questions->get($dependentSeedKey);
+
+            if (! $dependentQuestion) {
+                continue;
+            }
+
+            $dependentQuestion->forceFill([
+                'depends_on_question_id' => $resultCategories->id,
                 'dependency_operator' => QuestionDependencyOperator::CONTAINS,
-                'dependency_value' => 'nest_box_installation',
+                'dependency_value' => $dependencyValue,
             ])->save();
         }
     }
