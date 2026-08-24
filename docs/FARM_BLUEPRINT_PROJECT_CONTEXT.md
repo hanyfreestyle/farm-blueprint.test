@@ -299,7 +299,7 @@ Cage / Cell
 عرض الجاهزية وأسباب عدمها → Reports
 ```
 
-### 8.1 — بيانات وهوية الحيوان — IMPLEMENTED ON GITHUB
+### 8.1 — بيانات وهوية الحيوان — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 
@@ -359,7 +359,7 @@ preserveAnswers = true
 شكل الكود القابل للتهيئة → Settings 6.2
 ```
 
-### 8.2 — مصدر الحيوان وبداية السجل — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 8.2 — مصدر الحيوان وبداية السجل — IMPLEMENTED & LOCAL SEED VERIFIED
 
 Seeder:
 
@@ -431,6 +431,70 @@ preserveAnswers = true
 والقطيع الموجود أصلًا عند بدء استخدام النظام وتاريخه الناقص يعالج في:
 
 `3.4 القطيع الافتتاحي وتهيئة نقطة البداية`
+
+### 8.3 — النسب وشجرة العائلة — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+
+`database/seeders/Questions/AnimalHerd/AnimalPedigreeQuestionsSeeder.php`
+
+عدد الأسئلة: **10**.
+
+المفاتيح المستقرة:
+
+```text
+animal.pedigree_relationships
+animal.internal_pedigree_derivation
+animal.pedigree_completeness_states
+animal.external_ancestor_strategy
+animal.external_ancestor_fields
+animal.pedigree_evidence_types
+animal.family_tree_build_strategy
+animal.biological_vs_foster_mother
+animal.genetic_line_usage
+animal.offspring_breed_derivation
+```
+
+القرارات التي تغطيها المجموعة:
+
+- علاقات النسب المباشرة: الأب البيولوجي / الأم البيولوجية / البطن.
+- هل نسب الناتج الداخلي يستنتج من سجلات الولادة ودورة الإنتاج أم يعاد إدخاله يدويًا.
+- دعم النسب الكامل والجزئي وغير المعروف دون اختلاق بيانات.
+- كيفية تمثيل والد أو سلف معروف لكنه غير موجود كحيوان داخل النظام.
+- البيانات الممكن حفظها في سجل السلف الخارجي عند اعتماد هذا النموذج.
+- مصادر توثيق النسب ودرجة موثوقية المعلومة.
+- هل شجرة العائلة تبنى تلقائيًا من العلاقات أم تصان يدويًا.
+- الفصل بين الأم البيولوجية والأم الحاضنة / المرضعة عند نقل المواليد.
+- هل يحتاج المشروع مفهوم Genetic Line مستقلًا بجانب Breed وPedigree.
+- كيفية التعامل مع تصنيف سلالة نسل أبوين من سلالات مختلفة دون فقد حقيقة سلالة الأب والأم.
+
+Dependency الحالية:
+
+```text
+animal.external_ancestor_fields
+→ animal.external_ancestor_strategy EQUALS external_ancestor_reference
+```
+
+يستخدم:
+
+```text
+prune = true
+preserveAnswers = true
+```
+
+### حدود 3.3
+
+لا تحسم داخله موضوعات مكانها الأقسام الأخرى:
+
+```text
+عدد الأجيال المعروضة في شجرة العائلة → Reports 5.9
+تقارير الإخوة / الأبناء / انتشار الخطوط → Reports 5.9
+درجات القرابة والتحليل قبل التلقيح → Settings / Reports حسب الوظيفة
+Warning / Block / Override للقرابة → Settings 6.2 و6.5
+طريقة تصحيح الأب أو الأم كسجل حساس → Settings 6.2
+تقييم الأب والأم من نتائج الأبناء → Reports 5.7 و5.8
+نقل المواليد بين الأمهات كحدث فعلي → Workflow
+```
 
 ---
 
@@ -547,6 +611,7 @@ QuestionnaireSettingsQuestionsSeeder
 ```text
 AnimalIdentityQuestionsSeeder
 AnimalSourceQuestionsSeeder
+AnimalPedigreeQuestionsSeeder
 ```
 
 شجرة AnimalHerd الحالية:
@@ -554,7 +619,8 @@ AnimalSourceQuestionsSeeder
 ```text
 database/seeders/Questions/AnimalHerd/
 ├── AnimalIdentityQuestionsSeeder.php
-└── AnimalSourceQuestionsSeeder.php
+├── AnimalSourceQuestionsSeeder.php
+└── AnimalPedigreeQuestionsSeeder.php
 ```
 
 Workflow / Reports / Settings Orchestrators ما زالت بدون Question Seeders فعلية حتى يبدأ تصميم كل قسم.
@@ -666,8 +732,9 @@ Blueprint
 ```text
 Architecture → IMPLEMENTED & VERIFIED
 Question Creation → IN PROGRESS
-3.1 Animal Identity → IMPLEMENTED ON GITHUB
-3.2 Animal Source / Record Start → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+3.1 Animal Identity → IMPLEMENTED & LOCAL SEED VERIFIED
+3.2 Animal Source / Record Start → IMPLEMENTED & LOCAL SEED VERIFIED
+3.3 Animal Pedigree / Family Tree → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 الخطوة المحلية التالية:
@@ -677,9 +744,9 @@ git pull origin master
 php artisan db:seed --class=QuestionnaireAnimalHerdQuestionsSeeder
 ```
 
-بعد نجاح الـSeeder ومراجعة ظهور الأسئلة والـDependencies، يكون التالي:
+بعد نجاح الـSeeder يكون التالي:
 
-`3.3 النسب وشجرة العائلة`
+`3.4 القطيع الافتتاحي وتهيئة نقطة البداية`
 
 ---
 
