@@ -3,11 +3,11 @@
 namespace Database\Seeders;
 
 use App\Models\QuestionnaireSection;
+use Database\Seeders\Sections\QuestionnaireAnimalHerdSectionSeeder;
 use Database\Seeders\Sections\QuestionnaireFarmStructureSectionSeeder;
-use Database\Seeders\Sections\QuestionnaireHerdSetupSectionSeeder;
 use Database\Seeders\Sections\QuestionnaireMasterDataSectionSeeder;
-use Database\Seeders\Sections\QuestionnaireOperationSettingsSectionSeeder;
 use Database\Seeders\Sections\QuestionnaireReportsSectionSeeder;
+use Database\Seeders\Sections\QuestionnaireSettingsSectionSeeder;
 use Database\Seeders\Sections\QuestionnaireWorkflowSectionSeeder;
 use Illuminate\Database\Seeder;
 
@@ -18,19 +18,19 @@ class QuestionnaireSectionSeeder extends Seeder
         $this->call([
             QuestionnaireMasterDataSectionSeeder::class,
             QuestionnaireFarmStructureSectionSeeder::class,
-            QuestionnaireOperationSettingsSectionSeeder::class,
-            QuestionnaireHerdSetupSectionSeeder::class,
+            QuestionnaireAnimalHerdSectionSeeder::class,
             QuestionnaireWorkflowSectionSeeder::class,
             QuestionnaireReportsSectionSeeder::class,
+            QuestionnaireSettingsSectionSeeder::class,
         ]);
 
         $mainSectionOrder = [
             'إدارة البيانات الأساسية' => 1,
             'هيكل المزرعة' => 2,
-            'إعدادات التشغيل ودورة الإنتاج' => 3,
-            'تكوين وإدخال القطيع' => 4,
-            'الحركات ودورة التشغيل الفعلية' => 5,
-            'التقارير والإشعارات ومؤشرات الأداء' => 6,
+            'بيانات الحيوان وتكوين القطيع' => 3,
+            'الحركات ودورة التشغيل الفعلية' => 4,
+            'التقارير والتحليلات والتنبيهات ومؤشرات الأداء' => 5,
+            'الإعدادات وقواعد التشغيل' => 6,
         ];
 
         foreach ($mainSectionOrder as $name => $sortOrder) {
