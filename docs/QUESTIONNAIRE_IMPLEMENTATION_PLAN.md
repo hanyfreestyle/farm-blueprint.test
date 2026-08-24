@@ -1,197 +1,395 @@
-﻿# Questionnaire Implementation Plan
+# Questionnaire Implementation Plan
 
-## 1. Project Goal
-
-Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø¹Ø¨Ø§Ø±Ø© Ø¹Ù† ØªØ·Ø¨ÙŠÙ‚ Ù…Ø®ØµØµ Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© ÙˆØªØ­Ù„ÙŠÙ„ ØªØµÙˆØ± Ù†Ø¸Ø§Ù… Ø¥Ø¯Ø§Ø±Ø© Ù…Ø²Ø±Ø¹Ø© Ø§Ù„Ø£Ø±Ø§Ù†Ø¨ Ù…Ø¹ Ù…Ø®ØªØµ Domain Expert.
-
-Ø§Ù„Ù‡Ø¯Ù Ù„ÙŠØ³ Ø¥Ù†Ø´Ø§Ø¡ Questionnaire Platform Ø¹Ø§Ù…Ø©.
-
-Ø§Ù„Ù…Ø³Ø§Ø± Ø§Ù„Ø£Ø³Ø§Ø³ÙŠ Ù„Ù„Ù…Ø´Ø±ÙˆØ¹:
-
-Domain Review
-â†’ Questions
-â†’ Specialist Answers
-â†’ Optional Notes
-â†’ Needs Review
-â†’ Technical Specification
-
-Ø§Ù„Ù…Ø®ØªØµ Ù„Ø§ ÙŠÙ‚ÙˆÙ… Ø¨ØªØµÙ…ÙŠÙ… Laravel Database Ø£Ùˆ Migrations Ù…Ø¨Ø§Ø´Ø±Ø©.
-
-Ø§Ù„Ù…Ø®ØªØµ ÙŠØ¬ÙŠØ¨ Ø¹Ù† Ø£Ø³Ø¦Ù„Ø© ØªØ´ØºÙŠÙ„ÙŠØ© ÙˆÙÙ†ÙŠØ© ØªØ®Øµ Ø§Ù„ÙˆØ§Ù‚Ø¹ Ø§Ù„ÙØ¹Ù„ÙŠ Ù„Ù„Ù…Ø²Ø±Ø¹Ø©.
-
-Ø¨Ø¹Ø¯ Ø§ÙƒØªÙ…Ø§Ù„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§ØªØŒ ÙŠÙ‚ÙˆÙ… Ø§Ù„Ù†Ø¸Ø§Ù… Ø¨Ø¥Ù†ØªØ§Ø¬ Technical Specification Ù…Ù†Ø¸Ù… ÙŠÙ…ÙƒÙ† Ø¥Ø¹Ø·Ø§Ø¤Ù‡ Ù„Ø§Ø­Ù‚Ù‹Ø§ Ù„Ù…Ø·ÙˆØ± Ø£Ùˆ AI Developer Ù„Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù†Ø¸Ø§Ù… Ø§Ù„Ø­Ù‚ÙŠÙ‚ÙŠ.
+> هذا الملف هو **خطة التنفيذ التقنية وسجل تطور أداة الـQuestionnaire / Blueprint**.
+>
+> المرجع الأساسي الحالي لقواعد المشروع والقرارات المعتمدة هو:
+>
+> `docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`
+>
+> إذا تعارض وصف تاريخي قديم داخل هذا الملف مع السياق الحالي، تكون الأولوية دائمًا لـ:
+>
+> **أحدث قرار معتمد → FARM_BLUEPRINT_PROJECT_CONTEXT.md → الكود الحالي → السجل التاريخي القديم.**
 
 ---
 
-# 2. Core Development Reference
+## 1. هدف المشروع
 
-Ø§Ù„Ù…Ø±Ø¬Ø¹ Ø§Ù„Ø£Ø³Ø§Ø³ÙŠ Ù„Ù„ØªØ¹Ø§Ù…Ù„ Ù…Ø¹ Laravel Core Ù‡Ùˆ:
+المشروع عبارة عن تطبيق مخصص لبناء ومراجعة Blueprint تفصيلي لنظام إدارة مزرعة الأرانب قبل تنفيذ النظام النهائي.
 
-AGENTS.md
+هذا المشروع **ليس نظام إدارة المزرعة النهائي**، وليس منصة استبيانات عامة.
 
-Ø§Ù„Ù…ÙˆØ¬ÙˆØ¯ ÙÙŠ Ø¬Ø°Ø± Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
+المسار الأساسي:
 
-Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Ø£ÙŠ Phase ÙŠØ¬Ø¨:
+```text
+المرجع الوظيفي
+    ↓
+الأقسام
+    ↓
+الأسئلة
+    ↓
+الإجابات
+    ↓
+المراجعة
+    ↓
+Software Requirements / Business Rules
+    ↓
+Technical / Implementation Outputs
+    ↓
+Blueprint قابل للتنفيذ
+```
 
-1. Ù‚Ø±Ø§Ø¡Ø© AGENTS.md Ø¨Ø§Ù„ÙƒØ§Ù…Ù„.
-2. Ø§Ù„Ø§Ù„ØªØ²Ø§Ù… Ø¨Ø¥ØµØ¯Ø§Ø±Ø§Øª Laravel / Filament ÙˆØ§Ù„Ø­Ø²Ù… Ø§Ù„Ù…ÙˆØ¬ÙˆØ¯Ø© ÙØ¹Ù„ÙŠÙ‹Ø§.
-3. Ø§ØªØ¨Ø§Ø¹ conventions Ø§Ù„Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
-4. Ø§Ø³ØªØ®Ø¯Ø§Ù… Ù†ÙØ³ Ø£Ø³Ù„ÙˆØ¨ Ø¨Ù†Ø§Ø¡ Filament Resources Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… ÙÙŠ Ø§Ù„Ù€Core.
-5. Ø¹Ø¯Ù… Ø§ÙØªØ±Ø§Ø¶ APIs Ø£Ùˆ namespaces ØºÙŠØ± Ù…ÙˆØ¬ÙˆØ¯Ø© ÙÙŠ Ø§Ù„Ù†Ø³Ø®Ø© Ø§Ù„Ù…Ø«Ø¨ØªØ©.
-
-Ù‡Ø°Ø§ Ø§Ù„Ù…Ù„Ù:
-
-docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md
-
-Ø®Ø§Øµ ÙÙ‚Ø· Ø¨Ø®Ø·Ø© ØªÙ†ÙÙŠØ° Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø§Ø³ØªØ¨ÙŠØ§Ù†.
-
-AGENTS.md
-Ø®Ø§Øµ Ø¨Ù‚ÙˆØ§Ø¹Ø¯ Ø§Ù„Ù€Core ÙˆØ§Ù„Ù…Ø´Ø±ÙˆØ¹ ÙƒÙƒÙ„.
-
----
-
-# 3. Explicit Non-Goals
-
-Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ù„ÙŠØ³:
-
-- Generic Questionnaire Builder
-- Survey SaaS
-- Multi Project Platform
-- Multi Tenant Platform
-- Blueprint Engine
-- Questionnaire Versioning System
-- Questionnaire Sessions System
-- Source Mapping Engine
-- Generic Decision Engine
-- Rules DSL
-- Generic Workflow Builder
-
-Ù„Ø§ ÙŠØªÙ… Ø¥Ø¶Ø§ÙØ© Ø£ÙŠ abstraction Ø¹Ø§Ù…Ø© Ø¥Ù„Ø§ Ø¥Ø°Ø§ Ø¸Ù‡Ø±Øª Ù„Ù‡Ø§ Ø­Ø§Ø¬Ø© ÙØ¹Ù„ÙŠØ© ÙÙŠ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø­Ø§Ù„ÙŠ ÙˆØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯Ù‡Ø§ ØµØ±Ø§Ø­Ø©.
+المختص يجيب عن أسئلة وظيفية وتشغيلية واضحة، ولا يُطلب منه اتخاذ قرارات Laravel أو Database مباشرة.
 
 ---
 
-# 4. Simplified Architecture
+## 2. المراجع الأساسية
 
-Ø§Ù„Ø¨Ù†ÙŠØ© Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©:
+### المرجع الأول لقواعد المشروع الحالية
 
-Section
-â†’ Subsection
-â†’ Questions
-â†’ Question Options
-â†’ Answers
-â†’ Technical Report
+`docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`
 
-Ù„Ø¯ÙŠÙ†Ø§ Ø§Ø³ØªØ¨ÙŠØ§Ù† ÙˆØ§Ø­Ø¯ ÙÙ‚Ø·.
+يجب قراءته قبل أي تعديل في المستودع.
 
-Ù„Ø§ ØªÙˆØ¬Ø¯ Questionnaire Sessions.
+### المرجع الوظيفي عند إنشاء أو مراجعة الأسئلة
 
-ÙƒÙ„ Question Ù„Ù‡Ø§ Answer Ø­Ø§Ù„ÙŠØ© ÙˆØ§Ø­Ø¯Ø© ÙÙ‚Ø·.
+`تصور_مشروع_الارانب.md`
 
-Ø¹Ù†Ø¯ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© ÙŠØªÙ… ØªØ­Ø¯ÙŠØ« Ù†ÙØ³ Answer.
+يستخدم أثناء بناء الدراسة والأسئلة فقط، مع الحفاظ على المصطلحات والمنطق الموجودين فيه وعدم اختراع متطلبات غير مدعومة.
 
-Ù‡ÙŠÙƒÙ„ Ø§Ù„Ø£Ù‚Ø³Ø§Ù… Ø§Ù„Ù…Ø¹ØªÙ…Ø¯ Ø§Ù„Ø¢Ù†:
+### قواعد Laravel Core
 
-Main Section
-â†’ Subsection
-â†’ Questions
+`AGENTS.md`
 
-ÙˆÙ„Ø§ ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯ Ø´Ø¬Ø±Ø© Ø¹Ù…ÙŠÙ‚Ø© Ø¹Ø§Ù…Ø© ÙÙŠ Ù‡Ø°Ø§ Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
+يستخدم عند تنفيذ أو مراجعة الكود وFilament والـconventions التقنية.
 
 ---
 
-# 5. Sections
+## 3. نطاق المشروع
 
-Ø§Ù„Ø£Ù‚Ø³Ø§Ù… Ù‡ÙŠ Ø§Ù„Ù…Ø±Ø§Ø­Ù„ Ø§Ù„Ø±Ø¦ÙŠØ³ÙŠØ© Ù„Ù„Ø¯Ø±Ø§Ø³Ø©.
+المشروع يدعم حاليًا:
 
-ÙˆÙ‡ÙŠ Ø§Ù„Ù…ØµØ¯Ø± Ø§Ù„Ø°ÙŠ ÙŠØªÙ… Ù…Ù†Ù‡ Ø¨Ù†Ø§Ø¡ Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ø¬Ø§Ù†Ø¨ÙŠØ© ÙÙŠ ÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù….
+- Main Sections.
+- Subsections.
+- Questions.
+- Question Options.
+- Answers.
+- Optional Notes.
+- Needs Review.
+- Simple Dependencies.
+- Questionnaire Guides.
+- Final Requirements Input.
+- تقارير ومخرجات تقنية مشتقة من القرارات المعتمدة.
 
-ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… Ø¬Ø¯ÙˆÙ„ ÙˆØ§Ø­Ø¯ Ø°Ø§ØªÙŠ Ø§Ù„Ø±Ø¨Ø· Ù„Ø¯Ø¹Ù… Ù…Ø³ØªÙˆÙŠÙŠÙ† Ù…Ù†Ø·Ù‚ÙŠÙŠÙ† ÙÙ‚Ø·:
+المشروع ليس:
 
-- Main Section
-- Subsection
+- Generic Questionnaire Builder.
+- Survey SaaS.
+- Multi Tenant Questionnaire Platform.
+- Generic Workflow Builder.
+- Generic Rules DSL.
+- Generic Decision Engine.
 
-Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
-
-- id
-- parent_id nullable
-- name
-- description
-- sort_order
-- timestamps
-
-description:
-
-ÙŠØ­ØªÙˆÙŠ Ø¹Ù„Ù‰ Markdown.
-
-Ø§Ù„ØªØ±ØªÙŠØ¨:
-
-sort_order
-
-ÙŠØ­Ø¯Ø¯ ØªØ±ØªÙŠØ¨ Ø§Ù„Ù‚Ø³Ù… ÙÙŠ:
-
-- Filament
-- Frontend Sidebar
-- Technical Report
-
-Ù…Ø¹Ù†Ù‰ parent_id:
-
-parent_id = null
-â†’ Main Section
-
-parent_id != null
-â†’ Subsection
-
-Ø§Ù„Ø¹Ù„Ø§Ù‚Ø§Øª:
-
-- Section belongsTo Parent
-- Section hasMany Children
-- Section hasMany Questions
-
-Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨Ù†ÙŠØ©:
-
-- ÙŠØ¯Ø¹Ù… Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ù…Ø³ØªÙˆÙŠÙŠÙ† Ù…Ù†Ø·Ù‚ÙŠÙŠÙ† ÙÙ‚Ø· Ù„Ù„Ø£Ù‚Ø³Ø§Ù…
-- Ø§Ù„Ø£Ø³Ø¦Ù„Ø© ØªÙ†ØªÙ…ÙŠ Ø¹Ø§Ø¯Ø© Ø¥Ù„Ù‰ Subsections
-- Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡ deep tree Ø¹Ø§Ù…
-
-Ø³Ù„ÙˆÙƒ Ø§Ù„Ø­Ø°Ù Ø§Ù„Ø¢Ù…Ù†:
-
-- Ø­Ø°Ù Main Section Ù…Ø¹ ÙˆØ¬ÙˆØ¯ Subsections ØªØ­ØªÙ‡ ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ù…Ø±ÙÙˆØ¶Ø§Ù‹
-- Ø­Ø°Ù Ø£ÙŠ Section Ù…Ø§ Ø¯Ø§Ù… Ù…Ø±ØªØ¨Ø·Ø§Ù‹ Ø¨Ù‡ Questions ÙŠØ¬Ø¨ Ø£Ù† ÙŠÙƒÙˆÙ† Ù…Ø±ÙÙˆØ¶Ø§Ù‹
+أي abstraction جديدة لا تضاف إلا لحاجة فعلية معتمدة.
 
 ---
 
-# 6. Questions
+## 4. البنية المنطقية الحالية للأقسام
 
-ÙƒÙ„ Question ØªØªØ¨Ø¹ Section ÙˆØ§Ø­Ø¯Ø©.
+الأقسام الرئيسية المعتمدة حاليًا:
 
-Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
+```text
+1. إدارة البيانات الأساسية — Master / Reference Data
+2. هيكل المزرعة — Farm Structure
+3. إعدادات التشغيل ودورة الإنتاج — Operation Settings
+4. تكوين وإدخال القطيع — Herd Setup
+5. الحركات ودورة التشغيل الفعلية — Workflow
+6. التقارير والإشعارات ومؤشرات الأداء — Reports
+```
 
-- id
-- section_id
-- title
-- help_text
-- type
-- is_required
-- sort_order
-- depends_on_question_id nullable
-- dependency_operator nullable
-- dependency_value nullable
-- report_category nullable
-- target_entity nullable
-- timestamps
+### 4.1 إدارة البيانات الأساسية
 
-Ù„Ø§ ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠØ© Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Phase 1 ÙˆÙ…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ ÙØ¹Ù„ÙŠÙ‹Ø§.
+```text
+إدارة البيانات الأساسية
+├── الأنشطة التشغيلية
+├── الأغراض الإنتاجية
+├── مؤشرات السلالات
+├── بيانات السلالات
+├── المستخدمون وفريق التشغيل
+├── أسباب النقل
+├── أسباب النفوق
+├── أسباب الاستبعاد
+├── أسباب الخروج
+├── أسباب تغيير الذكر
+├── المحافظات
+├── المدن
+├── أنظمة التهوية
+├── أنظمة التبريد
+└── أنظمة التدفئة
+```
+
+> **ملفات إعدادات التشغيل لم تعد Subsection داخل Master Data.**
+>
+> سيتم التعامل معها لاحقًا داخل القسم الرئيسي المستقل:
+>
+> `إعدادات التشغيل ودورة الإنتاج`.
+
+### 4.2 هيكل المزرعة
+
+```text
+هيكل المزرعة
+├── بيانات المزرعة
+├── بيانات العنبر
+├── بيانات البطارية
+└── بيانات القفص / العين
+```
+
+العلاقة الهيكلية:
+
+```text
+Farm
+  ↓
+Barn
+  ↓
+Battery
+  ↓
+Cage / Cell
+```
+
+Farm / Barn / Battery / Cage كيانات هيكلية فعلية وليست Lookup Lists.
 
 ---
 
-# 7. Question Types
+## 5. شجرة Seeders — قاعدة تنظيمية معتمدة
 
-ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… PHP Backed Enum Ø¨Ø§Ø³Ù… Ù…Ù†Ø§Ø³Ø¨ Ù…Ø«Ù„:
+يجب أن تعكس شجرة ملفات Question Seeders شجرة الأقسام نفسها حتى لا توجد أسماء تاريخية مضللة.
 
-QuestionType
+الشكل المعتمد:
 
-Ø§Ù„Ù‚ÙŠÙ…:
+```text
+database/seeders/Questions/
+├── Concerns/
+│
+├── MasterData/
+│   ├── OperationalActivitiesQuestionsSeeder.php
+│   ├── ProductionPurposesQuestionsSeeder.php
+│   ├── BreedMetricsQuestionsSeeder.php
+│   ├── BreedDataQuestionsSeeder.php
+│   ├── TransferReasonsQuestionsSeeder.php
+│   ├── MortalityReasonsQuestionsSeeder.php
+│   ├── ExclusionReasonsQuestionsSeeder.php
+│   ├── ExitReasonsQuestionsSeeder.php
+│   ├── MaleChangeReasonsQuestionsSeeder.php
+│   ├── GovernoratesQuestionsSeeder.php
+│   ├── CitiesQuestionsSeeder.php
+│   ├── VentilationSystemsQuestionsSeeder.php
+│   ├── CoolingSystemsQuestionsSeeder.php
+│   └── HeatingSystemsQuestionsSeeder.php
+│
+├── FarmStructure/
+│   ├── FarmDataQuestionsSeeder.php
+│   ├── BarnDataQuestionsSeeder.php
+│   ├── BatteryDataQuestionsSeeder.php
+│   └── CageDataQuestionsSeeder.php
+│
+├── OperationSettings/     ← عند بدء أسئلة هذا القسم
+├── HerdSetup/             ← عند بدء أسئلة هذا القسم
+├── Workflow/              ← عند بدء أسئلة هذا القسم
+└── Reports/               ← عند بدء أسئلة هذا القسم
+```
 
+لا يجوز وضع Master Data Seeder داخل `FarmStructure` أو العكس لمجرد أن الملف قديم أو كان موجودًا سابقًا بهذا الشكل.
+
+---
+
+## 6. Orchestrators الحالية
+
+### كل الأسئلة الحالية
+
+`database/seeders/QuestionnaireQuestionsSeeder.php`
+
+هو الـorchestrator العام الحالي.
+
+يستدعي:
+
+```text
+QuestionnaireMasterDataQuestionsSeeder
+QuestionnaireFarmStructureQuestionsSeeder
+```
+
+ومستقبلًا يضاف إليه orchestrator كل Main Section عند بدء أسئلته فعليًا.
+
+### Master Data
+
+`database/seeders/QuestionnaireMasterDataQuestionsSeeder.php`
+
+يستدعي فقط Seeders الموجودة تحت:
+
+`Questions/MasterData/`
+
+### Farm Structure
+
+`database/seeders/QuestionnaireFarmStructureQuestionsSeeder.php`
+
+يستدعي:
+
+- `FarmDataQuestionsSeeder`
+- `BarnDataQuestionsSeeder`
+- `BatteryDataQuestionsSeeder`
+- `CageDataQuestionsSeeder`
+
+### DatabaseSeeder
+
+`DatabaseSeeder` يجب أن يستدعي:
+
+1. Seeders الأساسية للنظام.
+2. `QuestionnaireSectionSeeder`.
+3. `QuestionnaireQuestionsSeeder`.
+
+وبذلك يجب أن يؤدي Seed كامل إلى بناء الحالة الحالية من الصفر بدون الاعتماد على سجلات قديمة.
+
+---
+
+## 7. طريقة التشغيل الحالية أثناء إعادة البناء
+
+المستخدم يعمل حاليًا محليًا باستخدام:
+
+```bash
+php artisan migrate:refresh --seed
+```
+
+هذه الطريقة **تدمر بيانات قاعدة البيانات الحالية وتعيد بناءها بالكامل**.
+
+تم اعتمادها مؤقتًا في هذه المرحلة لأن الإجابات القديمة تم الاستغناء عنها ويجري الآن تنظيف الهيكل والـSeeders قبل بدء دورة إجابات جديدة.
+
+### النتيجة المطلوبة من كل تشغيل حالي
+
+بعد `migrate:refresh --seed` يجب أن:
+
+- تُنشأ الأقسام الرئيسية بالترتيب الصحيح.
+- تُنشأ Subsections في الـParent الصحيح.
+- تُزرع كل الأسئلة المعتمدة حاليًا.
+- لا تعتمد أي أسئلة على بيانات متبقية من تشغيل سابق.
+- لا تختفي مجموعة أسئلة بسبب عدم إضافتها إلى orchestrator.
+
+---
+
+## 8. الانتقال لاحقًا إلى الحفاظ على الإجابات
+
+بمجرد بدء دورة إجابات نريد الاحتفاظ بها، لا يكون `migrate:refresh --seed` أسلوب التشغيل العادي على قاعدة البيانات التي تحتوي هذه الإجابات.
+
+يصبح المبدأ:
+
+```text
+Stable Section Record
++ Stable section_id
++ Stable seed_key
++ Stable option value
++ preserveAnswers = true
+```
+
+### قاعدة مهمة
+
+هوية السؤال:
+
+```text
+section_id + seed_key
+```
+
+هوية الاختيار:
+
+```text
+question_id + option.value
+```
+
+لا يجب تغيير `seed_key` لمجرد تعديل صياغة عنوان السؤال إذا ظل نفس القرار الوظيفي.
+
+لا يجب تغيير `option.value` لمجرد تعديل Label إذا ظل نفس المعنى.
+
+---
+
+## 9. نقل الأقسام بعد وجود إجابات
+
+إذا احتجنا لاحقًا إلى إعادة تصنيف Subsection مع وجود إجابات:
+
+المسموح:
+
+```text
+نفس Section Record
+→ تعديل parent_id
+→ الحفاظ على Section ID
+```
+
+غير المسموح:
+
+```text
+Delete old subsection
+→ Create new subsection
+→ Recreate questions
+```
+
+لأن ذلك يكسر الهوية وقد يؤدي إلى فقد الإجابات والعلاقات.
+
+---
+
+## 10. Question Seeder Sync
+
+الخدمة الموحدة:
+
+`app/Services/Questionnaire/QuestionSeederSyncService.php`
+
+تستخدم بدل كتابة منطق مزامنة مختلف داخل كل Seeder.
+
+الشكل العام:
+
+```php
+app(QuestionSeederSyncService::class)->sync(
+    mainSectionName: 'هيكل المزرعة',
+    sectionName: 'بيانات القفص / العين',
+    questions: $questions,
+    prune: true,
+    preserveAnswers: true,
+);
+```
+
+`prune` يزيل الأسئلة التي لم تعد موجودة في تعريف Seeder إذا كان ذلك آمنًا وفق قواعد الخدمة.
+
+`preserveAnswers` يجب استخدامه عند التعامل مع إجابات يجب الاحتفاظ بها، وأي تغيير تدميري غير آمن يجب أن يوقف المزامنة برسالة واضحة بدل حذف البيانات بصمت.
+
+---
+
+## 11. Questions
+
+كل Question تتبع Subsection واحدًا.
+
+الحقول الأساسية الحالية تشمل:
+
+- `id`
+- `section_id`
+- `seed_key`
+- `title`
+- `help_text`
+- `type`
+- `is_required`
+- `sort_order`
+- `depends_on_question_id`
+- `dependency_operator`
+- `dependency_value`
+- `report_category`
+- `target_entity`
+
+كل سؤال يجب أن يؤدي إلى قرار قابل للتحويل إلى Requirement أو Rule أو Relationship أو Validation أو Workflow Decision.
+
+---
+
+## 12. Question Types الحالية
+
+الـEnum الحالي:
+
+`App\Enums\Questionnaire\QuestionType`
+
+يدعم:
+
+```text
 text
 textarea
 number
@@ -200,1718 +398,698 @@ yes_no
 single_choice
 multi_choice
 select
+```
 
-Ù…Ø¹Ø§Ù†ÙŠÙ‡Ø§:
-
-text
-= Ù†Øµ Ù‚ØµÙŠØ±
-
-textarea
-= Ù†Øµ Ø·ÙˆÙŠÙ„
-
-number
-= Ø±Ù‚Ù…
-
-date
-= ØªØ§Ø±ÙŠØ®
-
-yes_no
-= Ù†Ø¹Ù… / Ù„Ø§
-
-single_choice
-= Ø§Ø®ØªÙŠØ§Ø± ÙˆØ§Ø­Ø¯
-
-multi_choice
-= Ø£ÙƒØ«Ø± Ù…Ù† Ø§Ø®ØªÙŠØ§Ø±
-
-select
-= Ù‚Ø§Ø¦Ù…Ø© Ù…Ù†Ø³Ø¯Ù„Ø©
+لا يتم افتراض Question Type جديد قبل مراجعة الـEnum والكود الحالي واعتماد الحاجة إليه.
 
 ---
 
-# 8. Question Options
+## 13. Question Options
 
-ØªØ³ØªØ®Ø¯Ù… ÙÙ‚Ø· Ù…Ø¹:
+تستخدم مع:
 
-single_choice
-multi_choice
-select
+- `single_choice`
+- `multi_choice`
+- `select`
 
-Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
+كل Option لها `value` ثابت يستخدم كهوية منطقية للاختيار، و`label` قابل لتحسين الصياغة دون تغيير المعنى.
 
-- id
-- question_id
-- label
-- value
-- sort_order
-- timestamps
-
-ÙÙŠ Filament ÙŠØªÙ… Ø¥Ø¯Ø§Ø±ØªÙ‡Ø§ Ø¨ÙˆØ§Ø³Ø·Ø© Repeater Ø¯Ø§Ø®Ù„ Question Resource.
-
-Ø¹Ù†Ø¯ Ø§Ø®ØªÙŠØ§Ø± Question Type Ù„Ø§ ÙŠØ­ØªØ§Ø¬ Options:
-
-- text
-- textarea
-- number
-- date
-- yes_no
-
-Ù„Ø§ ÙŠØ¸Ù‡Ø± Repeater.
-
-Ø¹Ù†Ø¯ Ø§Ø®ØªÙŠØ§Ø±:
-
-- single_choice
-- multi_choice
-- select
-
-ÙŠØ¸Ù‡Ø± Repeater ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§.
+عند وجود إجابات مهمة، تغيير `value` يعتبر تغييرًا تدميريًا محتملًا ويجب التعامل معه بحذر.
 
 ---
 
-# 9. Simple Conditional Questions
+## 14. Dependencies
 
-Ø§Ù„Ù†Ø¸Ø§Ù… ÙŠØ¯Ø¹Ù… Ø´Ø±Ø· Ø¸Ù‡ÙˆØ± Ø¨Ø³ÙŠØ· ÙÙ‚Ø·.
+الدعم الحالي يعتمد على:
 
-Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„Ø­Ø§Ù„ÙŠ ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ Ø¥Ø¬Ø§Ø¨Ø© Ø³Ø¤Ø§Ù„ Ø³Ø§Ø¨Ù‚.
+```text
+EQUALS
+CONTAINS
+```
 
-Ø§Ù„Ù…Ù†Ø·Ù‚:
+ويتم تمثيله بواسطة:
 
-Parent Question
-+
-Operator
-+
-Expected Value
+`QuestionDependencyOperator`
 
-Ø§Ù„Ù€Operators Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ù…Ø¨Ø¯Ø¦ÙŠÙ‹Ø§:
+لا يتم اختراع Operators جديدة دون مراجعة الـEnum والـCondition Evaluator الحاليين.
 
-equals
-contains
+Dependency تستخدم فقط عندما يكون ظهور السؤال مرتبطًا فعليًا بإجابة سؤال آخر.
 
-Ù…Ø«Ø§Ù„:
-
-Question A:
-Ù‡Ù„ Ø§Ù„ØªØµÙˆØ± Ù…Ù†Ø§Ø³Ø¨ØŸ
-
-Answer:
-needs_changes
-
-Question B:
-Ù…Ø§ Ø§Ù„ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨ØŸ
-
-Question B ÙŠØ¸Ù‡Ø± Ø¹Ù†Ø¯Ù…Ø§:
-
-Question A
-equals
-needs_changes
-
-Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡:
-
-- DSL
-- Nested Rule Engine
-- Complex Boolean Expressions
-
-ÙÙŠ Ù‡Ø°Ù‡ Ø§Ù„Ù…Ø±Ø­Ù„Ø©.
+السؤال المعتمد الذي يجب أن يظهر دائمًا لا يتم إخفاؤه بشرط مصطنع.
 
 ---
 
-# 10. Answers
+## 15. Answers
 
-Ù„Ø¯ÙŠÙ†Ø§ Ù†ØªÙŠØ¬Ø© ÙˆØ§Ø­Ø¯Ø© ÙÙ‚Ø· Ù„Ù„Ø§Ø³ØªØ¨ÙŠØ§Ù†.
+النموذج الحالي يعتمد على:
 
-ÙƒÙ„ Question Ù„Ù‡Ø§ Answer ÙˆØ§Ø­Ø¯Ø© ÙƒØ­Ø¯ Ø£Ù‚ØµÙ‰.
+- Answer واحدة حالية لكل Question.
+- تخزين القيمة بما يناسب النوع.
+- `multi_choice` كقيمة Array/JSON.
+- Notes اختيارية.
+- Needs Review.
+- Review Status.
 
-Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
+الإجابة تعدل نفس Answer الحالية بدل إنشاء نسخ مستقلة لنفس Question.
 
-- id
-- question_id
-- value
-- notes nullable
-- needs_review boolean
-- review_status
-- reviewed_at nullable
-- timestamps
-
-ÙŠØ¬Ø¨ ÙˆØ¬ÙˆØ¯ Unique Constraint Ø¹Ù„Ù‰:
-
-question_id
-
-Ø¨Ø­ÙŠØ« Ù„Ø§ ÙŠØªÙ… Ø¥Ù†Ø´Ø§Ø¡ Ø¹Ø¯Ø© Answers Ù„Ù†ÙØ³ Ø§Ù„Ø³Ø¤Ø§Ù„.
-
-Ø¹Ù†Ø¯ ØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù…:
-
-updateOrCreate
-
-Ø£Ùˆ Ø§Ù„Ù…Ù†Ø·Ù‚ Ø§Ù„Ù…ÙƒØ§ÙØ¦.
+لا يوجد حاليًا Questionnaire Sessions كطبقة مستقلة.
 
 ---
 
-# 11. Answer Storage
+## 16. Notes وNeeds Review
 
-Ø§Ù„Ù‚ÙŠÙ… Ø§Ù„ÙØ±Ø¯ÙŠØ© Ù…Ø«Ù„:
+كل سؤال يمكن أن يحتوي على Notes اختيارية.
 
-text
-textarea
-number
-date
-yes_no
-single_choice
-select
+الملاحظات تستخدم لتسجيل نقطة تحتاج مراجعة أو قرار إضافي.
 
-ÙŠØªÙ… ØªØ®Ø²ÙŠÙ† Ù‚ÙŠÙ…Ø© ÙˆØ§Ø­Ø¯Ø©.
+المبدأ التاريخي الحالي:
 
-multi_choice:
+```text
+Specialist adds note
+→ Answer may require review
+→ Review occurs
+→ Existing Question / Option may be corrected
+   or a new explicit Question is added
+→ Review closes
+```
 
-ÙŠØªÙ… ØªØ®Ø²ÙŠÙ† Array Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… JSON/Cast Ù…Ù†Ø§Ø³Ø¨.
-
-Ø§Ù„ØªÙØ§ØµÙŠÙ„ Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠØ© ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯Ù‡Ø§ ÙÙŠ Phase 1.
-
----
-
-# 12. Notes
-
-ÙƒÙ„ Ø³Ø¤Ø§Ù„ ÙÙŠ Frontend ÙŠØ­ØªÙˆÙŠ Ø¹Ù„Ù‰:
-
-Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø§Ø®ØªÙŠØ§Ø±ÙŠØ©
-
-Ø§Ù„Ù…Ø®ØªØµ ÙŠØ³ØªØ·ÙŠØ¹ ÙƒØªØ§Ø¨Ø© Ø£ÙŠ Ù…Ù„Ø§Ø­Ø¸Ø© Ø¥Ø¶Ø§ÙÙŠØ© ØªØ®Øµ Ø§Ù„Ø³Ø¤Ø§Ù„.
-
-Ù…Ø«Ø§Ù„:
-
-Ø§Ù„Ø³Ø¤Ø§Ù„:
-Ù…Ø§ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ù…Ø²Ø±Ø¹Ø©ØŸ
-
-Ø§Ù„Ù…Ø®ØªØµ ÙŠØ®ØªØ§Ø±:
-
-- Ø§Ù„Ø§Ø³Ù…
-- Ø§Ù„Ù‡Ø§ØªÙ
-- Ø§Ù„Ø­Ø§Ù„Ø©
-
-Ø«Ù… ÙŠÙƒØªØ¨ ÙÙŠ Notes:
-
-"Ù†Ø­ØªØ§Ø¬ Ø£ÙŠØ¶Ù‹Ø§ Ø±Ù‚Ù… Ø§Ù„Ø³Ø¬Ù„ Ø§Ù„ØªØ¬Ø§Ø±ÙŠ."
+الملاحظات المفتوحة لا تتحول تلقائيًا إلى Requirements نهائية بدون مراجعة.
 
 ---
 
-# 13. Needs Review
+## 17. report_category وtarget_entity
 
-Ø¥Ø°Ø§ ÙƒØ§Ù†Øª:
+`report_category` يساعد على تفسير نوع القرار الناتج من السؤال.
 
-notes
+أمثلة مستخدمة في المشروع:
 
-ØºÙŠØ± ÙØ§Ø±ØºØ©:
+- `field`
+- `field_rule`
+- `rule`
+- `business_rule`
+- `relationship`
+- `relationship_rule`
+- `workflow_rule`
+- `lifecycle_rule`
+- `lookup_values`
+- `value_management`
+- `calculation_rule`
+- `ui_requirement`
+- `manual_review`
 
-needs_review = true
+`target_entity` يحدد الكيان أو الجزء الذي يتأثر بالقرار، مثل:
 
-ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§.
-
-Ù„Ø§ ÙŠØ­Ø¯Ø¯ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… needs_review Ø¨Ù†ÙØ³Ù‡.
-
-Ø§Ù„Ù…Ø³Ø§Ø±:
-
-Specialist writes note
-â†’ Answer becomes Needs Review
-â†’ Admin reviews note
-â†’ Admin may update existing Question
-or
-â†’ Add new Question
-or
-â†’ Add new Option
-â†’ Mark note Reviewed
-
----
-
-# 14. Review Status
-
-Ø§Ø³ØªØ®Ø¯Ù… Enum Ø¨Ø³ÙŠØ· Ø¥Ø°Ø§ ÙƒØ§Ù† Ù…Ù†Ø§Ø³Ø¨Ù‹Ø§:
-
-pending
-reviewed
-
-Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡ Workflow Ø£ÙƒØ¨Ø± Ù…Ù† Ø°Ù„Ùƒ.
-
-Ø§Ù„Ù…Ø·Ù„ÙˆØ¨ ÙÙ‚Ø· Ù…Ø¹Ø±ÙØ©:
-
-Ù‡Ù„ ØªÙ…Øª Ù…Ø±Ø§Ø¬Ø¹Ø© Ù…Ù„Ø§Ø­Ø¸Ø© Ø§Ù„Ù…Ø®ØªØµ Ø£Ù… Ù„Ø§ØŸ
-
----
-
-# 15. Business Questions vs Technical Decisions
-
-Ø§Ù„Ù…Ø®ØªØµ Ù„Ø§ ÙŠØªÙ… Ø³Ø¤Ø§Ù„Ù‡ Ø¨Ù„ØºØ© ØªÙ‚Ù†ÙŠØ©.
-
-Ù…Ø«Ø§Ù„ ØºÙŠØ± ØµØ­ÙŠØ­:
-
-"Ù‡Ù„ ØªØ±ÙŠØ¯ Farm Status ÙƒÙ€ Enum Ø£Ù… TableØŸ"
-
-Ø§Ù„Ø³Ø¤Ø§Ù„ Ø§Ù„ØµØ­ÙŠØ­:
-
-"Ù‡Ù„ Ø­Ø§Ù„Ø§Øª Ø§Ù„Ù…Ø²Ø±Ø¹Ø© Ù‚ÙŠÙ… Ø«Ø§Ø¨ØªØ© Ù„Ø§ ØªØªØºÙŠØ±ØŒ Ø£Ù… ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ³ØªØ·ÙŠØ¹ Ù…Ø¯ÙŠØ± Ø§Ù„Ù†Ø¸Ø§Ù… Ø¥Ø¶Ø§ÙØ© ÙˆØªØ¹Ø¯ÙŠÙ„ Ø§Ù„Ø­Ø§Ù„Ø§ØªØŸ"
-
-Ø¥Ø°Ø§ Ø§Ø®ØªØ§Ø±:
-
-Ù‚ÙŠÙ… Ø«Ø§Ø¨ØªØ©
-
-ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠÙ†ØªØ¬ Ø§Ù„ØªÙ‚Ø±ÙŠØ±:
-
-Recommendation:
-Enum
-
-Ø¥Ø°Ø§ Ø§Ø®ØªØ§Ø±:
-
-ÙŠÙ…ÙƒÙ† Ø¥Ø¶Ø§ÙØªÙ‡Ø§ ÙˆØªØ¹Ø¯ÙŠÙ„Ù‡Ø§
-
-ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠÙ†ØªØ¬ Ø§Ù„ØªÙ‚Ø±ÙŠØ±:
-
-Recommendation:
-Managed Lookup Table
-
-Ù…Ø«Ù„:
-
-farm_statuses
-
----
-
-# 16. Report Categories
-
-ÙŠÙ…ÙƒÙ† Ø£Ù† ØªØ­ØªÙˆÙŠ Question Ø¹Ù„Ù‰:
-
-report_category
-
-Ø§Ù„Ø£Ù†ÙˆØ§Ø¹ Ø§Ù„Ù…Ø¨Ø¯Ø¦ÙŠØ©:
-
-field
-lookup
-relationship
-workflow
-rule
-alert
-report
-general
-
-Ø§Ù„Ù‡Ø¯Ù Ù‡Ùˆ Ù…Ø³Ø§Ø¹Ø¯Ø© Technical Report Generator.
-
-Ù„Ø§ ÙŠØ¹ØªØ¨Ø± Ù‡Ø°Ø§ Generic Rule Engine.
-
----
-
-# 17. Target Entity
-
-ÙŠÙ…ÙƒÙ† Ø£Ù† ØªØ­ØªÙˆÙŠ Question Ø¹Ù„Ù‰:
-
-target_entity
-
-Ù…Ø«Ø§Ù„:
-
+```text
 farm
 barn
 battery
 cage
-rabbit
-mating
-birth
+breed
+city
+...
+```
 
-Ø§Ù„Ù‡Ø¯Ù:
-
-Ø±Ø¨Ø· Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© Ø¨Ø§Ù„Ø¬Ø²Ø¡ Ø§Ù„Ø°ÙŠ Ø³ØªØ¸Ù‡Ø± ØªØ­ØªÙ‡ ÙÙŠ Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„ØªÙ‚Ù†ÙŠ.
-
-Ù…Ø«Ø§Ù„:
-
-target_entity:
-farm
-
-report_category:
-field
+لا يتم تحويل هذه الحقول إلى DSL أو Rule Engine عام.
 
 ---
 
-# 18. Technical Specification Goal
+## 18. فلسفة تصميم الأسئلة
 
-Ø¨Ø¹Ø¯ Ø§Ù†ØªÙ‡Ø§Ø¡ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§ØªØŒ Ù„Ø§ Ù†Ø±ÙŠØ¯ ØªÙ‚Ø±ÙŠØ±Ù‹Ø§ Ù…Ù† Ù†ÙˆØ¹:
+السؤال الجيد ينتج قرارًا واضحًا مثل:
 
-Question:
-Ù…Ø§ Ø§Ù„Ø­Ù‚ÙˆÙ„ Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø©ØŸ
+- Field.
+- Required / Nullable.
+- Relationship.
+- Validation Rule.
+- Lifecycle Rule.
+- Workflow Rule.
+- State / Status Decision.
+- Audit / History Rule.
+- Configuration Rule.
+- UI Requirement.
 
-Answer:
-Ø§Ù„Ø§Ø³Ù…ØŒ Ø§Ù„Ù‡Ø§ØªÙØŒ Ø§Ù„Ø­Ø§Ù„Ø©.
+عند إنشاء أسئلة جديدة يجب:
 
-Ø¨Ù„ Ù†Ø±ÙŠØ¯ Technical Specification Ù…Ù†Ø¸Ù….
-
-Ù…Ø«Ø§Ù„:
-
-# Farm
-
-## Fields
-
-name
-- type: string
-
-phone
-- type: string
-
-status
-- source: Farm Status Requirement
-
-## Managed Lists
-
-Farm Status
-
-If editable:
-Recommend:
-farm_statuses table
-
-If fixed:
-Recommend:
-Enum
+1. قراءة الجزء المقابل من `تصور_مشروع_الارانب.md`.
+2. مراجعة الأسئلة الموجودة حاليًا.
+3. منع التكرار.
+4. تحويل النقاط غير المحسومة إلى أسئلة قرار.
+5. استخدام `seed_key` ثابت.
+6. استخدام Question Types الحالية فقط.
+7. مراجعة Dependencies الحالية قبل إضافة شرط.
+8. تحديد `report_category` و`target_entity`.
+9. التفكير من البداية في الحفاظ على الإجابات المستقبلية.
 
 ---
 
-# 19. Technical Specification Sections
+## 19. Farm Structure — الاتجاه الحالي
 
-Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ ÙŠÙ…ÙƒÙ† Ø£Ù† ÙŠØ­ØªÙˆÙŠ Ø¹Ù„Ù‰:
+تم فصل Farm Structure عن Master Data.
 
-# Entities
+### Farm
 
-# Fields
+`بيانات المزرعة` جزء من `هيكل المزرعة`.
 
-# Fixed Values / Enums
+### Barn
 
-# Managed Lookup Tables
+العنبر Child من المزرعة ويحتوي قواعده الهيكلية والتشغيلية الخاصة.
 
-# Relationships
+### Battery
 
-# Workflow Requirements
+البطارية Child من العنبر، وتحتوي البنية التي تستخدم لتوليد الأقفاص.
 
-# Business Rules
+### Cage
 
-# Alerts
+القفص Child مولد من البطارية وليس Record ينشأ يدويًا بصورة مستقلة.
 
-# Reports
+الاتجاه الحالي للقفص:
 
-# Needs Review
+```text
+Battery Structure
+→ Generate Cages
+→ Fixed Cage Identity
+→ Review / Activation
+→ Operational Cage
+→ Actions + History
+```
 
-Ù„Ø§ ÙŠØªÙ… Ø§Ø¹ØªÙ…Ø§Ø¯ Ø´ÙƒÙ„ Ø§Ù„ØªÙ‚Ø±ÙŠØ± Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ Ø¨Ø§Ù„ÙƒØ§Ù…Ù„ Ù‚Ø¨Ù„ Phase 4.
+القفص بعد التفعيل لا يعامل كـEdit Form عادي لتغيير هويته الأساسية.
 
----
+التغييرات التشغيلية يتم تمثيلها عبر Actions / Events مع History/Audit بدل تعديل قيم الحالة مباشرة بدون أثر تاريخي.
 
-# 20. Needs Review in Technical Report
-
-Ø£ÙŠ Answer ØªØ­ØªÙˆÙŠ:
-
-needs_review = true
-
-ÙˆÙ„Ø§ ØªØ²Ø§Ù„:
-
-review_status = pending
-
-ØªØ¸Ù‡Ø± ÙÙŠ Ø§Ù„ØªÙ‚Ø±ÙŠØ± ØªØ­Øª:
-
-# Needs Review
-
-Ù…Ø¹:
-
-- Section
-- Question
-- Current Answer
-- Specialist Note
-
-ÙˆÙ„Ø§ ÙŠØªÙ… ØªØ­ÙˆÙŠÙ„ Ø§Ù„Ù…Ù„Ø§Ø­Ø¸Ø© ØºÙŠØ± Ø§Ù„Ù…Ø¹ØªÙ…Ø¯Ø© ØªÙ„Ù‚Ø§Ø¦ÙŠÙ‹Ø§ Ø¥Ù„Ù‰ Migration Requirement.
+QR Code جزء من هوية الوصول الميداني للقفص ويرتبط بهويته/كوده.
 
 ---
 
-# 21. Filament Administration Goal
+## 20. Frontend
 
-Filament Admin ÙŠÙƒÙˆÙ† Ø¨Ø³ÙŠØ·Ù‹Ø§.
+واجهة المختص الحالية مبنية على:
 
-Ø§Ù„Ù‚Ø§Ø¦Ù…Ø© Ø§Ù„Ù…Ø·Ù„ÙˆØ¨Ø© Ù…Ø¨Ø¯Ø¦ÙŠÙ‹Ø§:
+- Blade.
+- Bootstrap 5.
+- Bootstrap RTL.
+- Tajawal.
+- Font Awesome 6.
+- JavaScript خفيف.
 
-Questionnaire
+الواجهة عربية RTL.
 
-- Sections
-- Questions
-- Answers
+التنقل الحالي يعتمد على:
 
-Question Options Ù„Ø§ ØªØ­ØªØ§Ø¬ Resource Ù…Ø³ØªÙ‚Ù„Ø© Ø¨Ø§Ù„Ø¶Ø±ÙˆØ±Ø©.
+```text
+Home
+→ Main Section
+→ Subsection
+→ One Question per Step
+→ Save & Continue
+→ Completion
+```
 
-ÙŠÙØ¶Ù„ Ø¥Ø¯Ø§Ø±ØªÙ‡Ø§ Ø¯Ø§Ø®Ù„ Question Resource Ø¨Ø§Ø³ØªØ®Ø¯Ø§Ù… Repeater.
-
----
-
-# 22. Section Resource
-
-Ø§Ù„Ù…Ø·Ù„ÙˆØ¨:
-
-List
-Create
-Edit
-Delete
-Ordering
-
-Form:
-
-Name
-
-Description
-Markdown Editor Ø£Ùˆ textarea Ù…Ù†Ø§Ø³Ø¨ Ø­Ø³Ø¨ Core conventions.
-
-Sort Order
+الإجابات تحفظ في قاعدة البيانات وليست معتمدة على Browser Session.
 
 ---
 
-# 23. Question Resource
+## 21. Filament Administration
 
-Form Ù…Ø¨Ø¯Ø¦ÙŠ:
+Filament يستخدم لإدارة:
 
-Section
+- Sections.
+- Questions.
+- Answers.
+- Question Options داخل Question Resource عند الحاجة.
 
-Question Title
-
-Help Text
-
-Question Type
-
-Required
-
-Sort Order
-
-Options Repeater
-ÙŠØ¸Ù‡Ø± ÙÙ‚Ø· Ø¹Ù†Ø¯ Ø§Ù„Ø­Ø§Ø¬Ø©.
-
-Conditional Question Settings
-ØªØ¸Ù‡Ø± ÙÙ‚Ø· Ø¹Ù†Ø¯ ØªÙØ¹ÙŠÙ„ dependency.
-
-Report Category
-
-Target Entity
-
-Metadata ÙÙ‚Ø· Ø¥Ø°Ø§ Ø¸Ù‡Ø±Øª Ù„Ù‡Ø§ Ø­Ø§Ø¬Ø© ÙØ¹Ù„ÙŠØ©.
+المطلوب الحفاظ على توافق التنفيذ مع Laravel 12 / PHP 8.2 / Filament 4 والكود الموجود فعليًا في المشروع.
 
 ---
 
-# 24. Dynamic Question Form
+## 22. Questionnaire Guide
 
-Filament form ÙŠØ¬Ø¨ Ø£Ù† ÙŠØªØºÙŠØ± Ø­Ø³Ø¨:
+الـGuides تشرح معنى الأسئلة وحدود تفسيرها ولا تعيد تخزين الإجابات كنسخة ثانية من الحقيقة.
 
-QuestionType
+المسار:
 
-TEXT:
-Ù„Ø§ Options.
+`docs/questionnaire-guide/`
 
-TEXTAREA:
-Ù„Ø§ Options.
-
-NUMBER:
-ÙŠÙ…ÙƒÙ† Ù„Ø§Ø­Ù‚Ù‹Ø§ Ø¥Ø¶Ø§ÙØ©:
-min
-max
-step
-Ø¥Ø°Ø§ Ø¸Ù‡Ø±Øª Ø­Ø§Ø¬Ø© ÙØ¹Ù„ÙŠØ©.
-
-DATE:
-Ù„Ø§ Options.
-
-YES_NO:
-Ø§Ù„Ù‚ÙŠÙ… Ù…Ø¹Ø±ÙˆÙØ© Ø¯Ø§Ø®Ù„ÙŠÙ‹Ø§:
-yes / no
-
-SINGLE_CHOICE:
-Options Repeater.
-
-MULTI_CHOICE:
-Options Repeater.
-
-SELECT:
-Options Repeater.
+كل Guide يجب أن يستخدم `Question Key / seed_key` للربط بين السؤال وبين المتطلبات الناتجة عنه.
 
 ---
 
-# 25. Answers Administration
+## 23. Final Requirements Input
 
-Filament Answers page ØªØ¹Ø±Ø¶ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª Ù…Ø¬Ù…Ø¹Ø© Ø­Ø³Ø¨ Section.
+المدخل النهائي لوكيل كتابة Requirements يجب أن يعتمد على:
 
-ÙŠØ¬Ø¨ Ø£Ù† ÙŠØ±Ù‰ Admin:
+- الأسئلة ذات `seed_key` معروف.
+- الإجابات المعتمدة.
+- عدم وجود مراجعة مفتوحة مؤثرة.
+- استبعاد `manual_review` من التحويل المباشر إلى Requirement.
+- استبعاد `*.additional_requirements` كقرار نهائي مباشر حتى يتم تحويل محتواه إلى سؤال واضح عند الحاجة.
 
-Question
+---
 
-Readable Answer
+## 24. مصادر Requirements Agent
 
-Notes
+بعد انتهاء مرحلة الأسئلة والإجابات، يعتمد Requirements Agent على:
 
+1. `docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md`
+2. Questionnaire Guide الخاص بالقسم.
+3. Final Requirements Input.
+4. `docs/questionnaire-guide/REQUIREMENTS_CONFLICTS.md`
+
+ولا يرجع إلى `تصور_مشروع_الارانب.md` ليغيّر قرارًا نهائيًا سبق اعتماده.
+
+---
+
+## 25. التعامل مع التعارضات
+
+إذا ظهر تعارض بين إجابات أو قرارات:
+
+- لا يحسم الوكيل التعارض من نفسه.
+- لا يخترع حلًا وسطًا.
+- لا يستخدم المرجع القديم لتجاوز أحدث قرار.
+- يسجل التعارض في `REQUIREMENTS_CONFLICTS.md`.
+- يحدد Question Keys المتأثرة.
+- ينتظر قرار المستخدم.
+
+---
+
+## 26. Technical Outputs
+
+المخرجات التقنية يجب أن تكون مشتقة من قرارات واضحة، وليس مجرد إعادة عرض سؤال/إجابة.
+
+أمثلة:
+
+```text
+Questions + Answers
+        ↓
+Entities
+Fields
+Relationships
+Enums / Fixed Values
+Managed Lookup Tables
+Business Rules
+Workflow Rules
+UI Requirements
 Needs Review
+```
 
-Review Status
-
-Edit
-
-Ù„Ø§ ÙŠØªÙ… Ø¹Ø±Ø¶:
-
-Raw JSON
-
-Internal Value
-
-IDs
-
-Ø¥Ù„Ø§ Ø¹Ù†Ø¯ Ø§Ù„Ø­Ø§Ø¬Ø© Ø§Ù„ØªÙ‚Ù†ÙŠØ©.
+التحويل يجب أن يكون قابلًا للمراجعة والتتبع إلى `seed_key` الأصلي.
 
 ---
 
-# 26. Frontend Goal
+## 27. قواعد الحذف والتعديل الآمن
 
-ÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… ÙŠØ¬Ø¨ Ø£Ù† ØªÙƒÙˆÙ† Ø¨Ø³ÙŠØ·Ø© Ø¬Ø¯Ù‹Ø§.
+### Sections
 
-Approved stack:
+لا يحذف Main Section إذا كان تحته Subsections مستخدمة.
 
-Bootstrap 5
-Bootstrap RTL
-Font Awesome 6
-Tajawal
-Blade
-Lightweight JavaScript
+لا يحذف Subsection عليها Questions/Answers مهمة لمجرد إعادة التنظيم.
 
-Ù„Ø§ ÙŠØªÙ… Ø§Ø³ØªØ®Ø¯Ø§Ù… Filament UI ÙÙŠ ÙˆØ§Ø¬Ù‡Ø© Ø§Ù„Ù…Ø®ØªØµ.
+### Questions
 
----
+عند وجود إجابات مهمة:
 
-# 27. Frontend Layout
-
-Desktop:
-
-Sidebar
-+
-Questions Area
-
-Sidebar ÙŠØªÙ… ØªÙˆÙ„ÙŠØ¯Ù‡Ø§ Ù…Ù†:
-
-Sections
-
-Ø¨Ø§Ù„ØªØ±ØªÙŠØ¨:
-
-sort_order
-
-ÙŠØ³ØªØ·ÙŠØ¹ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø§Ù„ØªÙ†Ù‚Ù„ Ø¨Ø­Ø±ÙŠØ© Ø¨ÙŠÙ† Ø§Ù„Ø£Ù‚Ø³Ø§Ù….
-
-Ù„Ø§ ÙŠÙˆØ¬Ø¯ Session Flow Ù…Ø¹Ù‚Ø¯.
+- لا يحذف Question ثم يعاد إنشاؤه تحت `seed_key` جديد لنفس القرار.
+- لا تغير Option Values بدون مراجعة أثر الإجابات.
+- لا يستخدم `prune` تدميريًا بدون `preserveAnswers` عندما نكون في وضع الحفاظ على الإجابات.
 
 ---
 
-# 28. Question Rendering
+## 28. Repository Encoding Standard
 
-Frontend ÙŠÙ‚Ø±Ø£ QuestionType ÙˆÙŠÙˆÙ„Ø¯ Control Ù…Ù†Ø§Ø³Ø¨.
+كل ملفات النصوص في المستودع يجب أن تكون:
 
-text:
-input text
+```text
+Encoding: UTF-8 without BOM
+Line Endings: LF
+Final Newline: Yes
+```
 
-textarea:
-textarea
+العربية يجب أن تظهر كنص عربي حقيقي، وليس Mojibake من نوع:
 
-number:
-input number
+```text
+Ù‡Ø°Ø§
+Ø§Ù„Ù…Ø´Ø±ÙˆØ¹
+```
 
-date:
-input date
-
-yes_no:
-Yes / No controls
-
-single_choice:
-radio/cards
-
-multi_choice:
-checkbox/cards
-
-select:
-select
+إذا ظهر هذا الشكل، يعتبر الملف بحاجة إلى إصلاح فعلي قبل الاعتماد عليه.
 
 ---
 
-# 29. Optional Notes on Every Question
+## 29. قواعد تعديل الملفات
 
-ØªØ­Øª ÙƒÙ„ Ø³Ø¤Ø§Ù„ ÙŠÙˆØ¬Ø¯:
+قبل تعديل أي ملف:
 
-Ù…Ù„Ø§Ø­Ø¸Ø§Øª Ø¥Ø¶Ø§ÙÙŠØ©
-Ø§Ø®ØªÙŠØ§Ø±ÙŠ
-
-Textarea ØµØºÙŠØ±Ø©.
-
-Ù„Ø§ ØªÙƒÙˆÙ† Ø¨Ø§Ø±Ø²Ø© Ø£ÙƒØ«Ø± Ù…Ù† Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø© Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ©.
-
-Ø¥Ø°Ø§ ÙƒØªØ¨ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… Ø¨Ù‡Ø§:
-
-needs_review = true
+1. اقرأ المحتوى الحالي.
+2. راجع `FARM_BLUEPRINT_PROJECT_CONTEXT.md`.
+3. استخدم تعديلًا واضحًا ومقصودًا.
+4. لا تنشئ أسماء بديلة مضللة لنفس المسؤولية.
+5. لا تترك Compatibility Wrapper قديمًا إذا أصبح اسمه يسبب التباسًا معماريًا، إلا إذا كانت هناك ضرورة فعلية ومعلنة.
+6. لا تعدل `تصور_مشروع_الارانب.md` بدون طلب صريح.
 
 ---
 
-# 30. Answer Persistence
+## 30. GitHub Workflow
 
-Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª ØªØ­ÙØ¸ ÙØ¹Ù„ÙŠÙ‹Ø§ ÙÙŠ Database.
+المستودع Read Only افتراضيًا.
 
-Ù„Ø§ ØªØ¹ØªÙ…Ø¯ Ø¹Ù„Ù‰ Browser Session.
+لا يتم تنفيذ كتابة على GitHub إلا بطلب صريح من المستخدم.
 
-Ø¥Ø°Ø§ Ø£ØºÙ„Ù‚ Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù…:
+عند وجود طلب صريح:
 
-Browser
-Computer
+```text
+Assistant modifies GitHub master
+→ Assistant verifies repository state
+→ User pulls locally
+→ User runs local tests / seed
+```
 
-Ø«Ù… Ø¹Ø§Ø¯ Ù„Ø§Ø­Ù‚Ù‹Ø§:
+بعد اكتمال التعديلات:
 
-Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª ØªØ¸Ù„ Ù…Ø­ÙÙˆØ¸Ø©.
+```bash
+git pull origin master
+```
 
-Ù„Ø§ ÙŠÙˆØ¬Ø¯ QuestionnaireSession Model.
+وفي مرحلة إعادة البناء الحالية:
 
-Ù„Ø¯ÙŠÙ†Ø§ Answer ÙˆØ§Ø­Ø¯Ø© Ù„ÙƒÙ„ Question.
-
----
-
-# 31. Technical Report Frontend
-
-Route Ù„Ø§Ø­Ù‚Ù‹Ø§ Ù…Ø«Ù„:
-
-/technical-report
-
-ØªØ¹Ø±Ø¶ Technical Specification Ø§Ù„Ù†Ù‡Ø§Ø¦ÙŠ.
-
-ØªØ­ØªÙˆÙŠ Ø¹Ù„Ù‰:
-
-Print
-
-ÙˆÙŠØ³ØªØ®Ø¯Ù… Browser Print:
-
-Save as PDF
-
-Ù„Ø§ Ù†Ø¶ÙŠÙ PDF Package ÙÙŠ Ø§Ù„Ø¨Ø¯Ø§ÙŠØ©.
+```bash
+php artisan migrate:refresh --seed
+```
 
 ---
 
-# 32. Repository Encoding Standard
+## 31. الوضع الحالي — 2026-08-24
 
-Ù‡Ø°Ù‡ Ø§Ù„Ù‚ÙˆØ§Ø¹Ø¯ Ø«Ø§Ø¨ØªØ© Ù„Ù„Ù…Ø´Ø±ÙˆØ¹.
+### مكتمل تقنيًا
 
-Encoding:
+- Core questionnaire data model.
+- Question Types.
+- Simple Dependencies.
+- Filament administration.
+- Respondent frontend.
+- Answer persistence.
+- Needs Review model.
+- Technical report foundations.
+- `QuestionSeederSyncService`.
+- Stable `seed_key` approach.
+- فصل `Farm Structure` عن `Master Data`.
+- فصل ملفات Question Seeders حسب شجرة الأقسام.
+- إعادة بناء أسئلة `Cage` وفق النموذج الهيكلي/التشغيلي الجديد.
 
-UTF-8 without BOM
+### مرحلة العمل الحالية
 
-Line Endings:
+المشروع في مرحلة:
 
-LF
+**تنظيف البنية والأسئلة قبل بدء دورة إجابات جديدة مستقرة.**
 
-Final Newline:
+الإجابات القديمة تم حذفها عمدًا بإعادة بناء قاعدة البيانات.
 
-Yes
+### طريقة التشغيل الحالية
 
-ÙŠØ¬Ø¨ Ø§Ù„Ø­ÙØ§Ø¸ Ø¹Ù„Ù‰ Ø§Ù„Ù„ØºØ© Ø§Ù„Ø¹Ø±Ø¨ÙŠØ© Ø¨Ø´ÙƒÙ„ ØµØ­ÙŠØ­.
+```bash
+php artisan migrate:refresh --seed
+```
 
----
+### الهدف قبل بدء الإجابات الجديدة
 
-# 33. File Editing Rules
-
-Ù‚Ø¨Ù„ ØªØ¹Ø¯ÙŠÙ„ Ø£ÙŠ Ù…Ù„Ù:
-
-Read it first.
-
-Ø§Ø³ØªØ®Ø¯Ù… targeted edits.
-
-Ù„Ø§ ØªØ¹ÙŠØ¯ ÙƒØªØ§Ø¨Ø© Ù…Ù„Ù ÙƒØ§Ù…Ù„ Ø¥Ø°Ø§ ÙƒØ§Ù† ØªØ¹Ø¯ÙŠÙ„ ØµØºÙŠØ± ÙƒØ§ÙÙŠÙ‹Ø§.
-
-Ø¥Ø°Ø§ ÙØ´Ù„ Patch:
-
-- Ù„Ø§ ØªÙƒØ±Ø± Ù†ÙØ³ Ø§Ù„Ù…Ø­Ø§ÙˆÙ„Ø©
-- Ø§ÙØ­Øµ Ø§Ù„Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø­Ø§Ù„ÙŠ
-- Ø§ÙØ­Øµ encoding
-- Ø§ÙØ­Øµ line endings
-- Ø«Ù… Ø¹Ø¯Ù„
-
-Ù„Ø§ ØªØ¹Ù…Ù„ normalization Ù„Ù…Ù„ÙØ§Øª ØºÙŠØ± Ù…Ø±ØªØ¨Ø·Ø© Ø¨Ø§Ù„Ù…Ù‡Ù…Ø©.
-
-Ù„Ø§ ØªÙ†Ø´Ø¦ noisy diffs Ø¨Ø¯ÙˆÙ† Ø¯Ø§Ø¹Ù.
-
----
-
-# 34. Filament Compatibility
-
-ÙŠØ¬Ø¨ Ù‚Ø±Ø§Ø¡Ø©:
-
-AGENTS.md
-
-Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Ø£ÙŠ Filament Resource.
-
-ÙˆÙŠØ¬Ø¨ Ø§Ù„ØªØ­Ù‚Ù‚ Ù…Ù†:
-
-actual installed Filament version
-
-Ù…Ù† Ø§Ù„Ù…Ø´Ø±ÙˆØ¹.
-
-Ù„Ø§ ÙŠØªÙ… Ø§ÙØªØ±Ø§Ø¶ namespace Ø£Ùˆ API Ù…Ù† Ø§Ù„Ø°Ø§ÙƒØ±Ø©.
-
-Existing working resources in the Laravel Core are the preferred implementation reference.
+- تثبيت شجرة الأقسام.
+- تثبيت شجرة Seeders.
+- إزالة الأقسام الموجودة في المكان الخطأ.
+- مراجعة الأسئلة الأساسية.
+- التأكد أن كل Seeder مستدعى من orchestrator الصحيح.
+- التأكد أن Fresh Seed يعيد بناء الحالة الكاملة.
+- بعدها تبدأ الإجابات الجديدة.
 
 ---
 
-# 35. Testing Rules
+## 32. المرحلة التالية بعد تثبيت الهيكل
 
-Ù„Ø§ ÙŠØªÙ… Ø¨Ù†Ø§Ø¡ Browser Screenshot Testing.
+بعد التأكد من سلامة الـSeeders محليًا:
 
-Ø§Ù„Ù…Ø³ØªØ®Ø¯Ù… ÙŠÙ‚ÙˆÙ… Ø¨Ø§Ù„Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„Ø¨ØµØ±ÙŠØ©.
-
-Codex Ù…Ø³Ø¤ÙˆÙ„ Ø¹Ù†:
-
-Automated Tests
-
-Ù„Ù„Ø³Ù„ÙˆÙƒ Ø§Ù„Ù…Ù‡Ù….
-
----
-
-# 36. Implementation Phases
-
-## Phase 0 â€” Project Audit & Repository Hygiene
-
-Goal:
-
-ÙÙ‡Ù… Laravel Core Ù‚Ø¨Ù„ ØªÙ†ÙÙŠØ° Ø§Ù„Ù…Ø´Ø±ÙˆØ¹ Ø§Ù„Ø¬Ø¯ÙŠØ¯.
-
-Tasks:
-
-- [x] Read AGENTS.md completely
-- [x] Verify Laravel version
-- [x] Verify PHP version
-- [x] Verify Filament version
-- [x] Verify database
-- [x] Verify installed packages
-- [x] Verify localization conventions
-- [x] Verify Filament Resource conventions
-- [x] Verify frontend conventions
-- [x] Verify UTF-8
-- [x] Verify BOM
-- [x] Verify line endings
-- [x] Review .editorconfig
-- [x] Review .gitattributes
-- [x] Verify text hygiene tooling if present
-- [x] Document findings
-- [x] Confirm Phase 1 architecture
-
-Verified Core Findings:
-
-- AGENTS.md matches the current Core stack in the audited areas and did not require correction during Phase 0.
-- PHP CLI version verified: 8.2.12.
-- Laravel version verified: 12.66.0.
-- Filament version verified from composer.lock: 4.12.6.
-- Database configuration supports multiple drivers, with MySQL defined and the default connection remaining environment-driven through `DB_CONNECTION`.
-- The questionnaire plan file is valid UTF-8 without BOM and uses LF line endings; Arabic text rendering issues observed in terminal output are display-side mojibake, not a repository encoding defect.
-- Audited directories `app/`, `resources/`, `lang/`, `database/`, and `docs/` currently contain no UTF-8 BOM files and no CRLF files.
-- `.editorconfig` already enforces `charset = utf-8`, `end_of_line = lf`, and `insert_final_newline = true`.
-- `.gitattributes` already enforces `* text=auto eol=lf`.
-- No dedicated repository-wide text hygiene script or test exists at the moment; Phase 0 did not introduce one because no encoding or line-ending defect was found.
-- Existing Filament resources confirm the current Core conventions: separate Resource / Schemas / Tables / Pages classes, translation-backed labels, session-persisted table state, modal filters with four columns when filters exist, `->iconButton()` record actions, and full-width admin pages.
-- Localization conventions are aligned with AGENTS.md: admin content locales come from `config/core.php`, frontend localized routes come from `mcamara/laravel-localization`, and translatable content uses Spatie Translatable.
-- Frontend baseline currently uses Blade + Vite + Tailwind CSS v4 in the starter project; the questionnaire-specific Bootstrap 5 / RTL / Font Awesome 6 / Tajawal stack remains a future approved direction for questionnaire frontend work rather than an existing Core-wide frontend implementation.
-
-Status:
-Completed
+1. مراجعة الأقسام واحدًا واحدًا.
+2. مراجعة الأسئلة قبل الإجابة.
+3. الإجابة على الأسئلة المعتمدة.
+4. مراجعة Notes / Needs Review.
+5. تثبيت Questionnaire Guides.
+6. إنشاء Final Requirements Input.
+7. توليد Requirements / Business Rules.
+8. مراجعة التعارضات.
+9. بناء الـBlueprint النهائي.
 
 ---
 
-## Phase 1 â€” Core Data Model
+## 33. ملخص تاريخ التنفيذ
 
-Goal:
+هذا القسم **تاريخي** ولا يعلو على الوضع الحالي الموثق أعلاه.
 
-Ø¥Ù†Ø´Ø§Ø¡ Ù‚Ø§Ø¹Ø¯Ø© Ø§Ù„Ø¨ÙŠØ§Ù†Ø§Øª Ø§Ù„Ø£Ø³Ø§Ø³ÙŠØ© ÙÙ‚Ø·.
+### Phase 0 — Project Audit & Repository Hygiene
 
-Expected scope:
+تمت مراجعة Laravel Core والإصدارات والـconventions وبنية المشروع قبل التنفيذ.
 
-- Sections Migration
-- Questions Migration
-- Question Options Migration
-- Answers Migration
-- Enums
-- Models
-- Relationships
-- Casts
-- Constraints
-- Indexes
-- Tests
+**Status:** Completed.
 
-Tasks:
+### Phase 1 — Core Data Model
 
-- [x] Finalize table structure
-- [x] Create migrations
-- [x] Create QuestionType enum
-- [x] Create AnswerReviewStatus enum if approved
-- [x] Create models
-- [x] Add relationships
-- [x] Add casts
-- [x] Add constraints
-- [x] Add indexes
-- [x] Add database tests
-- [x] Run migrations
-- [x] Run tests
-- [x] Update plan
+تم إنشاء:
 
-Status:
-Completed
+- Questionnaire Sections.
+- Questions.
+- Question Options.
+- Answers.
+- Enums.
+- Models.
+- Relationships.
+- Constraints.
+- Tests.
 
----
+**Status:** Completed.
 
-## Phase 2 â€” Filament Administration
+### Phase 2 — Filament Administration
 
-Goal:
+تم إنشاء إدارة الأقسام والأسئلة والإجابات وOptions وDependencies والمراجعات داخل Filament.
 
-Ø¥Ø¯Ø§Ø±Ø© Ù…Ø­ØªÙˆÙ‰ Ø§Ù„Ø§Ø³ØªØ¨ÙŠØ§Ù† ÙˆØ§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª Ù…Ù† Ù„ÙˆØ­Ø© Ø§Ù„ØªØ­ÙƒÙ….
+**Status:** Completed.
 
-Tasks:
+### Phase 3A — Questionnaire Frontend Pilot
 
-- [x] Section Resource
-- [x] Question Resource
-- [x] Dynamic Question Type form
-- [x] Options Repeater
-- [x] Conditional Question settings
-- [x] Report Category
-- [x] Target Entity
-- [x] Answers administration
-- [x] Needs Review indicators
-- [x] Review action
-- [x] Filament permissions according to Core
-- [x] Automated tests
-- [x] Update plan
+تم بناء واجهة المختص وحفظ الإجابات والتنقل والـprogress والـconditional questions.
 
-Status:
-Completed
+**Status:** Completed.
+
+### Phase 3A-R1 وما بعدها
+
+تمت عدة مراجعات للـUX والتنقل والـHome/Main Section hierarchy والـvisibility والـstepper.
+
+هذه التعديلات تعتبر سجلًا تاريخيًا للتطور وليست بنية مستقلة جديدة.
+
+### Phase 3B — Master Technical Specification Pilot
+
+تم بناء أساس تقرير تقني رئيسي مشتق من بيانات الاستبيان واختبار التحويل على Pilot مبكر.
+
+**Status:** Completed as Pilot.
+
+> ملاحظة: بعض افتراضات الـPilot القديمة تم تجاوزها لاحقًا أثناء إعادة تنظيم الأقسام والأسئلة، لذلك أي تنفيذ جديد يعتمد على السياق الحالي وQuestionnaire Guides وFinal Requirements Input.
 
 ---
 
-## Phase 3 â€” Questionnaire Frontend
+## 34. Architectural Decisions المستمرة
 
-Goal:
+### AD-001
 
-ÙˆØ§Ø¬Ù‡Ø© Ø¨Ø³ÙŠØ·Ø© Ù„Ù„Ù…Ø®ØªØµ Ù…Ø´Ø§Ø¨Ù‡Ø© ÙÙŠ Ø¨Ø³Ø§Ø·ØªÙ‡Ø§ Ù„Ù„Ù†Ù…ÙˆØ°Ø¬ Ø§Ù„Ù…Ø¹ØªÙ…Ø¯.
+يوجد Questionnaire واحد للدراسة الحالية.
 
-Tasks:
+**Status:** Approved.
 
-- [x] Questionnaire route
-- [x] Bootstrap layout
-- [x] RTL
-- [x] Tajawal
-- [x] Font Awesome
-- [x] Sidebar from Sections
-- [x] Section description rendering
-- [x] Question renderer
-- [x] Answer save/update
-- [x] Notes save/update
-- [x] Needs Review auto flag
-- [x] Simple conditional questions
-- [x] Restore existing answers
-- [x] Responsive structure
-- [x] Automated behavior tests
-- [x] Update plan
+### AD-002
 
-Status:
-Completed
+لا توجد Questionnaire Sessions كطبقة مستقلة حاليًا.
 
-Phase 3A note:
+**Status:** Approved.
 
-This frontend delivery was completed as the Farm Data Frontend Pilot using the existing seeded Pilot records.
+### AD-003
 
-Phase 3A-R1 note:
+لكل Question إجابة حالية واحدة.
 
-This UX revision updates the respondent flow to Arabic-only navigation, config-driven zero-group filtering, Main Section overview pages, and a one-question stepper while preserving the same one-answer-per-question persistence model.
+**Status:** Approved.
 
----
+### AD-004
 
-## Phase 4 â€” Technical Specification Generator
+Question Options مرتبطة بالسؤال وتدار ضمن Question Resource عند الحاجة.
 
-Goal:
+**Status:** Approved.
 
-ØªØ­ÙˆÙŠÙ„ Ø§Ù„Ø¥Ø¬Ø§Ø¨Ø§Øª Ø¥Ù„Ù‰ Technical Specification ÙˆØ§Ø¶Ø­.
+### AD-005
 
-Tasks:
+كل Question يدعم Notes اختيارية.
 
-- [ ] Define structured report format
-- [ ] Group by Target Entity
-- [ ] Fields section
-- [ ] Enum recommendations
-- [ ] Managed Lookup recommendations
-- [ ] Relationships
-- [ ] Workflow requirements
-- [ ] Business rules
-- [ ] Alerts
-- [ ] Reports
-- [ ] Needs Review
-- [ ] Technical report page
-- [ ] Print stylesheet
-- [ ] Automated report tests
-- [ ] Update plan
+**Status:** Approved.
 
-Status:
-Pending
+### AD-006
 
----
+الملاحظات تدخل مسار Needs Review ولا تتحول مباشرة إلى Requirements نهائية.
 
-## Phase 5 â€” Final Review & Polish
+**Status:** Approved.
 
-Goal:
+### AD-007
 
-Ù…Ø±Ø§Ø¬Ø¹Ø© Ø§Ù„ØªØ¬Ø±Ø¨Ø© Ø§Ù„ÙƒØ§Ù…Ù„Ø©.
+القرارات التقنية تستنتج من الإجابات الوظيفية المعتمدة.
 
-Tasks:
+**Status:** Approved.
 
-- [ ] Review Admin UX
-- [ ] Review questionnaire UX
-- [ ] Review report output
-- [ ] Fix confirmed usability problems
-- [ ] Validate answer persistence
-- [ ] Validate Needs Review process
-- [ ] Validate Print output
-- [ ] Final automated test run
-- [ ] Update documentation
+### AD-008
 
-Status:
-Pending
+لا يطلب من المختص اتخاذ قرارات Laravel / Database بصياغة تقنية مباشرة.
 
----
+**Status:** Approved.
 
-# 37. Architectural Decisions
+### AD-009
 
-## AD-001
+واجهة المختص عربية RTL وتعتمد Bootstrap 5 + Tajawal + Font Awesome 6.
 
-One questionnaire only.
+**Status:** Approved.
 
-Status:
-Approved
+### AD-010
 
-## AD-002
+Sections تستخدم مستويين منطقيين رئيسيين:
 
-No Questionnaire Sessions.
-
-Status:
-Approved
-
-## AD-003
-
-One Answer per Question.
-
-Status:
-Approved
-
-## AD-004
-
-Question Options are managed in Question Resource through Repeater.
-
-Status:
-Approved
-
-## AD-005
-
-Every Question supports Optional Notes.
-
-Status:
-Approved
-
-## AD-006
-
-Notes automatically trigger Needs Review.
-
-Status:
-Approved
-
-## AD-007
-
-Technical decisions are derived from business answers.
-
-Status:
-Approved
-
-## AD-008
-
-Specialist is not asked Laravel/database terminology.
-
-Status:
-Approved
-
-## AD-009
-
-Frontend uses Bootstrap 5 + Bootstrap RTL + Font Awesome 6 + Tajawal.
-
-Status:
-Approved
-
-## AD-010
-
-Technical report initially uses browser Print instead of PDF library.
-
-Status:
-Approved
-
-## AD-011
-
-Questionnaire Sections use a two-level self-referencing hierarchy:
-
+```text
 Main Section
-â†’ Subsection
+→ Subsection
+```
 
-Status:
-Approved
+**Status:** Approved.
 
-## AD-012
+### AD-011
 
-Questionnaire Answers may be created from Filament only for Questions that do not already have an Answer.
+Question identity تعتمد على `section_id + seed_key`.
 
-Status:
-Approved
+**Status:** Approved.
 
-## AD-013
+### AD-012
 
-Changing a Question from an option-based type to a non-option type is blocked while Options still exist, to avoid silent data loss.
+Option identity تعتمد على `question_id + value`.
 
-Status:
-Approved
+**Status:** Approved.
 
----
+### AD-013
 
-# 38. Deferred Decisions
+عند بدء الحفاظ على الإجابات، أي تغيير تدميري يجب أن يرفض أو يطلب مراجعة بدل حذف الإجابات بصمت.
 
-The following remain deferred until the relevant Phase:
+**Status:** Approved.
 
-- Exact report metadata fields
-- Exact Technical Specification transformation rules
-- Whether number questions require min/max/step
-- Whether Question metadata needs JSON
-- Whether Answer edit history is required
-- Whether report should later support direct PDF generation
+### AD-014
 
----
+شجرة ملفات Question Seeders يجب أن تعكس شجرة Main Sections/Subsections منطقيًا لمنع الأسماء المضللة.
 
-# 39. Development Rule
+**Status:** Approved.
 
-Any feature that does not directly support:
+### AD-015
 
-Question
-â†’ Answer
-â†’ Optional Note
-â†’ Needs Review
-â†’ Technical Specification
+Farm / Barn / Battery / Cage تقع تحت Main Section مستقل باسم `هيكل المزرعة`.
 
-must not be added without explicit approval.
+**Status:** Approved.
+
+### AD-016
+
+`ملفات إعدادات التشغيل` ليست Master Data Subsection حاليًا، وسيعاد بناؤها لاحقًا داخل Main Section الإعدادات.
+
+**Status:** Approved.
 
 ---
 
-# 40. Execution Log
-
-Append entries only.
-
-Do not delete previous execution history.
-
-Format:
-
-## YYYY-MM-DD â€” Phase X
-
-### Planned
-
-### Implemented
-
-### Files Created
-
-### Files Modified
-
-### Tests
-
-### Findings
-
-### Decisions
-
-### Issues
-
-### Next Step
-
-## 2026-08-15 - Phase 0
-
-### Planned
-
-- Audit the current Laravel Core before any questionnaire implementation.
-- Verify AGENTS.md against the actual repository state.
-- Confirm repository text hygiene and file editing safety conditions.
-- Stop after documenting Phase 0 findings and Phase 1 recommendations.
-
-### Implemented
-
-- Read AGENTS.md and the questionnaire implementation plan completely.
-- Verified PHP, Laravel, Filament, Node, npm, database configuration, and key installed package versions from the repository.
-- Inspected current Filament resources, localization helpers, admin panel provider, user model, routes, and frontend package configuration to capture actual project conventions.
-- Audited UTF-8 validity, BOM presence, and LF / CRLF status across `app/`, `resources/`, `lang/`, `database/`, and `docs/`.
-- Reviewed `.editorconfig` and `.gitattributes`.
-- Confirmed Phase 1 should retain the approved simplified questionnaire architecture with no questionnaire session layer.
-
-### Files Created
-
-- None.
-
-### Files Modified
-
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- `php -v`
-- `php artisan --version`
-- Read-only repository inspection of composer metadata, configuration, Filament resources, and localization helpers
-- Read-only UTF-8 / BOM / line-ending audit across the target directories
-
-### Findings
-
-- AGENTS.md is materially aligned with the actual Core and required no factual correction in Phase 0.
-- Verified versions: PHP 8.2.12, Laravel 12.66.0, Filament 4.12.6, Node 22.14.0, npm 10.9.2.
-- MySQL remains part of the intended Core stack and is fully configured, while the active default connection stays environment-driven.
-- Existing resource patterns are suitable as the direct reference for future questionnaire Resources.
-- The repository is already stable on the target text format standard in the audited directories.
-- No existing automated text hygiene tool was found.
-
-### Decisions
-
-- Phase 0 remains documentation and audit only; no questionnaire application code was created.
-- The plan continues to use the approved simplified architecture: one questionnaire, no questionnaire sessions, one current answer per question, optional notes triggering review, and a later technical specification output.
-
-### Issues
-
-- `composer show` and `git status` are blocked in this execution environment by Git safe-directory ownership checks, so package verification relied on `composer.lock`, `composer.json`, and installed project code instead.
-
-### Next Step
-
-- Await approval for Phase 1 - Core Data Model.
-
-## 2026-08-15 - Phase 1
-
-### Planned
-
-- Build the minimal questionnaire domain foundation only.
-- Add the approved two-level section hierarchy using one self-referencing table.
-- Create migrations, enums, models, relationships, casts, constraints, and focused database tests.
-- Stop before any Filament, frontend, or report-generation work.
-
-### Implemented
-
-- Created questionnaire migrations for sections, questions, question options, and answers.
-- Added `QuestionType`, `QuestionDependencyOperator`, and `AnswerReviewStatus` enums.
-- Added questionnaire models with relationships, defaults, casts, and safe domain rules.
-- Implemented automatic `notes` â†’ `needs_review` synchronization and `review_status` â†’ `reviewed_at` synchronization in the answer model.
-- Added focused feature tests covering hierarchy, deletion safety, relationships, uniqueness constraints, JSON answer storage, notes review behavior, and reviewed-state timestamps.
-- Updated the implementation plan to reflect the approved main-section / subsection hierarchy and Phase 1 completion.
-
-### Files Created
-
-- `app/Enums/Questionnaire/QuestionType.php`
-- `app/Enums/Questionnaire/QuestionDependencyOperator.php`
-- `app/Enums/Questionnaire/AnswerReviewStatus.php`
-- `lang/en/enums/questionnaire.php`
-- `lang/ar/enums/questionnaire.php`
-- `tests/Feature/QuestionnaireCoreDataModelTest.php`
-
-### Files Modified
-
-- `database/migrations/2026_08_15_144817_create_questionnaire_sections_table.php`
-- `database/migrations/2026_08_15_144818_create_questionnaire_questions_table.php`
-- `database/migrations/2026_08_15_144819_create_questionnaire_question_options_table.php`
-- `database/migrations/2026_08_15_144820_create_questionnaire_answers_table.php`
-- `app/Models/QuestionnaireSection.php`
-- `app/Models/QuestionnaireQuestion.php`
-- `app/Models/QuestionnaireQuestionOption.php`
-- `app/Models/QuestionnaireAnswer.php`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- Questionnaire core data model feature tests
-- Migration execution against SQLite in-memory configuration
-
-### Findings
-
-- The two-level section hierarchy fits cleanly in a single self-referencing table without needing a tree package.
-- Safe deletion is handled by FK restrictions for parent sections and section-owned questions.
-- A single JSON answer value column can support scalar and array answers while keeping the model API simple.
-
-### Decisions
-
-- `report_category` and `target_entity` remain nullable strings in Phase 1.
-- `metadata` remains deferred and was not added.
-- Dependency parent deletion clears only `depends_on_question_id`; dependent questions remain intact.
-
-### Issues
-
-- None beyond the previously known terminal mojibake display issue for Arabic text in this environment.
-
-### Next Step
-
-- Await approval for Phase 2 - Filament Administration.
-
-## 2026-08-15 - Phase 2
-
-### Planned
-
-- Verify Phase 1 questionnaire migrations against the actual MySQL development database.
-- Build Filament Administration for sections, questions, and answers only.
-- Keep question options inside the question form through a repeater.
-- Add simple review workflow, translations, and focused tests without starting frontend or report generation.
-
-### Implemented
-
-- Verified the four questionnaire Phase 1 migrations on the local MySQL development database and ran them successfully.
-- Added Filament resources, pages, schemas, and tables for questionnaire sections, questions, and answers.
-- Added section hierarchy admin controls, main-section to subsection selection flow, dynamic question-type behavior, dependency settings, and answer review actions.
-- Added translation files in Arabic and English for all three questionnaire resources.
-- Added questionnaire policies following the existing Shield policy naming convention.
-- Added focused tests for Filament-admin-supporting behavior and readable answer formatting.
-- Updated the implementation plan to mark Phase 2 complete and record the implementation details discovered during execution.
-
-### Files Created
-
-- `app/Filament/Resources/QuestionnaireSections/QuestionnaireSectionResource.php`
-- `app/Filament/Resources/QuestionnaireSections/Schemas/QuestionnaireSectionForm.php`
-- `app/Filament/Resources/QuestionnaireSections/Tables/QuestionnaireSectionsTable.php`
-- `app/Filament/Resources/QuestionnaireSections/Pages/ListQuestionnaireSections.php`
-- `app/Filament/Resources/QuestionnaireSections/Pages/CreateQuestionnaireSection.php`
-- `app/Filament/Resources/QuestionnaireSections/Pages/EditQuestionnaireSection.php`
-- `app/Filament/Resources/QuestionnaireQuestions/QuestionnaireQuestionResource.php`
-- `app/Filament/Resources/QuestionnaireQuestions/Schemas/QuestionnaireQuestionForm.php`
-- `app/Filament/Resources/QuestionnaireQuestions/Tables/QuestionnaireQuestionsTable.php`
-- `app/Filament/Resources/QuestionnaireQuestions/Pages/ListQuestionnaireQuestions.php`
-- `app/Filament/Resources/QuestionnaireQuestions/Pages/CreateQuestionnaireQuestion.php`
-- `app/Filament/Resources/QuestionnaireQuestions/Pages/EditQuestionnaireQuestion.php`
-- `app/Filament/Resources/QuestionnaireAnswers/QuestionnaireAnswerResource.php`
-- `app/Filament/Resources/QuestionnaireAnswers/Schemas/QuestionnaireAnswerForm.php`
-- `app/Filament/Resources/QuestionnaireAnswers/Tables/QuestionnaireAnswersTable.php`
-- `app/Filament/Resources/QuestionnaireAnswers/Pages/ListQuestionnaireAnswers.php`
-- `app/Filament/Resources/QuestionnaireAnswers/Pages/CreateQuestionnaireAnswer.php`
-- `app/Filament/Resources/QuestionnaireAnswers/Pages/EditQuestionnaireAnswer.php`
-- `app/Policies/QuestionnaireSectionPolicy.php`
-- `app/Policies/QuestionnaireQuestionPolicy.php`
-- `app/Policies/QuestionnaireAnswerPolicy.php`
-- `lang/en/filament/resources/questionnaire_sections.php`
-- `lang/ar/filament/resources/questionnaire_sections.php`
-- `lang/en/filament/resources/questionnaire_questions.php`
-- `lang/ar/filament/resources/questionnaire_questions.php`
-- `lang/en/filament/resources/questionnaire_answers.php`
-- `lang/ar/filament/resources/questionnaire_answers.php`
-- `tests/Feature/QuestionnaireFilamentAdminSupportTest.php`
-
-### Files Modified
-
-- `app/Models/QuestionnaireQuestion.php`
-- `app/Models/QuestionnaireAnswer.php`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- MySQL migration verification through `php artisan migrate`
-- Questionnaire core data model tests
-- Questionnaire Filament admin support tests
-- Resource route registration verification
-
-### Findings
-
-- The Phase 1 questionnaire schema works correctly on the local MySQL development database.
-- The existing Filament Core split structure adapts cleanly to questionnaire sections, questions, and answers.
-- Readable answer formatting is best centralized in the questionnaire model layer instead of duplicating mapping logic across tables and forms.
-
-### Decisions
-
-- Answers can be created from Filament only for unanswered questions.
-- Type changes from option-based questions to non-option types are blocked while options still exist.
-- Section delete UX now stops before the database exception and shows a readable admin message when child subsections or questions still exist.
-
-### Issues
-
-- Shield permission generation command was reviewed, but existing manually created questionnaire policies already follow the project Shield convention, so no extra generator write step was required during this phase.
-
-### Next Step
-
-- Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
-
-## 2026-08-15 - Phase 3A-R1
-
-### Planned
-
-- Revise respondent navigation and presentation without changing questionnaire data or persistence architecture.
-- Remove respondent language switching and simplify public respondent routes to Arabic-only paths.
-- Replace the single-page Subsection experience with a one-question stepper flow while preserving one Answer per Question.
-
-### Implemented
-
-- Removed respondent language switching from the questionnaire frontend and fixed the respondent shell to Arabic RTL.
-- Added `config/questionnaire.php` with `show_zero_groups` defaulting to `false`.
-- Updated respondent routes to use Arabic-only public paths for Home, Main Section, Subsection, Question steps, completion, and answer persistence.
-- Added Main Section overview pages that list only visible Subsections and do not render Questions directly.
-- Replaced the old all-questions Subsection page with a one-question stepper flow, including Previous navigation, Save & Continue behavior, and a completion state.
-- Kept lightweight auto-save for the current Question without automatic navigation.
-- Updated frontend tests to cover Arabic-only behavior, zero-group filtering, Main Section/Subsection navigation, stepper flow, required validation, conditional sequencing, and completion behavior.
-
-### Files Created
-
-- `config/questionnaire.php`
-- `app/Http/Controllers/Questionnaire/QuestionnairePageController.php`
-- `app/Http/Requests/Questionnaire/SubmitQuestionnaireAnswerStepRequest.php`
-- `resources/views/questionnaire/main-section.blade.php`
-- `resources/views/questionnaire/question.blade.php`
-- `resources/views/questionnaire/completion.blade.php`
-- `resources/views/components/questionnaire/question-form.blade.php`
-
-### Files Modified
-
-- `routes/web.php`
-- `app/Http/Controllers/Questionnaire/QuestionnaireAnswerController.php`
-- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
-- `resources/views/layouts/questionnaire.blade.php`
-- `resources/views/questionnaire/home.blade.php`
-- `resources/views/components/questionnaire/sidebar.blade.php`
-- `public/js/questionnaire.js`
-- `public/css/questionnaire.css`
-- `tests/Feature/QuestionnaireFrontendPilotTest.php`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- Questionnaire core data model tests
-- Questionnaire Filament admin support tests
-- Questionnaire frontend Pilot tests updated for 3A-R1
-
-### Findings
-
-- The existing one-answer-per-question model supports step-based navigation cleanly without adding sessions or step tables.
-- Zero-group filtering is safest when derived from real Question counts at runtime and controlled only by config.
-- Conditional Questions fit naturally into the stepper as long as the applicable sequence is recalculated after each saved step.
-
-### Decisions
-
-- Respondent frontend is Arabic-only in this Pilot revision.
-- Zero-question Main Sections and Subsections are hidden from respondent navigation by default through config.
-- Save & Continue is now the primary respondent flow, while auto-save remains secondary protection for the current Question.
-
-### Issues
-
-- The implementation plan keeps the original Phase 3 heading and records this change explicitly as Phase 3A-R1 rather than rewriting earlier approved history.
-
-### Next Step
-
-- Await the next approved frontend or report instruction.
-
-## 2026-08-15 - Phase 3A
-
-### Planned
-
-- Build the first real frontend Pilot for the Farm Data subsection only.
-- Reuse the existing database sections, questions, options, and answers as the source of truth.
-- Keep the UX compact, RTL, and database-persistent without introducing sessions or report generation.
-
-### Implemented
-
-- Added localized frontend routes for Home, Study, and answer save/update.
-- Added a dedicated questionnaire frontend service for tree loading, conditional applicability, answer payload preparation, and derived progress.
-- Added a compact Bootstrap RTL + Tajawal + Font Awesome frontend shell with a Main Section home page, hierarchical Sidebar, and a single-page Subsection study flow.
-- Added lightweight JavaScript auto-save behavior and optional Notes UX while keeping backend Answer model rules authoritative.
-- Added support for all approved QuestionTypes, conditional rendering, existing-answer restore behavior, and derived Main/Subsection progress.
-- Added focused automated tests covering frontend rendering, persistence, conditional visibility, and progress behavior.
-- Updated the implementation plan to record Phase 3A completion and the next gated step.
-
-### Files Created
-
-- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
-- `app/Http/Requests/Questionnaire/SaveQuestionnaireAnswerRequest.php`
-- `app/Http/Controllers/Questionnaire/QuestionnaireController.php`
-- `app/Http/Controllers/Questionnaire/QuestionnaireAnswerController.php`
-- `resources/views/layouts/questionnaire.blade.php`
-- `resources/views/components/questionnaire/sidebar.blade.php`
-- `resources/views/components/questionnaire/question-block.blade.php`
-- `resources/views/questionnaire/home.blade.php`
-- `resources/views/questionnaire/study.blade.php`
-- `public/css/questionnaire.css`
-- `public/js/questionnaire.js`
-- `tests/Feature/QuestionnaireFrontendPilotTest.php`
-
-### Files Modified
-
-- `routes/web.php`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- Questionnaire core data model tests
-- Questionnaire Filament admin support tests
-- Questionnaire frontend Pilot tests
-- Frontend route registration verification
-
-### Findings
-
-- The current one-answer-per-question architecture supports persistent frontend behavior cleanly without sessions.
-- Rendering all Pilot questions for one Subsection on a single page works well with a compact UI and lightweight auto-save.
-- Progress is most reliable when derived from currently applicable questions only, while hidden conditional answers remain preserved.
-
-### Decisions
-
-- Frontend respondent routes now use explicit localized `{locale}` prefixes.
-- Hidden conditional answers are preserved in the database during this Pilot instead of being auto-deleted.
-- Zero-question Subsections render a safe placeholder state instead of failing.
-
-### Issues
-
-- Bootstrap RTL, Tajawal, and Font Awesome are loaded through CDN links in this Pilot frontend shell.
-
-### Next Step
-
-- Await HUMAN frontend review and real answers before Phase 3B - Technical Report Pilot.
-
-## 2026-08-15 - Phase 3A-R2
-
-### Planned
-
-- Apply a very small Home-page-only revision without changing the question flow, persistence, or report generation.
-- Separate zero Main Section visibility from zero Subsection visibility in config.
-- Add a Home page PDF button as a visual placeholder only.
-
-### Implemented
-
-- Kept the frontend revision limited to Home visibility behavior and Home header actions.
-- Split zero-group visibility into separate Main Section and Subsection config flags.
-- Added a Home page PDF button placeholder with no backend PDF generation behavior.
-
-### Files Created
-
-- None.
-
-### Files Modified
-
-- `config/questionnaire.php`
-- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
-- `resources/views/questionnaire/home.blade.php`
-- `public/css/questionnaire.css`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- No automated test run was required for this small Home/config revision.
-
-### Findings
-
-- Home visibility is clearer when empty Main Sections and empty Subsections are controlled independently.
-- The current Pilot setting keeps both visibility flags enabled: `show_zero_main_sections = true` and `show_zero_subsections = true`.
-- The PDF button is intentionally present as a UI placeholder only; PDF generation is still not implemented in this phase.
-
-### Decisions
-
-- No questionnaire data, question rendering flow, save behavior, conditional behavior, or report routes were changed.
-- Visual verification remains a human review responsibility for this small UI adjustment.
-
-### Issues
-
-- None.
-
-### Next Step
-
-- Await the next approved frontend or report instruction.
-
-## 2026-08-15 - Phase 3A-R3
-
-### Planned
-
-- Correct Home-page Main Section aggregation without changing any questionnaire flow or persistence behavior.
-- Reposition the Home-page PDF placeholder button inside a cleaner header action area only.
-
-### Implemented
-
-- Fixed Main Section totals so they are aggregated from all child Subsections instead of being distorted by visible-child filtering.
-- Changed Main Section progress totals to use all child-subsection question counts while keeping answered counts based on answered applicable questions.
-- Moved the PDF placeholder button into a dedicated Home header action area with compact RTL-friendly alignment.
-
-### Files Created
-
-- None.
-
-### Files Modified
-
-- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
-- `resources/views/questionnaire/home.blade.php`
-- `public/css/questionnaire.css`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- No automated test run was performed for this Home-page-only correction.
-
-### Findings
-
-- Main Section counting was previously coupled to filtered visible Subsections and to applicable-question totals, which could understate the true child-question total on Home cards.
-
-### Decisions
-
-- `show_zero_main_sections` and `show_zero_subsections` remain visibility-only settings and do not alter Main Section question aggregation.
-- The Home PDF button remains a placeholder with `href="#"` and no PDF behavior.
-
-### Issues
-
-- None.
-
-### Next Step
-
-- Await manual Home-page review.
-
-## 2026-08-15 - Phase 3A-R4
-
-### Planned
-
-- Fix the hierarchy/visibility bug by separating Subsection collection, question counting, and visibility rules at the service layer only.
-
-### Implemented
-
-- Added one service-level path that first builds direct-child Subsection statistics, then applies visibility separately.
-- Changed Main Section visibility to depend on aggregated child question counts instead of the already-filtered child collection.
-- Added explicit Subsection-level attributes for `question_count`, `answered_count`, `progress_percentage`, `needs_review`, and `is_visible`.
-
-### Files Created
-
-- None.
-
-### Files Modified
-
-- `app/Services/Questionnaire/QuestionnaireFrontendService.php`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- No automated test run was performed for this service-only hierarchy fix.
-
-### Findings
-
-- The previous service mixed collection filtering with visibility decisions, which made Main Section visibility depend on the post-filtered child collection instead of real child-question totals.
-
-### Decisions
-
-- Main Section and Subsection visibility now depend on actual `question_count` statistics, while progress remains a separate calculation.
-
-### Issues
-
-- None.
-
-### Next Step
-
-- Await manual verification of the current Pilot hierarchy.
-
-## 2026-08-15 - Phase 3A-R5
-
-### Planned
-
-- Restrict the Main Section page content to one Main Section overview with its direct child Subsections only.
-- Convert the Main Section page Subsection area into a compact navigation list without rendering question controls.
-
-### Implemented
-
-- Kept the page bound to the current Main Section only and rendered just its direct visible child Subsections in the main content area.
-- Replaced the oversized per-Subsection card treatment with a compact list showing either `answered / total` for question-bearing Subsections or `0 سؤال` for empty ones.
-- Kept question-bearing Subsections clickable through the existing `study.subsection` route while leaving zero-question Subsections non-clickable.
-
-### Files Created
-
-- None.
-
-### Files Modified
-
-- `resources/views/questionnaire/main-section.blade.php`
-- `public/css/questionnaire.css`
-- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
-
-### Tests
-
-- No automated test run was performed for this Main Section page presentation revision.
-
-### Findings
-
-- The page already received the correct current Main Section and direct child collection from the service; the remaining issue was the presentation shape on the page itself.
-
-### Decisions
-
-- Main Section progress remains based on the existing service aggregation across all direct child Subsections.
-- The compact Main Section page remains an overview/navigation page and does not render Question controls.
-
-### Issues
-
-- None.
-
-### Next Step
-
-- Await manual review of `/study/1`.
+## 35. قرارات مؤجلة
+
+تظل التفاصيل التالية مؤجلة إلى القسم أو المرحلة المناسبة:
+
+- التصميم النهائي الكامل لقسم Operation Settings.
+- الشكل النهائي لتكوين وإدخال القطيع.
+- كل Workflow operations التفصيلية التي لم تتحول إلى أسئلة بعد.
+- التقارير والتنبيهات التفصيلية غير المعتمدة بعد.
+- أي PDF direct generation إذا لم يعد Browser/Markdown كافيًا.
+- أي Answer edit history أوسع من النموذج الحالي إذا أثبتت الحاجة إليه.
 
 ---
 
-# 41. Phase 3B - Master Technical Specification Pilot
+## 36. قاعدة التنفيذ الحالية
 
-## Planned
+أي عمل جديد يجب أن يخدم المسار التالي مباشرة:
 
-- Generate one master technical report for the entire questionnaire hierarchy.
-- Output Markdown only using a deterministic PHP transformation.
-- Include all Main Sections and all Subsections, even when a Subsection still has zero questions.
-- Interpret the currently answered Farm Data Pilot subsection and aggregate the rest of the hierarchy safely.
+```text
+Reference / Domain Decision
+→ Explicit Question
+→ Stable Seed Definition
+→ Answer
+→ Review
+→ Requirement
+→ Blueprint
+```
 
-## Implemented
+ولا تتم إضافة طبقات عامة أو تعقيد معماري لا يخدم هذا المسار بصورة مباشرة.
 
-- Added one master technical report service built around `buildReportData()` then `renderMarkdown()`.
-- Loaded the full Section/Subsection hierarchy directly from the database without using frontend visibility settings.
-- Added a live preview route and a Markdown download route for the same generated report content.
-- Implemented current deterministic interpretation rules for `إدخال البيانات الأساسية للمزرعة -> بيانات المزرعة`.
-- Added consolidated global chapters for Entities, Fields, Enums, Lookup Tables, Relationships, Business Rules, UI Requirements, Needs Review, Unanswered Questions, and Decision Log.
-- Kept generation on demand only with no report persistence, no PDF generation, and no AI generation.
-- Updated the Home page with compact actions for report preview and Markdown download.
-- Added focused automated tests for hierarchy coverage, numbering, zero-question visibility, interpretation behavior, unresolved handling, notes aggregation, consistency checks, and download behavior.
+---
 
-## Decisions
+## 37. Execution Log — من الآن فصاعدًا
 
-- ONE master technical report only: `rabbit-farm-technical-specification.md`
-- Markdown output only in this phase
-- Entire Section/Subsection hierarchy remains visible in the report
-- Zero-question Subsections remain visible in the report
-- Farm Data currently has the only detailed interpretation mapping
-- Future Subsections will join the same report through the same master service
-- No separate report per Subsection
-- No AI generation
-- Deterministic PHP transformation only
-- Consolidated Entities / Fields / Enums / Lookups / Relationships / Rules are generated from approved current answers only
-- Needs Review items are aggregated per Subsection and globally
-- Unanswered applicable Questions are aggregated per Subsection and globally
-- Report generation is on demand only
-- No report persistence
-- No PDF generation yet
+أي إضافة جديدة لهذا السجل تكون Append Only بصيغة:
 
-## Tests
+```text
+## YYYY-MM-DD — Task / Phase
 
-- Master report includes all Main Sections
-- Master report includes all Subsections
-- Zero-question Subsection still appears
-- Section numbering follows sort order
-- Farm Data answers generate technical interpretation
-- Unanswered applicable Question appears as unresolved
-- Non-applicable Question is not treated as unresolved
-- Yes/No `false` is treated as a valid Answer
-- Fixed Farm Status produces Enum output
-- Managed Farm Status produces Lookup output
-- Fixed Activity produces Enum output
-- Managed Activity produces Lookup output
-- Notes appear in Needs Review
-- Free-text Farm requirement appears in Needs Review
-- Contradictions appear in Needs Review
-- Consolidated sections are generated
-- Download returns the expected Markdown filename
-- Arabic report content remains readable
+### Planned
 
-## Status
+### Implemented
 
-Completed
+### Files Created
 
-## Next Action
+### Files Modified
 
-HUMAN review of the generated Master Markdown specification.
+### Tests
 
-# 42. Current Phase
+### Findings
 
-Current Phase:
+### Decisions
 
-Phase 3B - Master Technical Specification Pilot
+### Issues
 
-Status:
+### Next Step
+```
 
-Completed
+لا يستخدم الـExecution Log لتعريف الوضع الحالي إذا كان هناك قسم Current State أحدث في أعلى الملف.
 
-Next Action:
+---
 
-HUMAN review of the generated Master Markdown specification.
+## 2026-08-24 — Plan Repair & Current Workflow Alignment
 
+### Planned
+
+- إصلاح مشكلة ترميز `QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`.
+- إزالة الـMojibake وBOM.
+- إعادة تعريف دور الملف بوضوح.
+- جعل الخطة متوافقة مع طريقة العمل الحالية.
+- الحفاظ على خلاصة تاريخ التنفيذ والقرارات المعمارية المهمة.
+
+### Implemented
+
+- إعادة كتابة الملف كنص UTF-8 عربي واضح.
+- تعريف `FARM_BLUEPRINT_PROJECT_CONTEXT.md` كمرجع الوضع الحالي الأعلى أولوية.
+- تحديث شجرة الأقسام الحالية.
+- إزالة `ملفات إعدادات التشغيل` من Master Data في الخطة الحالية.
+- توثيق فصل `MasterData` و`FarmStructure` في شجرة Question Seeders.
+- توثيق `QuestionnaireQuestionsSeeder` كـorchestrator عام.
+- توثيق طريقة التطوير الحالية `php artisan migrate:refresh --seed`.
+- توثيق الانتقال المستقبلي إلى `preserveAnswers = true` والحفاظ على `seed_key` وOption Values.
+- توثيق Farm Structure واتجاه Cage الحالي.
+- الاحتفاظ بتاريخ المراحل السابقة كملخص تاريخي بدل اعتباره Current Architecture.
+
+### Files Modified
+
+- `docs/QUESTIONNAIRE_IMPLEMENTATION_PLAN.md`
+
+### Decisions
+
+- هذا الملف أصبح Technical Implementation Plan + Historical Execution Record.
+- Current Project Rules تبقى في `FARM_BLUEPRINT_PROJECT_CONTEXT.md`.
+- أي تعارض مع سجل قديم يحسم بأحدث قرار معتمد.
+
+### Next Step
+
+- استكمال تنظيف السياق والـSeeders ثم تشغيل Fresh Seed محليًا والتحقق قبل بدء دورة الإجابات الجديدة.
