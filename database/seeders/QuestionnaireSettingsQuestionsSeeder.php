@@ -2,12 +2,18 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\Settings\SettingsScopeArchitectureQuestionsSeeder;
+use Database\Seeders\Sections\QuestionnaireSettingsSectionSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireSettingsQuestionsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Question seeders will be added here when section 6 question design begins.
+        $this->call(QuestionnaireSettingsSectionSeeder::class);
+
+        $this->call([
+            SettingsScopeArchitectureQuestionsSeeder::class,
+        ]);
     }
 }
