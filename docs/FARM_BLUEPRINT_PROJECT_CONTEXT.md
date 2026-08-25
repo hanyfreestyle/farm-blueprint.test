@@ -255,8 +255,6 @@ Seeder: `Questions/Workflow/AnimalIntakeQuestionsSeeder.php` — **11 سؤالً
 
 Seeder: `Questions/Workflow/HousingMovementQuestionsSeeder.php` — **12 سؤالًا**.
 
-المفاتيح:
-
 ```text
 housing_movement.event_types
 housing_movement.record_fields
@@ -290,34 +288,15 @@ operational_measurement.batch_entry_support
 operational_measurement.batch_individual_records
 ```
 
-قاعدة الفصل:
-
 ```text
 الوزن الفعلي → 4.3
 موعد/دورية/Target/Threshold → Settings
 منحنيات النمو والمقارنات → Reports
 ```
 
-المصدر يوثق الوزن كقياس رقمي تشغيلي واضح؛ لا تضاف قياسات جسم أخرى دون دعم وظيفي.
-
 ### 4.4 Mating / Attempts — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/MatingAttemptsQuestionsSeeder.php` — **12 سؤالًا**.
-
-```text
-mating.structure_model
-mating.reproductive_cycle_start_model
-mating.attempt_event_cardinality
-mating.event_record_fields
-mating.event_result_categories
-mating.execution_context_fields
-mating.assigned_male_execution_role
-mating.runtime_kinship_check
-mating.multiple_males_paternity_policy
-mating.attempt_completion_model
-mating.new_attempt_boundary
-mating.attempt_cancellation_model
-```
 
 المبدأ:
 
@@ -325,26 +304,11 @@ mating.attempt_cancellation_model
 Mating Event ≠ Mating Attempt ≠ Reproductive Cycle
 ```
 
-الحدود: Assigned Male→3.5؛ Actual Mating→4.4؛ الجاهزية/الأعمار/الأوزان/عدد التلقيحات والفاصل/Kinship Rules→Settings؛ Pregnancy Check→4.5؛ التحليل→Reports.
+Assigned Male→3.5؛ Actual Mating→4.4؛ الجاهزية/الأعمار/الأوزان/عدد التلقيحات والفاصل/Kinship Rules→Settings؛ Pregnancy Check→4.5؛ التحليل→Reports.
 
 ### 4.5 Pregnancy Check / Follow-up / Birth Preparation — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/PregnancyFollowUpQuestionsSeeder.php` — **12 سؤالًا**.
-
-```text
-pregnancy_check.history_model
-pregnancy_check.record_fields
-pregnancy_check.result_categories
-pregnancy_check.not_performed_handling
-pregnancy_check.uncertain_result_flow
-pregnancy_check.positive_result_flow
-pregnancy_check.negative_result_flow
-pregnancy.record_fields
-pregnancy.current_state_model
-pregnancy.followup_event_types
-pregnancy.followup_event_record_fields
-pregnancy.expected_window_birth_behavior
-```
 
 قواعد مهمة:
 
@@ -372,8 +336,6 @@ birth.no_live_offspring_behavior
 birth.post_registration_transitions
 ```
 
-المبدأ:
-
 ```text
 Pregnancy / Cycle → Actual Birth Event → Litter Record → Lactation إذا وُجد مواليد أحياء
 ```
@@ -384,12 +346,9 @@ Pregnancy / Cycle → Actual Birth Event → Litter Record → Lactation إذا 
 - Litter بدون مواليد أحياء لا يختفي تاريخيًا.
 - Foster Transfer→4.7؛ Weaning/Individualization→4.8؛ Litter Code Pattern→Settings؛ تحليل الولادة→Reports.
 
-### 4.7 Lactation / Litter Follow-up / Overlapping Cycles — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 4.7 Lactation / Litter Follow-up / Overlapping Cycles — IMPLEMENTED / WAITING LOCAL SEED
 
-Seeder:
-`database/seeders/Questions/Workflow/LactationOverlapQuestionsSeeder.php`
-
-عدد الأسئلة: **12**.
+Seeder: `Questions/Workflow/LactationOverlapQuestionsSeeder.php` — **12 سؤالًا**.
 
 ```text
 lactation.start_model
@@ -406,18 +365,11 @@ lactation.concurrent_cycle_link_model
 lactation.end_model
 ```
 
-المبادئ والقرارات التي تغطيها المجموعة:
-
-- الرضاعة تبدأ من Litter الناتج من الولادة عند وجود مواليد أحياء، مع حسم Auto vs Explicit Start.
-- `Current Alive Count` لا يعيد كتابة أعداد الولادة؛ يراجع هل يشتق من Birth + Lactation Mortality + Foster Transfers.
-- المتابعات الفعلية يمكن أن تشمل حالة البطن والأم، المواليد الضعيفة، ملاحظات النمو، وربط Weight Record من 4.3.
-- Stillborn at Birth → 4.6؛ Mortality بعد الولادة → حدث جديد. السؤال يحسم هل نستخدم Canonical Mortality Event في 4.13 مرتبطًا بالبطن أم سجلًا خاصًا.
-- Foster Transfer يراجع هل يكون Structured Workflow مستقلًا؛ وعند اعتماده تظهر أسئلة النطاق والحقول وطريقة تتبع المواليد قبل الترقيم الفردي وعلاقة Foster Mother.
-- نقل المولود لا يجب أن يطمس Biological Mother / Original Litter إذا اعتمد نموذج الحفاظ على الأصل؛ Foster Mother علاقة رعاية منفصلة.
-- نقطة مفتوحة من المصدر: كيف نميز بعض المواليد المنقولين قبل الفطام حتى نعيد ربط الأفراد الناتجين بأصلهم الصحيح في 4.8.
-- مشكلة رضاعة/أمومة يمكن أن تنتج إجراءات تشغيلية مثل المتابعة أو النقل لأم حاضنة أو التوزيع أو الرعاية البديلة أو Early Weaning إذا سمحت القواعد؛ السبب الصحي نفسه يبقى في 4.13 عند كونه صحيًا.
-- تداخل الدورات معتمد معماريًا: الأم يمكن أن تكون مرضعة وفي دورة تناسلية جديدة بالتوازي. 4.7 يسأل فقط هل نحتاج Explicit Link إلى Active Litter أم يكفي Temporal Derivation؛ تنفيذ التلقيح نفسه يبقى 4.4.
-- نهاية الرضاعة يجب أن تنتج من Weaning Event في 4.8 أو Terminal Event موثق حسب الإجابة، لا من Status يدوي غامض.
+- Current Alive Count لا يعيد كتابة Birth Counts؛ ينتج من الأحداث حسب الإجابة.
+- Stillborn→4.6؛ Mortality بعد الولادة حدث جديد ويرتبط 4.13 حسب النموذج المعتمد.
+- Foster Transfer يحافظ على Biological Mother / Original Litter إذا اعتمد نموذج الأصل الصحيح.
+- Temporary Tracking للمواليد المنقولين قبل الفطام يحسم في 4.7 ثم Resolution إلى Final Animal Identity في 4.8.
+- التلقيح أثناء الرضاعة يستخدم نفس 4.4؛ 4.7 يسجل فقط علاقة التداخل بالبطن النشطة.
 
 Dependencies:
 
@@ -429,28 +381,9 @@ lactation.foster_relationship_model
 → lactation.foster_transfer_model EQUALS structured_foster_transfer
 ```
 
-حدود 4.7:
+### 4.8 Weaning / Individual Tracking — IMPLEMENTED / WAITING LOCAL SEED
 
-```text
-Birth Counts / إنشاء Litter → 4.6
-طريقة وزن المواليد قبل الفطام والWeight Record الفعلي → 4.3
-Mortality Canonical Record / Health Cause → 4.13؛ 4.7 يحدد أثره على Litter عند الربط
-أسباب النفوق المرجعية → Master Data
-قواعد اختيار Foster Mother / الحد الأقصى للمواليد / شروط Early Weaning → Settings 6.7 / 6.8
-مواعيد متابعة الرضاعة / إعادة التلقيح أثناء الرضاعة → Settings 6.7 / 6.12
-Mating الفعلي أثناء الرضاعة → نفس 4.4 Workflow
-Pregnancy التالية → 4.5 مع السماح باستمرار Litter الحالية بالتوازي
-Actual Weaning / Individualization → 4.8
-الحالات الاستثنائية التي تقطع المسار → 4.14 عند انطباقها
-تحليل Lactation Mortality / Foster Transfers / Weaned Count → Reports 5.4 / 5.7
-```
-
-### 4.8 Weaning / Individual Tracking — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-
-Seeder:
-`database/seeders/Questions/Workflow/WeaningIndividualTrackingQuestionsSeeder.php`
-
-عدد الأسئلة: **12**.
+Seeder: `Questions/Workflow/WeaningIndividualTrackingQuestionsSeeder.php` — **12 سؤالًا**.
 
 ```text
 weaning.operation_structure
@@ -467,7 +400,7 @@ weaning.summary_persistence_model
 weaning.post_completion_transition_model
 ```
 
-المبدأ الوظيفي:
+المبدأ:
 
 ```text
 Litter Tracking
@@ -476,41 +409,80 @@ Litter Tracking
 → Growth / Sorting
 ```
 
-القرارات التي تغطيها 4.8:
+- الفطام ليس Status فقط؛ هو عملية تحول رئيسية.
+- اختلاف Expected Alive Count عن Actual Weaned Count لا يختفي بصمت.
+- Partial Weaning Requirement مفتوح ويعالج كسؤال صريح.
+- كل مفطوم يصبح Animal Record مستقلًا بنفس قواعد الهوية في 3.1.
+- البيانات الموثوقة تورث ولا يعاد إدخالها يدويًا.
+- Foster Origin Resolution يتم عند تكوين الهوية النهائية.
+- Weaning Weight→4.3 Integration؛ Housing→4.2 Integration.
+- موعد/عمر/وزن الفطام وEarly Weaning والفصل بين الجنسين→Settings.
 
-- الفطام عملية رئيسية وليست مجرد Status؛ يحسم هل تكون Guided Operation واحدة أم Staged Session لها Finalization أم إجراءات منفصلة.
-- Weaning Event يمكن أن يحتفظ بالبطن، وقت التنفيذ، Expected Alive Count، Actual Weaned Count، العمر، الحالة العامة، سبب فرق العدد، المنفذ والملاحظات حسب الإجابات.
-- Expected Count ينتج من Birth + Lactation Events؛ اختلافه عن العدد الفعلي لا يجب أن يختفي بصمت، والسؤال يحسم مستوى Reconciliation المطلوب قبل الإغلاق.
-- الفطام الجزئي Requirement مفتوح صراحة في المصدر: إما Full Litter Only أو إنشاء أفراد للمفطومين مع بقاء البطن مفتوحة بالباقي حتى Weaning Event لاحق.
-- بعد الفطام كل مفطوم يصبح Animal Record مستقلًا دائمًا؛ السؤال يحسم Batch/Generated Rows/One-by-one داخل عملية الفطام دون إعادة تعريف Animal Code Rules في 3.1.
-- البيانات الموثوقة لا تعاد يدويًا؛ يمكن توريث Birth Date / Biological Mother / Paternity / Original Litter / Birth Event / Breed Origin / Farm / Weaning Reference وعلاقات Foster عند انطباقها.
-- عند وجود Foster Transfers قبل الفطام يجب حسم كيفية Resolution من Temporary Tracking في 4.7 إلى Final Animal Origin، مع حماية Biological Mother / Original Litter.
-- الجنس يمكن أن يكون Male / Female / Unknown إذا تعذر التأكد، أو يفرض التأكيد/يؤجل حسب الإجابة؛ توقيت الفصل بين الجنسين Rule في Settings.
-- Weaning Weight لا يخلق مصدرًا ثانيًا للقيمة؛ السؤال يحسم هل شاشة الفطام تنشئ/تربط Canonical Weight Measurement في 4.3 أم تتعامل بطريقة أخرى. إلزام الوزن نفسه → Settings.
-- التسكين بعد الفطام يبقى عبر Housing Movements في 4.2؛ السؤال يحسم هل يدمج داخل جلسة الفطام أو يكون Step منفصلًا قبل/بعد Finalization. يدعم المصدر توزيع أفراد البطن على أكثر من Cage.
-- بيانات الملخص مثل Weaning Age / Count / Male-Female-Unknown يمكن أن تكون Derived أو Immutable Snapshot Validated Against Individuals؛ لا نريد ملخصًا يدويًا يناقض السجلات دون قرار صريح.
-- نجاح الفطام هو Boundary إلى 4.9؛ السؤال يحسم هل يبدأ Growth/Sorting Context تلقائيًا أم عبر Transition مسجل مستقل.
+### 4.9 Growth / Sorting / Re-evaluation — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/GrowthSortingEvaluationQuestionsSeeder.php`
+
+عدد الأسئلة: **10**.
+
+```text
+growth_sorting.program_entry_model
+growth_sorting.stage_reference_model
+growth_sorting.evaluation_history_model
+growth_sorting.evaluation_record_fields
+growth_sorting.evaluation_context_sources
+growth_sorting.derived_growth_metric_model
+growth_sorting.preliminary_result_categories
+growth_sorting.result_to_fate_link_model
+growth_sorting.reevaluation_model
+growth_sorting.reevaluation_record_fields
+```
+
+المبدأ الوظيفي:
+
+```text
+Weaning / Individual Animal
+→ Growth Tracking
+→ Sorting / Evaluation Event(s)
+→ Preliminary Direction / Re-evaluation
+→ Actual Fate Decision in 4.10
+```
+
+القرارات التي تغطيها 4.9:
+
+- حسم هل يبدأ Growth/Sorting تلقائيًا بعد الفطام أم بإجراء مستقل.
+- الأعمار مثل 45 يومًا و70 يومًا و3 أشهر أمثلة وليست قيمًا ثابتة؛ حدث التقييم يراجع هل يرتبط بمرحلة معرفة في Settings أم بنموذج آخر.
+- تاريخ الفرز لا يمسح عند تغير النتيجة لاحقًا؛ السؤال يحسم Independent Evaluation Events vs Current Record with Audit vs Overwrite.
+- Evaluation Record يمكن أن يحتفظ بالحيوان والمرحلة والوقت والعمر ومراجع الأوزان ومؤشرات النمو والسياق الصحي والنسب والتقييم السابق والمنفذ والملاحظات.
+- المعلومات التي تظهر أثناء التقييم يمكن أن تشمل Weight History / Derived Growth / Sex / Health / Pedigree / Parent Performance / Litter-Sibling Context / Previous Evaluations، بينما درجة تأثير كل عنصر ومعايير القبول تبقى Settings.
+- Derived Growth Metrics مثل الزيادة اليومية مصدرها Weight Records في 4.3؛ السؤال يحسم Live Derivation vs Snapshot with Source References vs Manual Values.
+- نتائج الفرز هنا **مبدئية** مثل الاستمرار، مرشح مبدئي للإحلال، توصية بالتسمين، توصية بالاستبعاد، أو إعادة تقييم.
+- Source + Architecture يؤكدان أن Sorting Result لا تنفذ المصير وحدها؛ `growth_sorting.result_to_fate_link_model` يحسم فقط طريقة إنشاء Pending/Draft/No Automatic Fate Record في 4.10.
+- انخفاض النمو مؤشر داخل التقييم ولا يعني Auto Exclusion بمجرده.
+- Re-evaluation لا يجب أن تمحو نتيجة التقييم السابق؛ عند اختيارها يمكن حفظ السبب والموعد المقترح وما يجب متابعته وربطها بالتقييم المصدر.
 
 Dependencies:
 
 ```text
-لا توجد Dependencies داخل 4.8 حاليًا؛ جميع الأسئلة أساسية لمسار الفطام نفسه.
+growth_sorting.reevaluation_model
+growth_sorting.reevaluation_record_fields
+→ growth_sorting.preliminary_result_categories CONTAINS reevaluation
 ```
 
-حدود 4.8:
+حدود 4.9:
 
 ```text
-موعد الفطام المستهدف / الحد الأدنى للعمر أو الوزن / Weight Requirement → Settings 6.8
-قواعد Early Weaning والصلاحية/التحذير → Settings 6.8؛ السبب أو الحالة الاستثنائية التي أدت إليه → 4.7 / 4.14 حسب الحدث؛ Actual Weaning Operation → 4.8
-توقيت الفصل بين الذكور والإناث وقواعد Housing Eligibility / Capacity → Settings 6.4 / 6.8
-Actual Weight Record → 4.3؛ 4.8 يحدد Integration فقط
-Actual Housing Movement → 4.2؛ 4.8 يحدد Integration فقط
-Foster Transfer / Temporary Preweaning Tracking → 4.7؛ Resolution إلى Final Animal Identity → 4.8
-Animal Identity / Code Rules → 3.1
-Pedigree Rules → 3.3
-Growth / Sorting / Re-evaluation Events → 4.9
-Task Generation → Settings 6.12؛ Task Lifecycle → 4.17
-Weaning / Survival / Sex / Weight Analytics → Reports 5.4 / 5.5 / 5.7
+Actual Weight Record → 4.3
+موعد/عمر كل Sorting Stage والأوزان المستهدفة والمعايير والThresholds → Settings 6.9
+اختلاف معايير الذكر والأنثى ودرجة تأثير Health/Pedigree/Parent Performance → Settings 6.9
+Task Generation ومواعيد الفرز/إعادة التقييم → Settings 6.12؛ Task Lifecycle → 4.17
+Growth Curves / Sibling Comparison / Analytics → Reports 5.5 / 5.7 / 5.10
+Preliminary Sorting Result / Re-evaluation → 4.9
+Actual Fate Decision / Exclusion from a path → 4.10
+Actual Replacement Approval → 4.11
+Actual Fattening Workflow → 4.12
+Actual Housing Movement الناتج عن القرار → 4.2
+Health Events → 4.13
 ```
 
 ---
@@ -548,7 +520,7 @@ Open Requirements العامة:
 - Override Policy.
 - Sensitive Record Correction + Audit.
 
-ذات الصلة بالتلقيح/الحمل/الولادة/الرضاعة/الفطام:
+ذات الصلة بالمراحل الحالية:
 
 ```text
 جاهزية الأنثى والذكر
@@ -570,7 +542,12 @@ Reference Mating Rule
 قواعد Early Weaning
 توقيت وقواعد الفصل بين الجنسين
 قواعد Housing Eligibility / Capacity عند الفطام
-→ Settings 6.4 / 6.5 / 6.6 / 6.7 / 6.8 / 6.12
+تعريف مراحل Growth / Sorting وأعمارها أو شروط استحقاقها
+Weight / Growth Targets وThresholds لكل مرحلة
+Evaluation Criteria ودرجة تأثير كل مؤشر
+اختلاف معايير الذكور والإناث
+قواعد إعادة التقييم ومواعيدها عند الحاجة
+→ Settings 6.4 / 6.5 / 6.6 / 6.7 / 6.8 / 6.9 / 6.12
 ```
 
 ---
@@ -626,6 +603,7 @@ PregnancyFollowUpQuestionsSeeder
 BirthLitterQuestionsSeeder
 LactationOverlapQuestionsSeeder
 WeaningIndividualTrackingQuestionsSeeder
+GrowthSortingEvaluationQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -652,6 +630,7 @@ Question Creation → IN PROGRESS
 4.6 Birth Registration / Litter Creation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.7 Lactation / Litter Follow-up / Overlapping Cycles → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.8 Weaning / Individual Tracking → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.9 Growth / Sorting / Re-evaluation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -666,7 +645,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 **التالي:**
 
-`4.9 النمو والفرز وإعادة التقييم`
+`4.10 تحديد المصير والاستبعاد من المسار`
 
 ---
 
