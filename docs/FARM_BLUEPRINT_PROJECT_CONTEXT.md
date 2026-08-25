@@ -137,6 +137,7 @@ Master Data تشمل: الأنشطة التشغيلية، الأغراض الإ�
 - `أسباب النقل` و`أسباب النفوق` و`أسباب الاستبعاد` و`أسباب الخروج` لا يعاد تعريف قيمها داخل Workflow.
 - `ExclusionReason` يشرح لماذا حدث الاستبعاد؛ `Exclusion Decision` يسجل الحيوان والوقت والمسار والمصير التالي؛ `ExitReason` يخص الخروج الفعلي من المزرعة.
 - `Excluded ≠ Exited`.
+- `الأغراض الإنتاجية` تعرف في Master Data؛ Workflow الإحلال يقرر فقط هل يشير حدث الاعتماد إلى الغرض المرجعي ولا يعيد تعريف قيمه.
 
 Farm Structure:
 
@@ -428,6 +429,79 @@ Thresholds / automatic recommendation rules / approval criteria → Settings ح�
 Decision / Exclusion analytics → Reports 5.2 / 5.5 / 5.7 / 5.10
 ```
 
+### 4.11 Replacement / Production Herd Approval — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/ReplacementApprovalQuestionsSeeder.php`
+
+عدد الأسئلة: **11**.
+
+```text
+replacement.candidate_stage_policy
+replacement.candidate_record_fields
+replacement.candidate_followup_context_sources
+replacement.candidate_nonapproval_handoff_model
+replacement.approval_trigger_model
+replacement.approval_record_fields
+replacement.production_role_assignment_model
+replacement.production_purpose_reference
+replacement.group_assignment_integration_model
+replacement.replaced_animal_link_model
+replacement.approval_vs_mating_readiness
+```
+
+المبدأ الوظيفي:
+
+```text
+Existing Animal Record
+→ Replacement Candidate / Follow-up عند انطباقه
+→ Production Herd Approval Event
+→ Production Herd Member
+
+Candidate ≠ Production Herd Member
+Production Herd Member ≠ Mating Ready
+```
+
+القرارات التي تغطيها 4.11:
+
+- الإحلال لا ينشئ Animal Record جديدًا؛ نفس الحيوان يحتفظ بهويته وتاريخه منذ الميلاد/الدخول وحتى الاعتماد والإنتاج اللاحق.
+- المصدر الوظيفي يسمح بإحلال داخلي وإحلال خارجي؛ `replacement.candidate_stage_policy` يحسم هل يمر كلاهما بمرحلة Candidate أم يمكن اعتماد الحيوان الخارجي المؤهل مباشرة بعد Intake وفق القواعد.
+- Candidate Record يمكن أن يحتفظ بتاريخ الترشيح ومصدر الإحلال وSource Decision Reference والعمر وWeight Reference وSorting Context والهدف الإنتاجي وسبب الاختيار والمنفذ والملاحظات حسب الإجابات.
+- متابعة المرشح لا تنشئ نسخًا مستقلة من الوزن أو النمو أو الصحة أو النسب؛ السؤال يحسم أي Canonical Contexts يجب عرضها وربطها أثناء المتابعة.
+- إذا احتاج المرشح متابعة إضافية يمكن العودة إلى 4.9 حسب القرار، أما رفض الترشيح أو تغيير المصير فينتقل إلى 4.10 حسب النموذج المختار؛ لا نغلق Candidate بصمت مع تغيير Status فقط.
+- شروط الاعتماد مثل العمر والوزن والصحة والنسب والفرز واختلاف شروط الذكر والأنثى تنتمي إلى Settings 6.9؛ 4.11 يحسم فقط كيفية تنفيذ Approval Event بعد تقييم هذه القواعد.
+- Approval Record يمكن أن يحتفظ بتاريخ الاعتماد والعمر وWeight Reference والدور الإنتاجي وProduction Purpose Reference وCurrent Housing Reference وProduction Group Reference والحيوان المستبدل وسبب الاعتماد وRule Evaluation Reference والمنفذ والملاحظات حسب الإجابات.
+- Production Role عند الاعتماد يمكن أن يكون Explicit أو Derived من Candidate Target أو Sex حسب القرار، دون إنشاء هوية جديدة.
+- `replacement.production_purpose_reference` يقرر استخدام الغرض الإنتاجي المرجعي الموجود أصلًا في Master Data بدل إعادة تعريف قيمه داخل Workflow.
+- Group Definition / membership policy موجودة في 3.5؛ 4.11 يحسم فقط Integration الفعلي عند إدخال الحيوان للقطيع، مع حفظ تاريخ العضوية وعدم اعتبار التخصيص تلقيحًا.
+- المصدر يطرح ربط المرشح بالحيوان الذي يحل محله عند وجود إحلال مباشر؛ `replacement.replaced_animal_link_model` يحسم Optional / Required for Direct Replacement / No Direct Link.
+- اعتماد الحيوان للقطيع لا يعني بالضرورة جاهزيته لأول تلقيح؛ `replacement.approval_vs_mating_readiness` يحسم الفصل الصريح بين Membership وبين Mating Readiness.
+
+Dependencies:
+
+```text
+لا توجد Dependencies داخل 4.11 حاليًا؛ الأسئلة كلها قرارات أساسية في Lifecycle الإحلال والاعتماد.
+```
+
+حدود 4.11:
+
+```text
+Animal Identity / Source → 3.1 / 3.2
+External Intake / Acceptance → 4.1
+Growth / Sorting / Re-evaluation → 4.9
+Actual Fate Decision to Replacement Candidate Path → 4.10
+Candidate Follow-up / Production Herd Approval → 4.11
+Production Group definition and structural membership policy → 3.5
+Actual Group Assignment integration عند الاعتماد → 4.11 مع History؛ Actual Mating → 4.4
+Actual Housing Movement عند الحاجة → 4.2؛ 4.11 يحتفظ بالمرجع/التكامل فقط
+Production Purpose values → Master Data
+Approval Criteria / Male-Female differences / Replacement Rules → Settings 6.9
+Housing / herd organization eligibility that affects approval → Settings 6.4
+Mating Readiness → Settings 6.5؛ Actual Mating → 4.4
+Candidate or Replacement analytics / herd readiness → Reports 5.2 / 5.7 / 5.8 / 5.10
+Task generation → Settings 6.12؛ Task Lifecycle → 4.17
+```
+
 ---
 
 ## 7. Reports — حدود مختصرة
@@ -442,6 +516,7 @@ Reports مسؤولة عن فهم وتجميع ومقارنة الأحداث، و
 5.4 تقارير الولادة والرضاعة والفطام
 5.5 تقارير النمو والأوزان والتسمين
 5.7 تحليل أداء الحيوانات الإنتاجية
+5.8 تقارير النسب والإحلال
 5.10 الاتجاهات والمقارنات عبر الزمن
 5.12 التنبيهات والإنذار المبكر
 ```
@@ -467,20 +542,25 @@ Open Requirements العامة:
 ذات الصلة بالمراحل الحالية:
 
 ```text
-جاهزية الأنثى والذكر
-التلقيح أثناء الرضاعة
-Mating limits / Kinship Rules
-Pregnancy Check / Recheck / Gestation / Birth Window
-Lactation / Foster / Weaning Rules
-Housing Eligibility / Capacity
-Growth / Sorting Stages and Criteria
-Weight / Growth Targets and Thresholds
-اختلاف معايير الذكور والإناث
-Re-evaluation Rules
-Decision Recommendation / Approval Criteria عند جعلها قابلة للضبط
-Task Generation / Timing / Priority
-→ Settings 6.4 / 6.5 / 6.6 / 6.7 / 6.8 / 6.9 / 6.12 وغيرها حسب المجال
+6.4 قواعد التسكين وتنظيم القطيع والجاهزية
+→ Housing Eligibility / Capacity / Group Rules / شروط اعتماد الحيوان داخل القطيع عند ارتباطها بالتنظيم
+
+6.5 قواعد التلقيح والخصوبة والجاهزية التناسلية
+→ Mating Readiness / Male Usage / Kinship / Mating Rules
+
+6.9 قواعد النمو والوزن والفرز والإحلال
+→ Growth / Sorting Stages
+→ Weight / Growth Targets and Thresholds
+→ Evaluation Criteria
+→ اختلاف معايير الذكور والإناث
+→ Replacement Candidate Rules
+→ Final Production Herd Approval Criteria
+
+6.12 قواعد المهام والتنبيهات والمواعيد والأولويات
+→ Task Generation / Timing / Priority
 ```
+
+باقي Pregnancy / Birth / Lactation / Weaning / Health / Fattening Rules موزعة على Subsections Settings المقابلة ولا تحول إلى Workflow Events.
 
 ---
 
@@ -537,6 +617,7 @@ LactationOverlapQuestionsSeeder
 WeaningIndividualTrackingQuestionsSeeder
 GrowthSortingEvaluationQuestionsSeeder
 FateExclusionQuestionsSeeder
+ReplacementApprovalQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -565,6 +646,7 @@ Question Creation → IN PROGRESS
 4.8 Weaning / Individual Tracking → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.9 Growth / Sorting / Re-evaluation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.10 Fate Decision / Exclusion from Path → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.11 Replacement / Production Herd Approval → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -579,7 +661,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 **التالي:**
 
-`4.11 الإحلال والاعتماد داخل القطيع الإنتاجي`
+`4.12 التسمين والجاهزية للبيع`
 
 ---
 
