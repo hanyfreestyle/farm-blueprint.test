@@ -2,12 +2,15 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Sections\QuestionnaireReportsSectionSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireReportsQuestionsSeeder extends Seeder
 {
     public function run(): void
     {
-        // Question seeders will be added here when section 5 question design begins.
+        $this->call(QuestionnaireReportsSectionSeeder::class);
+
+        // Question seeders are added here progressively in section order (5.1 → 5.16).
     }
 }
