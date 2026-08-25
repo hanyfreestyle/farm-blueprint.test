@@ -15,6 +15,7 @@ use Database\Seeders\Questions\Workflow\HousingSiteOperationsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\LactationOverlapQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\MatingAttemptsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\OperationalMeasurementsQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\OperationalTaskManagementQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\PregnancyFollowUpQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\ReplacementApprovalQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\WeaningIndividualTrackingQuestionsSeeder;
@@ -41,6 +42,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             ExceptionalPathRecoveryQuestionsSeeder::class,
             FarmExitReentryQuestionsSeeder::class,
             HousingSiteOperationsQuestionsSeeder::class,
+            OperationalTaskManagementQuestionsSeeder::class,
         ]);
     }
 }
