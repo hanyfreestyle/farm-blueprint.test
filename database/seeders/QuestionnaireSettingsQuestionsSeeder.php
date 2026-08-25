@@ -9,6 +9,7 @@ use Database\Seeders\Questions\Settings\HousingSiteOperatingRulesQuestionsSeeder
 use Database\Seeders\Questions\Settings\MatingFertilityReadinessRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\PregnancyCheckGestationBirthPreparationRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\SettingsScopeArchitectureQuestionsSeeder;
+use Database\Seeders\Questions\Settings\WeaningIndividualTrackingRulesQuestionsSeeder;
 use Database\Seeders\Sections\QuestionnaireSettingsSectionSeeder;
 use Illuminate\Database\Seeder;
 
@@ -26,6 +27,7 @@ class QuestionnaireSettingsQuestionsSeeder extends Seeder
             MatingFertilityReadinessRulesQuestionsSeeder::class,
             PregnancyCheckGestationBirthPreparationRulesQuestionsSeeder::class,
             BirthLactationRematingRulesQuestionsSeeder::class,
+            WeaningIndividualTrackingRulesQuestionsSeeder::class,
         ]);
     }
 }
