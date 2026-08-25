@@ -11,6 +11,7 @@ use Database\Seeders\Questions\Workflow\FatteningSaleReadinessQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\GrowthSortingEvaluationQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\HealthIsolationMortalityQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\HousingMovementQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\HousingSiteOperationsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\LactationOverlapQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\MatingAttemptsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\OperationalMeasurementsQuestionsSeeder;
@@ -39,6 +40,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             HealthIsolationMortalityQuestionsSeeder::class,
             ExceptionalPathRecoveryQuestionsSeeder::class,
             FarmExitReentryQuestionsSeeder::class,
+            HousingSiteOperationsQuestionsSeeder::class,
         ]);
     }
 }
