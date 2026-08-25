@@ -445,6 +445,74 @@ Actual Weaning / Individualization → 4.8
 تحليل Lactation Mortality / Foster Transfers / Weaned Count → Reports 5.4 / 5.7
 ```
 
+### 4.8 Weaning / Individual Tracking — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/WeaningIndividualTrackingQuestionsSeeder.php`
+
+عدد الأسئلة: **12**.
+
+```text
+weaning.operation_structure
+weaning.event_record_fields
+weaning.count_reconciliation_model
+weaning.partial_weaning_model
+weaning.individual_creation_model
+weaning.inherited_animal_fields
+weaning.preweaning_origin_resolution_model
+weaning.sex_capture_model
+weaning.weight_integration_model
+weaning.housing_integration_model
+weaning.summary_persistence_model
+weaning.post_completion_transition_model
+```
+
+المبدأ الوظيفي:
+
+```text
+Litter Tracking
+→ Actual Weaning Event
+→ Individual Animal Records
+→ Growth / Sorting
+```
+
+القرارات التي تغطيها 4.8:
+
+- الفطام عملية رئيسية وليست مجرد Status؛ يحسم هل تكون Guided Operation واحدة أم Staged Session لها Finalization أم إجراءات منفصلة.
+- Weaning Event يمكن أن يحتفظ بالبطن، وقت التنفيذ، Expected Alive Count، Actual Weaned Count، العمر، الحالة العامة، سبب فرق العدد، المنفذ والملاحظات حسب الإجابات.
+- Expected Count ينتج من Birth + Lactation Events؛ اختلافه عن العدد الفعلي لا يجب أن يختفي بصمت، والسؤال يحسم مستوى Reconciliation المطلوب قبل الإغلاق.
+- الفطام الجزئي Requirement مفتوح صراحة في المصدر: إما Full Litter Only أو إنشاء أفراد للمفطومين مع بقاء البطن مفتوحة بالباقي حتى Weaning Event لاحق.
+- بعد الفطام كل مفطوم يصبح Animal Record مستقلًا دائمًا؛ السؤال يحسم Batch/Generated Rows/One-by-one داخل عملية الفطام دون إعادة تعريف Animal Code Rules في 3.1.
+- البيانات الموثوقة لا تعاد يدويًا؛ يمكن توريث Birth Date / Biological Mother / Paternity / Original Litter / Birth Event / Breed Origin / Farm / Weaning Reference وعلاقات Foster عند انطباقها.
+- عند وجود Foster Transfers قبل الفطام يجب حسم كيفية Resolution من Temporary Tracking في 4.7 إلى Final Animal Origin، مع حماية Biological Mother / Original Litter.
+- الجنس يمكن أن يكون Male / Female / Unknown إذا تعذر التأكد، أو يفرض التأكيد/يؤجل حسب الإجابة؛ توقيت الفصل بين الجنسين Rule في Settings.
+- Weaning Weight لا يخلق مصدرًا ثانيًا للقيمة؛ السؤال يحسم هل شاشة الفطام تنشئ/تربط Canonical Weight Measurement في 4.3 أم تتعامل بطريقة أخرى. إلزام الوزن نفسه → Settings.
+- التسكين بعد الفطام يبقى عبر Housing Movements في 4.2؛ السؤال يحسم هل يدمج داخل جلسة الفطام أو يكون Step منفصلًا قبل/بعد Finalization. يدعم المصدر توزيع أفراد البطن على أكثر من Cage.
+- بيانات الملخص مثل Weaning Age / Count / Male-Female-Unknown يمكن أن تكون Derived أو Immutable Snapshot Validated Against Individuals؛ لا نريد ملخصًا يدويًا يناقض السجلات دون قرار صريح.
+- نجاح الفطام هو Boundary إلى 4.9؛ السؤال يحسم هل يبدأ Growth/Sorting Context تلقائيًا أم عبر Transition مسجل مستقل.
+
+Dependencies:
+
+```text
+لا توجد Dependencies داخل 4.8 حاليًا؛ جميع الأسئلة أساسية لمسار الفطام نفسه.
+```
+
+حدود 4.8:
+
+```text
+موعد الفطام المستهدف / الحد الأدنى للعمر أو الوزن / Weight Requirement → Settings 6.8
+قواعد Early Weaning والصلاحية/التحذير → Settings 6.8؛ السبب أو الحالة الاستثنائية التي أدت إليه → 4.7 / 4.14 حسب الحدث؛ Actual Weaning Operation → 4.8
+توقيت الفصل بين الذكور والإناث وقواعد Housing Eligibility / Capacity → Settings 6.4 / 6.8
+Actual Weight Record → 4.3؛ 4.8 يحدد Integration فقط
+Actual Housing Movement → 4.2؛ 4.8 يحدد Integration فقط
+Foster Transfer / Temporary Preweaning Tracking → 4.7؛ Resolution إلى Final Animal Identity → 4.8
+Animal Identity / Code Rules → 3.1
+Pedigree Rules → 3.3
+Growth / Sorting / Re-evaluation Events → 4.9
+Task Generation → Settings 6.12؛ Task Lifecycle → 4.17
+Weaning / Survival / Sex / Weight Analytics → Reports 5.4 / 5.5 / 5.7
+```
+
 ---
 
 ## 7. Reports — حدود مختصرة
@@ -480,7 +548,7 @@ Open Requirements العامة:
 - Override Policy.
 - Sensitive Record Correction + Audit.
 
-ذات الصلة بالتلقيح/الحمل/الولادة/الرضاعة:
+ذات الصلة بالتلقيح/الحمل/الولادة/الرضاعة/الفطام:
 
 ```text
 جاهزية الأنثى والذكر
@@ -497,8 +565,12 @@ Reference Mating Rule
 مواعيد Lactation Follow-up
 موعد إعادة تلقيح الأم أثناء الرضاعة
 شروط Foster Mother وحدود عدد المواليد لديها
+موعد الفطام المستهدف
+الحد الأدنى للعمر/الوزن أو Weight Requirement للفطام
 قواعد Early Weaning
-→ Settings 6.5 / 6.6 / 6.7 / 6.8 / 6.12
+توقيت وقواعد الفصل بين الجنسين
+قواعد Housing Eligibility / Capacity عند الفطام
+→ Settings 6.4 / 6.5 / 6.6 / 6.7 / 6.8 / 6.12
 ```
 
 ---
@@ -553,6 +625,7 @@ MatingAttemptsQuestionsSeeder
 PregnancyFollowUpQuestionsSeeder
 BirthLitterQuestionsSeeder
 LactationOverlapQuestionsSeeder
+WeaningIndividualTrackingQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -578,6 +651,7 @@ Question Creation → IN PROGRESS
 4.5 Pregnancy Check / Follow-up / Birth Preparation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.6 Birth Registration / Litter Creation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.7 Lactation / Litter Follow-up / Overlapping Cycles → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.8 Weaning / Individual Tracking → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -592,7 +666,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 **التالي:**
 
-`4.8 الفطام والتحول إلى التتبع الفردي`
+`4.9 النمو والفرز وإعادة التقييم`
 
 ---
 
