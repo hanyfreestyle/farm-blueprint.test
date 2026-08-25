@@ -1,0 +1,236 @@
+<?php
+
+namespace Database\Seeders\Questions\Reports;
+
+use App\Enums\Questionnaire\QuestionType;
+use App\Services\Questionnaire\QuestionSeederSyncService;
+use Illuminate\Database\Seeder;
+use Illuminate\Support\Facades\DB;
+
+class AnalyticalEntityPagesQuestionsSeeder extends Seeder
+{
+    public function run(): void
+    {
+        DB::transaction(function (): void {
+            $questions = [
+                [
+                    'seed_key' => 'analytical_entity_page.initial_entity_scopes',
+                    'title' => 'ما الكيانات التي يجب أن تحصل على صفحة تحليلية متكاملة في النطاق الحالي؟',
+                    'help_text' => 'المرجع الوظيفي يحدد بوضوح صفحة تحليلية للحيوان وصفحة تحليلية للبطن. يمكن أن يبقى النموذج قابلًا للتوسع مستقبلًا، لكن لا نفترض صفحات لكيانات أخرى قبل وجود احتياج وظيفي موثق.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 1,
+                    'report_category' => 'analysis_scope',
+                    'target_entity' => 'analytical_entity_page',
+                    'options' => [
+                        ['label' => 'الحيوان الفردي', 'value' => 'animal'],
+                        ['label' => 'البطن / Litter', 'value' => 'litter'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.common_blocks',
+                    'title' => 'ما المكونات المشتركة التي يجب أن تتكون منها الصفحة التحليلية للكيان؟',
+                    'help_text' => 'الصفحة التحليلية ليست سجل تعريف بديلًا، بل تجمع ما هو موجود بالفعل حول الكيان في صورة قابلة للفهم والمراجعة. تفاصيل كل مؤشر تظل في تقريره المتخصص.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 2,
+                    'report_category' => 'page_structure',
+                    'target_entity' => 'analytical_entity_page',
+                    'options' => [
+                        ['label' => 'ملخص الهوية والبيانات المرجعية الأساسية', 'value' => 'identity_reference_summary'],
+                        ['label' => 'ملخص الحالة الحالية المشتقة من السجلات', 'value' => 'current_derived_state'],
+                        ['label' => 'Timeline زمني للأحداث والحركات', 'value' => 'event_timeline'],
+                        ['label' => 'المؤشرات والتحليلات المشتقة المناسبة للكيان', 'value' => 'derived_metrics_and_analysis'],
+                        ['label' => 'العلاقات مع الكيانات المرتبطة', 'value' => 'entity_relationships'],
+                        ['label' => 'ملخصات من التقارير المتخصصة ذات الصلة', 'value' => 'domain_report_summaries'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.canonical_source_policy',
+                    'title' => 'هل يجب أن تعتمد الصفحة التحليلية على السجلات والـWorkflow Canonical والمؤشرات المشتقة دون إنشاء نسخ مستقلة قابلة للتعديل من نفس البيانات داخل الصفحة؟',
+                    'help_text' => 'الهدف منع وجود وزن أو موقع أو نتيجة تلقيح أو ولادة أو حالة صحية بنسخة ثانية تنافس المصدر الأصلي. الصفحة تجمع وتفسر البيانات، ولا تصبح مصدرًا بديلًا لتسجيل الحدث.',
+                    'type' => QuestionType::YES_NO,
+                    'is_required' => true,
+                    'sort_order' => 3,
+                    'report_category' => 'integrity_rule',
+                    'target_entity' => 'analytical_entity_page',
+                    'options' => [],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.animal_timeline_domains',
+                    'title' => 'ما أنواع الأحداث التي يجب أن يستطيع Timeline الحيوان تجميعها في صفحة واحدة؟',
+                    'help_text' => 'المرجع يصف ملف الحيوان كتاريخ كامل من الدخول أو الميلاد حتى الخروج، مع اختلاف بعض المسارات بين الأنثى والذكر. الحدث نفسه يظل محفوظًا في قسمه Canonical.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 4,
+                    'report_category' => 'timeline_scope',
+                    'target_entity' => 'animal_analytical_page',
+                    'options' => [
+                        ['label' => 'الميلاد أو الاستقبال وبداية السجل', 'value' => 'birth_or_intake'],
+                        ['label' => 'الأوزان والقياسات', 'value' => 'weights_and_measurements'],
+                        ['label' => 'الفرز وإعادة التقييم وتحديد الاتجاه', 'value' => 'sorting_and_evaluation'],
+                        ['label' => 'الترشيح والإحلال والاعتماد داخل القطيع', 'value' => 'replacement_and_approval'],
+                        ['label' => 'التلقيح والحمل والولادة والبطون عند انطباقها', 'value' => 'reproductive_events'],
+                        ['label' => 'الصحة والعزل والتعافي والنفوق عند انطباقه', 'value' => 'health_and_mortality'],
+                        ['label' => 'التسكين والنقل والإخلاء', 'value' => 'housing_movements'],
+                        ['label' => 'التسمين والجاهزية للبيع عند انطباقهما', 'value' => 'fattening_and_sale_readiness'],
+                        ['label' => 'الخروج وإعادة الدخول', 'value' => 'exit_and_reentry'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.timeline_time_model',
+                    'title' => 'أي توقيت يجب أن يكون الأساس لترتيب أحداث الـTimeline عندما يختلف وقت حدوث الواقعة عن وقت تسجيلها؟',
+                    'help_text' => 'عدد من الـWorkflow الحالية يفرق بين وقت حدوث الواقعة ووقت إدخالها. الصفحة التحليلية يجب أن تعرض التسلسل الحقيقي لما حدث، مع إمكانية إظهار وقت التسجيل لأغراض التدقيق عند توفره.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 5,
+                    'report_category' => 'timeline_rule',
+                    'target_entity' => 'analytical_timeline',
+                    'options' => [
+                        ['label' => 'الترتيب حسب وقت حدوث الواقعة فعليًا، مع إظهار وقت التسجيل كبيان تدقيق عند توفره', 'value' => 'event_time_primary_recorded_time_audit'],
+                        ['label' => 'الترتيب حسب وقت تسجيل السجل في النظام', 'value' => 'recorded_time_primary'],
+                        ['label' => 'السماح بالتبديل بين ترتيب وقت الحدث وترتيب وقت التسجيل', 'value' => 'switchable_event_and_recorded_time'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.current_state_model',
+                    'title' => 'كيف يجب أن تعرض الصفحة الحالة الحالية بجانب التاريخ الكامل للكيان؟',
+                    'help_text' => 'الموقع الحالي والوزن الأخير والجاهزية والحالة التشغيلية أمثلة على معلومات حالية مشتقة، بينما الـTimeline يحتفظ بما حدث تاريخيًا. المطلوب منع اختزال التاريخ في آخر Status.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 6,
+                    'report_category' => 'presentation_rule',
+                    'target_entity' => 'analytical_entity_page',
+                    'options' => [
+                        ['label' => 'ملخص حالي مشتق أعلى الصفحة + Timeline تاريخي مستقل تحته', 'value' => 'derived_current_summary_plus_history'],
+                        ['label' => 'Timeline فقط ويستنتج المستخدم الحالة الحالية من آخر حدث', 'value' => 'timeline_only'],
+                        ['label' => 'حالة حالية فقط مع فتح التاريخ عند الطلب', 'value' => 'current_state_primary_history_on_demand'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.female_content',
+                    'title' => 'ما المحتوى التحليلي الخاص بالأنثى الذي يجب أن يظهر في صفحتها بجانب الـTimeline العام؟',
+                    'help_text' => 'المرجع يربط صفحة الأنثى بالتلقيحات والجس والحمل والولادات والبطون والفطام مع مؤشرات الأداء الإنتاجي. حساب المؤشرات نفسها يظل في التقارير المتخصصة مثل 5.3 و5.4 و5.7.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 7,
+                    'report_category' => 'entity_analysis_content',
+                    'target_entity' => 'female_analytical_page',
+                    'options' => [
+                        ['label' => 'الدورات ومحاولات التلقيح المرتبطة', 'value' => 'mating_cycles_and_attempts'],
+                        ['label' => 'نتائج فحوص الحمل والحمل المؤكد', 'value' => 'pregnancy_results'],
+                        ['label' => 'الولادات والبطون الناتجة', 'value' => 'births_and_litters'],
+                        ['label' => 'نتائج الرضاعة والفطام للأبناء', 'value' => 'lactation_and_weaning_outcomes'],
+                        ['label' => 'المؤشرات الإنتاجية المشتقة للأنثى', 'value' => 'female_productive_metrics'],
+                        ['label' => 'الأبناء والمرشحون للإحلال من نسلها', 'value' => 'offspring_and_replacement_descendants'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.male_content',
+                    'title' => 'ما المحتوى التحليلي الخاص بالذكر الذي يجب أن يظهر في صفحته بجانب الـTimeline العام؟',
+                    'help_text' => 'المرجع يذكر الأوزان وعمليات التلقيح والإناث المستخدمة معه ونتائج الحمل والأبناء وأداء الأبناء ومرشحي الإحلال من نسله، إضافة إلى الصحة والنقل والخروج الموجودين أصلًا في Timeline العام.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 8,
+                    'report_category' => 'entity_analysis_content',
+                    'target_entity' => 'male_analytical_page',
+                    'options' => [
+                        ['label' => 'عمليات ومحاولات التلقيح', 'value' => 'mating_events_and_attempts'],
+                        ['label' => 'الإناث التي استخدم معها', 'value' => 'mated_females'],
+                        ['label' => 'نتائج الحمل المرتبطة باستخدامه', 'value' => 'pregnancy_outcomes'],
+                        ['label' => 'الأبناء والبطون الناتجة', 'value' => 'offspring_and_litters'],
+                        ['label' => 'مؤشرات أداء الأبناء ونموهم وبقائهم عند توفرها', 'value' => 'offspring_performance'],
+                        ['label' => 'المرشحون أو المعتمدون للإحلال من نسله', 'value' => 'replacement_descendants'],
+                        ['label' => 'المؤشرات الإنتاجية المشتقة للذكر', 'value' => 'male_productive_metrics'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.litter_content',
+                    'title' => 'ما المعلومات والنتائج التي يجب أن تجمعها صفحة البطن التحليلية؟',
+                    'help_text' => 'المصدر يتابع البطن من الأب والأم والولادة حتى الفطام ثم يربط الأفراد الناتجين بأوزانهم ومصيرهم لاحقًا. نقل المواليد بين الأمهات لا يغير الأصل البيولوجي، بل يظهر كتاريخ رعاية منفصل.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 9,
+                    'report_category' => 'entity_analysis_content',
+                    'target_entity' => 'litter_analytical_page',
+                    'options' => [
+                        ['label' => 'الأب والأم البيولوجيان', 'value' => 'biological_parents'],
+                        ['label' => 'تاريخ الولادة وإجمالي المواليد والأحياء عند الولادة', 'value' => 'birth_summary'],
+                        ['label' => 'النفوق أثناء الرضاعة', 'value' => 'preweaning_mortality'],
+                        ['label' => 'حركات نقل المواليد والأمهات الحاضنة / المرضعة مع بقاء الأصل البيولوجي مستقلًا', 'value' => 'foster_transfer_history'],
+                        ['label' => 'عدد المفطومين ونتائج الفطام وأوزانه', 'value' => 'weaning_outcomes'],
+                        ['label' => 'الأفراد الناتجون بعد التحول للتتبع الفردي', 'value' => 'resulting_individual_animals'],
+                        ['label' => 'أوزان ونمو الأفراد الناتجين لاحقًا', 'value' => 'offspring_later_growth'],
+                        ['label' => 'من تم اختياره للإحلال أو توجيهه للتسمين أو لمسار آخر', 'value' => 'offspring_later_fate'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.litter_to_individual_continuity',
+                    'title' => 'هل يجب أن تظل صفحة البطن مرتبطة بالحيوانات الفردية التي نتجت عنها بعد الفطام بحيث يمكن متابعة نتائجها اللاحقة دون فقد علاقة الأصل؟',
+                    'help_text' => 'المرجع يطلب أن تظهر في صفحة البطن الأفراد الناتجة وأوزانها لاحقًا ومن اختير للإحلال أو ذهب للتسمين. هذا الربط تحليلي ويعتمد على علاقات السجلات الأصلية، لا على نسخ بيانات الحيوان داخل البطن.',
+                    'type' => QuestionType::YES_NO,
+                    'is_required' => true,
+                    'sort_order' => 10,
+                    'report_category' => 'relationship_rule',
+                    'target_entity' => 'litter_offspring_relationship',
+                    'options' => [],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.relationship_navigation',
+                    'title' => 'ما العلاقات التي يجب أن تسمح الصفحة التحليلية بالتنقل المباشر بينها؟',
+                    'help_text' => 'الهدف الاستفادة من النسب والبطن والعلاقات الموجودة بالفعل بدل عرضها كنصوص غير قابلة للتتبع. لا ينشئ هذا السؤال علاقات نسب جديدة؛ هو يحدد التنقل بين العلاقات الموثقة.',
+                    'type' => QuestionType::MULTI_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 11,
+                    'report_category' => 'navigation_rule',
+                    'target_entity' => 'analytical_entity_relationships',
+                    'options' => [
+                        ['label' => 'الحيوان ← الأب / الأم', 'value' => 'animal_to_parents'],
+                        ['label' => 'الحيوان ← البطن الأصلية', 'value' => 'animal_to_birth_litter'],
+                        ['label' => 'الحيوان ← الأبناء / البطون الناتجة عند انطباقها', 'value' => 'animal_to_offspring_and_litters'],
+                        ['label' => 'البطن ← الأب / الأم', 'value' => 'litter_to_parents'],
+                        ['label' => 'البطن ← الحيوانات الفردية الناتجة', 'value' => 'litter_to_resulting_animals'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.metric_drilldown_model',
+                    'title' => 'إلى أي مستوى يجب أن يستطيع المستخدم النزول من المؤشر الظاهر داخل الصفحة التحليلية إلى البيانات التي كونته؟',
+                    'help_text' => 'الصفحة تجمع مؤشرات من عدة تقارير، لذلك يجب الحفاظ على إمكانية تفسير الرقم دون إعادة حسابه بمنطق مختلف عن تقريره الأصلي.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 12,
+                    'report_category' => 'interaction_rule',
+                    'target_entity' => 'analytical_entity_page',
+                    'options' => [
+                        ['label' => 'عرض المؤشر فقط داخل الصفحة', 'value' => 'metric_only'],
+                        ['label' => 'فتح التقرير المتخصص الذي يحسب المؤشر', 'value' => 'drilldown_to_domain_report'],
+                        ['label' => 'فتح التقرير المتخصص ثم الوصول إلى الأحداث والسجلات Canonical التي كونت المؤشر', 'value' => 'drilldown_to_domain_report_and_source_records'],
+                    ],
+                ],
+                [
+                    'seed_key' => 'analytical_entity_page.incomplete_data_model',
+                    'title' => 'كيف يجب أن تتعامل الصفحة التحليلية مع البيانات التاريخية أو العلاقات غير المكتملة؟',
+                    'help_text' => 'الحيوانات الخارجية أو القطيع الافتتاحي قد يبدأ من أول معلومة موثوقة، وقد يكون النسب جزئيًا أو بعض الأحداث السابقة غير معروفة. الصفحة يجب ألا تملأ هذه الفجوات بافتراضات غير مسجلة.',
+                    'type' => QuestionType::SINGLE_CHOICE,
+                    'is_required' => true,
+                    'sort_order' => 13,
+                    'report_category' => 'data_quality_rule',
+                    'target_entity' => 'analytical_entity_page',
+                    'options' => [
+                        ['label' => 'إظهار المتاح فقط مع تمييز البيانات أو الفترات غير المعروفة بوضوح', 'value' => 'show_known_data_and_mark_unknowns'],
+                        ['label' => 'إخفاء الأجزاء التي لا تحتوي بيانات دون إظهار وجود فجوة', 'value' => 'hide_missing_sections'],
+                        ['label' => 'استكمال القيم الناقصة تقديريًا لأغراض العرض', 'value' => 'estimate_missing_history_for_display'],
+                    ],
+                ],
+            ];
+
+            app(QuestionSeederSyncService::class)->sync(
+                mainSectionName: 'التقارير والتحليلات والتنبيهات ومؤشرات الأداء',
+                sectionName: 'الصفحات والسجلات التحليلية',
+                questions: $questions,
+                prune: true,
+                preserveAnswers: true,
+            );
+        });
+    }
+}
