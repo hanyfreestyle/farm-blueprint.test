@@ -489,6 +489,35 @@ Rules / Warning / Block / Override / required weight / restrictions → Settings
 Exit / sales / churn / presence analytics → Reports
 ```
 
+### 4.16 Housing Site Operations / Maintenance / Preparation — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder: `database/seeders/Questions/Workflow/HousingSiteOperationsQuestionsSeeder.php` — **9 أسئلة**.
+
+Stable keys:
+
+```text
+housing_site_maintenance.target_scopes
+housing_site_maintenance.record_model
+housing_site_maintenance.lifecycle_model
+housing_site_maintenance.occupied_target_integration
+housing_site_sanitation.post_vacate_trigger_model
+housing_site_operation.parent_child_history_model
+housing_site_maintenance.post_completion_sanitation_model
+housing_site_operation.return_to_service_model
+housing_site_sanitation.readiness_after_completion_model
+```
+
+حدود 4.16:
+
+```text
+Site identity / structural definition → Farm Structure
+Actual housing / transfer / vacating → 4.2
+Maintenance / sanitation / preparation execution → 4.16
+Task lifecycle → 4.17
+Required sanitation / waiting periods / block-warning-override / permissions → Settings
+Housing eligibility / maintenance history / downtime analytics → Reports
+```
+
 ---
 
 ## 7. Reports — حدود مختصرة
@@ -518,159 +547,3 @@ Targets / Thresholds / Periods / Severity Rules القابلة للضبط → Se
 ## 8. Settings — حدود مختصرة
 
 Settings = القواعد والسياسات القابلة للضبط، وليست مكانًا لكل Business Rule.
-
-Open Requirements العامة:
-
-- Scope: System / Farm / Barn / Profile.
-- Defaults / Inheritance / Overrides.
-- Effective Date / Versioning.
-- Historical Settings Reference / Snapshot.
-- Information / Warning / Block.
-- Override Policy.
-- Sensitive Record Correction + Audit.
-
-ذات الصلة:
-
-```text
-6.2 General Control / Override / Audit
-→ sensitive correction permissions / approval / audit / override
-
-6.4 Housing / Herd Organization / Readiness
-6.5 Mating / Fertility / Reproductive Readiness
-6.9 Growth / Sorting / Replacement
-6.10 Fattening / Sale Readiness
-→ targets / required sale-readiness data / weight rules when configurable
-
-6.11 Health / Isolation / Mortality / Exceptional Cases
-6.12 Tasks / Alerts / Timing / Priority
-6.13 Report / KPI Targets and Thresholds
-```
-
-قواعد السماح بالخروج من حالات نشطة، Requirement وزن البيع/الخروج، Warning/Block/Override، وقواعد العودة أو النقل بين المزارع عند جعلها قابلة للتهيئة تبقى Settings ولا تتحول إلى أحداث داخل 4.15.
-
----
-
-## 9. قواعد إنشاء الأسئلة وملفات الشرح
-
-قبل أي Question Seeder جديد:
-
-1. قراءة هذا الملف أولًا.
-2. مراجعة الجزء المقابل من `تصور_مشروع_الارانب.md`.
-3. مراجعة Architecture Review وحدود Subsection.
-4. مراجعة الأسئلة السابقة لمنع التكرار.
-5. مراجعة Enums / Models / Engine.
-6. تحويل النقاط غير المحسومة فقط إلى Questions تنتج Decisions فعلية.
-7. Stable Keys / Option Values.
-8. Dependencies فقط عند حاجة وظيفية.
-9. تحديد `report_category` و`target_entity` حسب conventions الحالية.
-10. عدم تحويل مثال إلى Requirement نهائي بلا سؤال/قرار.
-11. عدم تضخيم الأسئلة.
-12. `preserveAnswers = true`.
-
-عند إعداد Questionnaire Guide لاحقًا **لا تعاد الدراسة من الصفر**. يعتمد على:
-
-```text
-FARM_BLUEPRINT_PROJECT_CONTEXT.md
-+ Seeder النهائي
-+ الإجابات المسجلة
-+ مراجعة سريعة للجزء المقابل من تصور_مشروع_الارانب.md
-```
-
----
-
-## 10. Question Orchestrators الحالية
-
-`QuestionnaireAnimalHerdQuestionsSeeder`:
-
-```text
-AnimalIdentityQuestionsSeeder
-AnimalSourceQuestionsSeeder
-AnimalPedigreeQuestionsSeeder
-InitialHerdSetupQuestionsSeeder
-ProductionHerdGroupsQuestionsSeeder
-```
-
-`QuestionnaireWorkflowQuestionsSeeder`:
-
-```text
-AnimalIntakeQuestionsSeeder
-HousingMovementQuestionsSeeder
-OperationalMeasurementsQuestionsSeeder
-MatingAttemptsQuestionsSeeder
-PregnancyFollowUpQuestionsSeeder
-BirthLitterQuestionsSeeder
-LactationOverlapQuestionsSeeder
-WeaningIndividualTrackingQuestionsSeeder
-GrowthSortingEvaluationQuestionsSeeder
-FateExclusionQuestionsSeeder
-ReplacementApprovalQuestionsSeeder
-FatteningSaleReadinessQuestionsSeeder
-HealthIsolationMortalityQuestionsSeeder
-ExceptionalPathRecoveryQuestionsSeeder
-FarmExitReentryQuestionsSeeder
-```
-
-Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
-
----
-
-## 11. حالة التنفيذ الحالية
-
-```text
-Architecture → IMPLEMENTED & VERIFIED
-Question Creation → IN PROGRESS
-
-3.1 Animal Identity → LOCAL SEED VERIFIED
-3.2 Animal Source / Record Start → LOCAL SEED VERIFIED
-3.3 Animal Pedigree / Family Tree → LOCAL SEED VERIFIED
-3.4 Initial Herd Setup → LOCAL SEED VERIFIED
-3.5 Production Herd / Groups → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-
-4.1 Animal Intake / Re-entry → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.2 Housing / Movement / Vacating / Occupancy → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.3 Operational Weight / Measurements → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.4 Mating / Attempts → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.5 Pregnancy / Follow-up / Birth Preparation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.6 Birth / Litter Creation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.7 Lactation / Litter Follow-up / Overlapping Cycles → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.8 Weaning / Individual Tracking → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.9 Growth / Sorting / Re-evaluation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.10 Fate Decision / Exclusion → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.11 Replacement / Production Herd Approval → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.12 Fattening / Sale Readiness → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.13 Health / Isolation / Recovery / Mortality → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.14 Exceptional Cases / Path Reconstruction → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-4.15 Farm Exit / Re-entry → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-```
-
-لتحديث البيئة المحلية دون فقد الإجابات:
-
-```bash
-git pull origin master
-php artisan db:seed --class=QuestionnaireAnimalHerdQuestionsSeeder
-php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
-```
-
-إذا كان AnimalHerd تم Seed له بالفعل، يشغل Workflow Seeder فقط.
-
-**التالي:** `4.16 تشغيل وصيانة وتجهيز مواقع الإيواء`
-
----
-
-## 12. قاعدة GitHub الإلزامية
-
-المستودع افتراضيًا **READ ONLY**.
-
-أي تعديل / إنشاء / حذف / Commit / Branch / PR / Seeder يحتاج طلبًا صريحًا ومباشرًا من المستخدم في نفس السياق.
-
-وجود الصلاحية التقنية لا يعني وجود إذن بالتعديل.
-
-`تصور_مشروع_الارانب.md` Reference Only ولا يعدل إلا بطلب صريح.
-
----
-
-## 13. المبدأ الأساسي
-
-هذا المشروع هو **أداة تحليل متطلبات قبل التطوير** وليس **نظام إدارة المزرعة النهائي**.
-
-الهدف تقليل الافتراضات وتحويل الإجابات إلى Requirements قابلة للتنفيذ مع الحفاظ على التاريخ والاتساق وعدم الاعتماد على الذاكرة وحدها.
