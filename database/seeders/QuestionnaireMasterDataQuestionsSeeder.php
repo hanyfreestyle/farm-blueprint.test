@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\MasterData\BatteryPhysicalTypesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\BreedDataQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\BreedMetricsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\CagePhysicalTypesQuestionsSeeder;
@@ -11,10 +12,13 @@ use Database\Seeders\Questions\MasterData\CoolingSystemsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\ExclusionReasonsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\ExitReasonsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\GovernoratesQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\HealthProblemCategoriesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\HeatingSystemsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\IsolationReasonsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\MaleChangeReasonsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\MortalityReasonsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\OperationalActivitiesQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\OperationalTaskTypesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\ProductionPurposesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\TransferReasonsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\VentilationSystemsQuestionsSeeder;
@@ -24,12 +28,6 @@ class QuestionnaireMasterDataQuestionsSeeder extends Seeder
 {
     public function run(): void
     {
-        /*
-         * This orchestrator owns reference/master-data question groups only.
-         * Structural entities are seeded through QuestionnaireFarmStructureQuestionsSeeder.
-         * Operation settings belong to their own main section and are intentionally
-         * not represented as a Master Data subsection here.
-         */
         $this->call([
             OperationalActivitiesQuestionsSeeder::class,
             ProductionPurposesQuestionsSeeder::class,
@@ -47,6 +45,10 @@ class QuestionnaireMasterDataQuestionsSeeder extends Seeder
             HeatingSystemsQuestionsSeeder::class,
             CagePhysicalTypesQuestionsSeeder::class,
             CageUsagesQuestionsSeeder::class,
+            BatteryPhysicalTypesQuestionsSeeder::class,
+            OperationalTaskTypesQuestionsSeeder::class,
+            IsolationReasonsQuestionsSeeder::class,
+            HealthProblemCategoriesQuestionsSeeder::class,
         ]);
     }
 }
