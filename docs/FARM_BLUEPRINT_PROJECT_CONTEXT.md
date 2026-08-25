@@ -1,1 +1,1 @@
-TEMP
+# Farm Blueprint — Project Context & Working Rules
