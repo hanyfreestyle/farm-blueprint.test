@@ -7,6 +7,7 @@ use Database\Seeders\Questions\Reports\AnalyticalEntityPagesQuestionsSeeder;
 use Database\Seeders\Questions\Reports\BirthLactationWeaningReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\DailyOperationsDashboardQuestionsSeeder;
 use Database\Seeders\Questions\Reports\DataQualityAdministrativeExceptionsQuestionsSeeder;
+use Database\Seeders\Questions\Reports\FarmKeyPerformanceIndicatorsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\FertilityMatingPregnancyReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\GrowthWeightFatteningReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\HealthMortalityIsolationReportsQuestionsSeeder;
@@ -40,6 +41,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
             AnalyticalEntityPagesQuestionsSeeder::class,
             AlertEarlyWarningDetectionQuestionsSeeder::class,
             DataQualityAdministrativeExceptionsQuestionsSeeder::class,
+            FarmKeyPerformanceIndicatorsQuestionsSeeder::class,
         ]);
     }
 }
