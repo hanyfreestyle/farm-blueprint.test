@@ -123,7 +123,7 @@ class CitiesQuestionsSeeder extends Seeder
             sectionName: 'المدن',
             questions: $questions,
             prune: true,
-            preserveAnswers: false,
+            preserveAnswers: true,
         );
     }
 }
