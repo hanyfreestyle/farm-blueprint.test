@@ -9,6 +9,7 @@ use Database\Seeders\Questions\Reports\GrowthWeightFatteningReportsQuestionsSeed
 use Database\Seeders\Questions\Reports\HealthMortalityIsolationReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\HerdReadinessMovementReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\HousingOccupancyCapacityOperationsReportsQuestionsSeeder;
+use Database\Seeders\Questions\Reports\OperationalTaskPerformanceReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\PedigreeReplacementReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\ProductiveAnimalPerformanceAnalysisQuestionsSeeder;
 use Database\Seeders\Sections\QuestionnaireReportsSectionSeeder;
@@ -30,6 +31,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
             ProductiveAnimalPerformanceAnalysisQuestionsSeeder::class,
             PedigreeReplacementReportsQuestionsSeeder::class,
             HousingOccupancyCapacityOperationsReportsQuestionsSeeder::class,
+            OperationalTaskPerformanceReportsQuestionsSeeder::class,
         ]);
     }
 }
