@@ -248,7 +248,9 @@ Workflow يجيب عن: **ماذا حدث؟ ومتى؟ ولماذا؟ ومن ن�
 
 Seeder: `Questions/Workflow/AnimalIntakeQuestionsSeeder.php` — 11.
 
-الحدود: source→3.2؛ identity→3.1؛ housing→4.2؛ weight→4.3؛ intake quarantine/acceptance rules→Settings؛ health→4.13؛ exit→4.15.
+الحدود: source→3.2؛ identity→3.1؛ housing→4.2؛ weight→4.3؛ intake quarantine/acceptance rules→Settings؛ health→4.13؛ exit/re-entry history boundary→4.15.
+
+`animal_intake.reentry_process_model` يحسم فقط خطوات الاستقبال التي يعاد تطبيقها على نفس Animal Record بعد العودة، ولا يحسم علاقة العودة بواقعة الخروج أو Presence History.
 
 ### 4.2 Housing / Movement / Vacating / Occupancy — IMPLEMENTED / WAITING LOCAL SEED
 
@@ -266,7 +268,7 @@ Timing / Target / Threshold → Settings
 Analysis → Reports
 ```
 
-يدعم Intake / Pregnancy / Lactation / Weaning / Growth / Sorting / Replacement / Fattening، مع Batch Entry كوسيلة تشغيل فقط إذا اعتمدت الإجابة.
+يدعم Intake / Pregnancy / Lactation / Weaning / Growth / Sorting / Replacement / Fattening، وأي وزن خروج فعلي يجب أن يحافظ على Canonical Weight History بدل إنشاء مصدر وزن متنافس.
 
 ### 4.4 Mating / Attempts — IMPLEMENTED / WAITING LOCAL SEED
 
@@ -292,17 +294,13 @@ Seeder: `Questions/Workflow/BirthLitterQuestionsSeeder.php` — 11.
 Pregnancy / Cycle → Actual Birth Event → Litter Record → Lactation عند وجود Live Offspring
 ```
 
-Birth Counts تاريخية؛ الولادة خارج النطاق تسجل بتاريخها الحقيقي؛ Stillborn عند الولادة→4.6؛ mortality بعد الولادة→4.13؛ Foster→4.7؛ Weaning→4.8.
+Birth Counts تاريخية؛ Stillborn at Birth→4.6؛ mortality after birth→4.13؛ Foster→4.7؛ Weaning→4.8.
 
 ### 4.7 Lactation / Litter Follow-up / Overlapping Cycles — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/LactationOverlapQuestionsSeeder.php` — 12.
 
-- Current Alive Count ينتج من الأحداث ولا يعيد كتابة Birth Counts.
-- Foster Transfer يحافظ على Biological Mother / Original Litter.
-- Preweaning temporary tracking يحسم هنا ثم Final Identity Resolution في 4.8.
-- Mortality بعد الولادة يمكن أن يستخدم Canonical Mortality Event في 4.13 ويرتبط بالبطن.
-- Mating أثناء الرضاعة يستخدم 4.4؛ 4.7 يسجل علاقة التداخل فقط.
+Current Alive Count ينتج من الأحداث؛ Foster يحافظ على Biological Origin؛ Preweaning temporary tracking هنا ثم Final Identity في 4.8؛ Mortality after birth→4.13؛ Mating أثناء الرضاعة يستخدم 4.4.
 
 ### 4.8 Weaning / Individual Tracking — IMPLEMENTED / WAITING LOCAL SEED
 
@@ -312,7 +310,7 @@ Seeder: `Questions/Workflow/WeaningIndividualTrackingQuestionsSeeder.php` — 12
 Litter Tracking → Weaning Event → Individual Animal Records → Growth / Sorting
 ```
 
-Partial Weaning سؤال صريح؛ كل مفطوم يصبح Animal Record مستقلًا؛ Weight→4.3؛ Housing→4.2؛ weaning criteria→Settings.
+Partial Weaning سؤال صريح؛ كل مفطوم يصبح Animal Record مستقلًا؛ Weight→4.3؛ Housing→4.2؛ criteria→Settings.
 
 ### 4.9 Growth / Sorting / Re-evaluation — IMPLEMENTED / WAITING LOCAL SEED
 
@@ -326,17 +324,14 @@ Weaning / Individual Animal
 → Actual Fate Decision in 4.10
 ```
 
-المراحل والأعمار والمعايير→Settings 6.9؛ Derived Growth من Weight History؛ كل تقييم يحتفظ بتاريخه؛ نتائج 4.9 مبدئية ولا تنفذ المصير.
+المراحل والمعايير→Settings 6.9؛ Derived Growth من Weight History؛ كل تقييم يحتفظ بتاريخه؛ نتائج 4.9 مبدئية ولا تنفذ المصير.
 
 ### 4.10 Fate Decision / Exclusion — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/FateExclusionQuestionsSeeder.php` — 11.
 
 ```text
-Evaluation / Review
-→ Actual Fate Decision
-→ Downstream Transition
-→ Replacement / Fattening / Exit / Other Path
+Evaluation / Review → Actual Fate Decision → Downstream Transition
 ```
 
 ```text
@@ -360,7 +355,7 @@ Candidate ≠ Production Herd Member
 Production Herd Member ≠ Mating Ready
 ```
 
-نفس Animal Record يستمر؛ internal/external replacement مدعومان للدراسة؛ approval criteria→Settings 6.9؛ production purpose→Master Data؛ group definition→3.5؛ actual mating→4.4.
+Approval criteria→Settings 6.9؛ Production Purpose→Master Data؛ Group Definition→3.5؛ Actual Mating→4.4.
 
 ### 4.12 Fattening / Sale Readiness — IMPLEMENTED / WAITING LOCAL SEED
 
@@ -379,115 +374,119 @@ Fate Decision to Fattening
 Sale Readiness ≠ Sale / Exit Event
 ```
 
-Target Age / Weight / Duration / Growth / Readiness Criteria→Settings 6.10؛ actual weight→4.3؛ actual housing→4.2؛ actual sale/exit→4.15؛ health event→4.13.
+Targets / duration / growth / readiness criteria→Settings 6.10؛ actual weight→4.3؛ actual housing→4.2؛ actual sale/exit→4.15؛ health→4.13.
 
 ### 4.13 Health / Isolation / Recovery / Mortality — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/HealthIsolationMortalityQuestionsSeeder.php` — 13.
 
+- MVP لا يصبح Veterinary Treatment Module كاملًا.
+- Health History لا يمحى بتغير Current Summary.
+- Isolation Period/Decision→4.13؛ actual housing transfer→4.2.
+- Recovery لا يعني Automatic Readiness بالضرورة.
+- Stillborn→4.6؛ Mortality after Birth→4.13.
+- MortalityReason values→Master Data؛ Mortality Event→4.13.
+- Mortality Post-event Integration يربط Presence / Occupancy / Litter / Active Paths / Tasks دون حذف التاريخ.
+
+### 4.14 Exceptional Cases / Path Reconstruction — IMPLEMENTED / WAITING LOCAL SEED
+
+Seeder: `Questions/Workflow/ExceptionalPathRecoveryQuestionsSeeder.php` — 13.
+
 ```text
-Health Observation / Review
-→ Health State + Operational Impact
-→ Isolation عند الحاجة
-→ Follow-up
-→ Recovery / Re-evaluation / Return
-
-أو
-
-Actual Mortality Event
-→ Presence / Occupancy / Active Path / Task integrations
+Normal Workflow
+→ Exceptional Event / Domain Event
+→ Detect affected context
+→ Preserve history
+→ Determine invalid old steps/tasks
+→ Determine next valid actions
+→ Execute domain actions in canonical sections
 ```
 
-قواعد وحدود:
+- Canonical Domain Events لا تكرر بلا قرار.
+- Pregnancy Exceptions: abortion / pregnancy loss / false pregnancy-misdiagnosis / health-related termination / other documented exception.
+- Historical Pregnancy Check لا يمحى لمجرد اكتشاف نتيجة لاحقة.
+- Maternal Death itself→4.13؛ Reconstruction of active litter→4.14؛ Foster→4.7؛ Early Weaning→4.8.
+- Missing Animal ≠ Death / Sale / Exit.
+- Sensitive wrong-event correction لا يفترض Hard Delete؛ permissions/override/audit→Settings 6.2.
 
-- لا يتحول الـMVP إلى Veterinary Treatment Module كامل.
-- Health History لا يمحى بتغير Current Health Summary.
-- Health restrictions rules / Warning / Block / Override→Settings 6.11.
-- Isolation Period/Decision→4.13؛ actual transfer to isolation housing→4.2.
-- Recovery لا يعني Automatic Readiness بالضرورة؛ طريقة العودة يحسمها السؤال.
-- Stillborn at Birth→4.6؛ Mortality after Birth→4.13.
-- MortalityReason values→Master Data؛ actual Mortality Event→4.13.
-- Mortality Stage يدرس كDerived from Timeline / Snapshot / Manual.
-- Mortality Post-event integration يربط Presence / Occupancy / Litter / Active Paths / Tasks دون حذف التاريخ.
+### 4.15 Farm Exit / Re-entry — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 
-### 4.14 Exceptional Cases / Path Reconstruction — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+Seeder: `database/seeders/Questions/Workflow/FarmExitReentryQuestionsSeeder.php` — **11 سؤالًا**.
 
-Seeder: `database/seeders/Questions/Workflow/ExceptionalPathRecoveryQuestionsSeeder.php` — **13 سؤالًا**.
+Stable keys:
 
 ```text
-exception_handling.canonical_routing_model
-exception_handling.unmodeled_case_policy
-pregnancy_exception.outcome_categories
-pregnancy_exception.record_fields
-pregnancy_exception.history_integrity_model
-workflow_reconstruction.context_detection_model
-workflow_reconstruction.action_plan_model
-workflow_reconstruction.task_integration_model
-workflow_reconstruction.maternal_death_with_litter_model
-missing_animal.lifecycle_model
-missing_animal.record_fields
-sex_correction.conflict_model
-event_correction.correction_model
+farm_exit.canonical_event_routing_model
+farm_exit.record_fields
+farm_exit.reason_reference_policy
+farm_exit.active_context_handling_model
+farm_exit.post_event_transition_model
+farm_exit.batch_operation_model
+sale_exit.commercial_data_scope
+interfarm_transfer.boundary_model
+animal_reentry.previous_exit_link_model
+animal_reentry.presence_transition_model
+animal_reentry.episode_history_model
 ```
 
 المبدأ الوظيفي:
 
 ```text
-Normal Workflow
-→ Exceptional Event / Domain Event
-→ Detect affected active context
-→ Preserve history
-→ Determine invalid old steps/tasks
-→ Determine next valid actions
-→ Execute domain actions in their canonical sections
+Actual Farm Exit
+→ Preserve Animal Record / Pedigree / Historical Links
+→ Presence becomes outside according to chosen model
+→ Housing / Active Paths / Tasks integrations
+
+وعند عودة نفس الحيوان:
+
+Verified Same Animal
+→ Re-entry Event on same Animal Record
+→ Link to previous exit/history according to chosen model
+→ 4.1 Intake/Re-entry Process
+→ Housing / Operational Return according to resulting events and rules
 ```
 
-والقاعدة الأساسية:
+قواعد وحدود 4.15:
 
-```text
-Exceptional Case = Event / Orchestration
-وليس مجرد Status
-```
-
-حدود وقرارات 4.14:
-
-- إذا كان الحدث له Canonical Event موجود بالفعل، مثل Mortality في 4.13 أو Foster Transfer في 4.7 أو Weaning في 4.8، فلا يجب افتراض إنشاء سجل منافس؛ `exception_handling.canonical_routing_model` يحسم Domain Event + Reconstruction Layer vs Generic Wrapper vs Domain-only.
-- للحالات غير المغطاة بEvent متخصص، `exception_handling.unmodeled_case_policy` يحسم Structured Generic Exception vs Timeline Note vs Require Dedicated Event.
-- Pregnancy Exceptions التشغيلية المدروسة من المصدر: Observed Abortion، Pregnancy Loss without observed abortion، False Pregnancy / Misdiagnosis، Health-related Pregnancy Termination، Other Documented Exception. التصنيف الطبي الدقيق يظل Open Requirement ولا يفترضه Seeder.
-- Pregnancy Exception Record يمكن أن يحفظ Female / Cycle-Pregnancy / Outcome / Occurred-or-Discovered At / Gestational Age or Stage / Last Pregnancy Check Reference / Known Reason / Health Reference / User / Notes حسب الإجابات.
-- لا يجب تعديل نتيجة Pregnancy Check تاريخية لإخفاء ما كان مسجلًا وقتها دون قرار صريح؛ `pregnancy_exception.history_integrity_model` يحسم Preserve Prior Check + Later Event vs Revision with Audit vs Replacement.
-- Reconstruction يجب ألا يعتمد على Status واحد؛ `context_detection_model` يحسم استنتاج الحمل/الرضاعة/التسكين/المهام/المسارات النشطة من Timeline مع أو بدون إضافات يدوية.
-- `action_plan_model` يحسم وجود Reconstruction Plan موثق مقابل Direct Auto-Rebuild أو Manual Rebuild.
-- Task rules/generation→Settings 6.12؛ actual Task Lifecycle→4.17؛ 4.14 يحسم فقط Integration للمهام التي لم تعد صالحة بعد الاستثناء.
-- نفوق الأم أثناء الرضاعة نفسه يسجل Canonically في 4.13؛ 4.14 يحسم إعادة بناء مسار البطن. المصدر يؤكد أن البطن لا تغلق تلقائيًا لمجرد نفوق الأم، بل يحتاج المواليد إجراء رعاية/نقل/فطام فعلي حسب القواعد.
-- Complete Litter Loss لا يعاد تعريفه كسجل نفوق جديد هنا؛ Mortality→4.13 وCurrent Alive Count/Lactation End→4.7، بينما Reconstruction ينسق إغلاق المهام والخطوة التالية عند الحاجة.
-- Missing Animal ≠ Death / Sale / Exit. السؤال يحسم Missing Event ثم Found Event على نفس Animal Record مقابل Status مؤقت أو Exit/Re-entry model.
-- Missing Record يدرس discovered_at / last known housing / last movement / reporter / found_at / found location / recovery action / notes.
-- Sex Correction: المصدر يسمح بالتصحيح مع Audit قبل وجود تعارض تاريخي، أما التعارض مع أحداث إنتاجية سابقة فيحتاج Exceptional Review حسب القرار. Permissions / general correction policy→Settings 6.2.
-- Wrong Sensitive Event Correction: لا يفترض Hard Delete. `event_correction.correction_model` يحسم Linked Correction Event preserving original vs Edit with Full Audit vs Hard Delete؛ أي آثار تابعة يجب إعادة بنائها عند اعتماد ذلك.
+- خروج الحيوان **لا يحذف** Animal Record أو النسب أو الوزن أو التاريخ الإنتاجي؛ الحيوان الخارج يبقى قابلًا للعرض والتقارير لكنه لا يظهر ضمن التشغيل النشط حسب النموذج المعتمد.
+- قائمة أسباب الخروج موجودة بالفعل في Master Data ولا تعاد هنا. القائمة الحالية تحتوي Sale / Mortality / Final Exclusion / Transfer to Another Farm / Internal Slaughter-Consumption / Lost / Other.
+- لأن Mortality له Canonical Event في 4.13 وMissing/Lost له مسار في 4.14، `farm_exit.canonical_event_routing_model` يحسم Domain-only Derived Presence vs Linked Exit Event vs Always Exit Event، لمنع ازدواج الواقعة.
+- Exit Record يدرس Animal / exited_at / age / Weight Reference / Source Housing / Operational Stage / ExitReason Reference / destination-recipient / Source Decision / performed_by / notes.
+- `farm_exit.reason_reference_policy` يحسم إلزام ExitReason والتعامل مع Other، دون إعادة تعريف قيم القائمة.
+- إذا كان للحيوان Pregnancy / Lactation / Fattening / Isolation أو مسار آخر نشط عند الخروج، 4.15 لا يختلق Rules السماح والمنع؛ يحسم Integration مع Resolution / 4.14 Reconstruction. Rules / Warning / Block / Override→Settings.
+- بعد الخروج يجب الحفاظ على التاريخ مع تحديث Presence وإغلاق/تحرير Occupancy عبر 4.2 ومعالجة المسارات والمهام عبر أقسامها المختصة حسب النموذج المختار.
+- المصدر يدعم Batch Sale / Batch Exit؛ `farm_exit.batch_operation_model` يحسم Batch operation with individual exit events vs Group-only vs Individual-only. التتبع الفردي لا يفترض فقده لمجرد العملية الجماعية.
+- `sale_exit.commercial_data_scope` يحسم Operational-only vs Basic Optional Commercial Fields vs External Commercial Transaction Reference. Full Accounting/Finance Module غير مفترض داخل هذا Blueprint.
+- وزن البيع/الخروج الفعلي، إذا سجل، يجب أن يحافظ على Canonical Weight History في 4.3؛ هل الوزن مطلوب ومتى يصبح إلزاميًا Rule قابل للضبط ويعالج في Settings المناسب.
+- **Inter-farm Transfer داخل نفس النظام ليس بالضرورة Final Exit.** `interfarm_transfer.boundary_model` يحسم Standard Cross-farm Housing Movement في 4.2 vs Dedicated Inter-farm Transfer vs Linked Exit+Re-entry، مع الحفاظ على نفس Animal Record وتاريخه.
+- Architecture Review معتمدة على أن الخروج يتطور ليشمل إعادة الدخول مع الحفاظ على الهوية.
+- 4.15 لا يكرر سؤال 4.1 عن خطوات إعادة الاستقبال؛ `animal_reentry.previous_exit_link_model` يحسم فقط الربط التاريخي بواقعة الخروج السابقة.
+- `animal_reentry.presence_transition_model` يفصل Physical Presence بعد العودة عن Operational/Production Readiness؛ الوصول الفعلي قد يسبق اعتماد 4.1 حسب الإجابة.
+- `animal_reentry.episode_history_model` يحسم Append-only Presence Episodes vs Reopened Presence Record with Audit vs Current Presence derived from Exit/Re-entry Events. لا تنشأ هوية حيوان جديدة عند إثبات أنه نفس الحيوان.
 
 Dependencies:
 
 ```text
-لا توجد Dependencies داخل 4.14 حاليًا؛ القرارات كلها Core Decisions في Exception Handling / Reconstruction.
+لا توجد Dependencies داخل 4.15 حاليًا؛ الأسئلة كلها Core Decisions في Exit / Presence / Re-entry Boundary.
 ```
 
-حدود 4.14:
+حدود 4.15:
 
 ```text
-Actual Mortality / Health Event → 4.13
-Actual Foster Transfer / Litter management → 4.7
-Actual Weaning → 4.8
-Pregnancy normal checks/follow-up → 4.5
-Birth Event → 4.6
-Actual Housing Movement → 4.2
-Actual Fate/Exclusion → 4.10
-Actual Exit/Re-entry → 4.15
+ExitReason values → Master Data
+Actual Exit / Sale / Final removal from farm → 4.15
+Sale Readiness / Planned Sale → 4.12
+Mortality Event → 4.13
+Missing / Found → 4.14
+Active-path reconstruction بسبب الخروج → 4.14 عند الحاجة
+Actual Housing close / new housing → 4.2
+Actual exit weight → 4.3
+Re-entry history / presence link → 4.15
+Re-entry intake steps / evaluation / quarantine / approval → 4.1
+Re-entry identity remains same Animal Record → 3.1 + approved architecture
 Task Lifecycle → 4.17
-Task generation/timing → Settings 6.12
-Sensitive correction permissions / override / audit policy → Settings 6.2
-Health/exception thresholds and configurable rules → Settings 6.11
-Exception / abortion / loss analytics and alerts → Reports
+Rules / Warning / Block / Override / required weight / restrictions → Settings
+Exit / sales / churn / presence analytics → Reports
 ```
 
 ---
@@ -506,8 +505,10 @@ Reports = فهم وتجميع ومقارنة الأحداث، وليس تعدي�
 5.6 الصحة والنفوق والعزل
 5.7 أداء الحيوانات الإنتاجية
 5.8 النسب والإحلال
+5.9 الإشغال والسعة والمواقع
 5.10 الاتجاهات والمقارنات عبر الزمن
 5.12 التنبيهات والإنذار المبكر
+5.13 جودة البيانات والاستثناءات الإدارية
 ```
 
 Targets / Thresholds / Periods / Severity Rules القابلة للضبط → Settings.
@@ -532,20 +533,20 @@ Open Requirements العامة:
 
 ```text
 6.2 General Control / Override / Audit
-→ Sensitive correction permissions / approval / audit rules
+→ sensitive correction permissions / approval / audit / override
 
 6.4 Housing / Herd Organization / Readiness
 6.5 Mating / Fertility / Reproductive Readiness
 6.9 Growth / Sorting / Replacement
 6.10 Fattening / Sale Readiness
+→ targets / required sale-readiness data / weight rules when configurable
+
 6.11 Health / Isolation / Mortality / Exceptional Cases
-→ health restrictions / isolation-return rules / exception handling rules / thresholds
-
 6.12 Tasks / Alerts / Timing / Priority
-→ generation / timing / priority / rules after events
-
 6.13 Report / KPI Targets and Thresholds
 ```
+
+قواعد السماح بالخروج من حالات نشطة، Requirement وزن البيع/الخروج، Warning/Block/Override، وقواعد العودة أو النقل بين المزارع عند جعلها قابلة للتهيئة تبقى Settings ولا تتحول إلى أحداث داخل 4.15.
 
 ---
 
@@ -606,6 +607,7 @@ ReplacementApprovalQuestionsSeeder
 FatteningSaleReadinessQuestionsSeeder
 HealthIsolationMortalityQuestionsSeeder
 ExceptionalPathRecoveryQuestionsSeeder
+FarmExitReentryQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -638,6 +640,7 @@ Question Creation → IN PROGRESS
 4.12 Fattening / Sale Readiness → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.13 Health / Isolation / Recovery / Mortality → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.14 Exceptional Cases / Path Reconstruction → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.15 Farm Exit / Re-entry → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -650,7 +653,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 إذا كان AnimalHerd تم Seed له بالفعل، يشغل Workflow Seeder فقط.
 
-**التالي:** `4.15 الخروج من المزرعة وإعادة الدخول`
+**التالي:** `4.16 تشغيل وصيانة وتجهيز مواقع الإيواء`
 
 ---
 
