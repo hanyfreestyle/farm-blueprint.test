@@ -108,7 +108,7 @@ abstract class ReferenceMasterDataQuestionsSeeder extends Seeder
             sectionName: $this->sectionName(),
             questions: $questions,
             prune: true,
-            preserveAnswers: false,
+            preserveAnswers: true,
         );
     }
 
