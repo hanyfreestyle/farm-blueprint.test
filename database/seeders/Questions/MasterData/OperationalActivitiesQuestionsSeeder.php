@@ -109,7 +109,7 @@ class OperationalActivitiesQuestionsSeeder extends Seeder
             sectionName: 'الأنشطة التشغيلية',
             questions: $questions,
             prune: true,
-            preserveAnswers: false,
+            preserveAnswers: true,
         );
     }
 }
