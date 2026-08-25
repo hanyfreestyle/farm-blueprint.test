@@ -21,7 +21,7 @@
 → النظام النهائي لاحقًا
 ```
 
-### أولوية المراجع
+أولوية المراجع:
 
 ```text
 أحدث قرار صريح معتمد من المستخدم
@@ -42,7 +42,7 @@ Architecture Review مكتملة ومعتمدة، وإعادة الهيكلة P0
 
 ---
 
-## 2. التقنية ومحرك الأسئلة
+## 2. التقنية ومحرك الأسئلة والحفاظ على الإجابات
 
 - Laravel 12
 - PHP 8.2
@@ -70,13 +70,11 @@ EQUALS
 CONTAINS
 ```
 
-الموديل:
-`App\Models\QuestionnaireQuestion`
+الموديل: `App\Models\QuestionnaireQuestion`
 
-خدمة المزامنة:
-`App\Services\Questionnaire\QuestionSeederSyncService`
+خدمة المزامنة: `App\Services\Questionnaire\QuestionSeederSyncService`
 
-قواعد الهوية والحفاظ على الإجابات:
+قاعدة الحفاظ على الإجابات:
 
 ```text
 Stable Section Record
@@ -87,10 +85,10 @@ Stable Section Record
 ```
 
 - لا يتغير `seed_key` بسبب إعادة صياغة نفس القرار.
-- لا تتغير `option.value` لمجرد تغيير الـLabel.
+- لا تتغير `option.value` لمجرد تغيير Label.
 - أي تغيير يهدد إجابة محفوظة يجب أن يفشل بوضوح بدل حذفها بصمت.
 - لا يستخدم `migrate:refresh --seed` روتينيًا على قاعدة تحتوي إجابات نريد الاحتفاظ بها.
-- لا يستخدم Type أو Dependency Operator جديد دون مراجعة Enums / Models / Engine.
+- لا يستخدم Type أو Operator جديد دون مراجعة Enums / Models / Engine.
 
 ---
 
@@ -130,13 +128,13 @@ Total = 69
 
 ## 4. حدود Master Data وFarm Structure المهمة
 
-Master Data الحالية تشمل: الأنشطة التشغيلية، الأغراض الإنتاجية، مؤشرات السلالات، بيانات السلالات، المستخدمين وفريق التشغيل، أسباب النقل/النفوق/الاستبعاد/الخروج/تغيير الذكر، المحافظات، المدن، وأنظمة التهوية/التبريد/التدفئة.
+Master Data تشمل: الأنشطة التشغيلية، الأغراض الإنتاجية، مؤشرات السلالات، بيانات السلالات، المستخدمين وفريق التشغيل، أسباب النقل/النفوق/الاستبعاد/الخروج/تغيير الذكر، المحافظات، المدن، وأنظمة التهوية/التبريد/التدفئة.
 
 قواعد ثابتة:
 
 - Breed Master Data ≠ Animal Pedigree.
-- قوائم الأسباب تعرف القيم المرجعية؛ استخدامها الفعلي يسجل في Workflow.
-- `أسباب النقل` موجودة ولا يعاد تعريفها داخل 4.2.
+- قوائم الأسباب تعرف القيم المرجعية؛ الاستخدام الفعلي يسجل في Workflow.
+- `أسباب النقل` و`أسباب النفوق` لا يعاد تعريفهما داخل Workflow.
 
 Farm Structure:
 
@@ -184,92 +182,29 @@ Farm → Barn → Battery → Cage / Cell
 - Animal Record يستمر لنفس الحيوان طوال حياته.
 - الموقع الحالي والوزن الحالي والجاهزية والحالة الإنتاجية المشتقة ليست حقولًا ثابتة تعدل يدويًا.
 - القطيع الافتتاحي يبدأ من أول معلومة موثوقة ولا يختلق تاريخًا سابقًا.
+- Biological Mother تبقى منفصلة عن Foster Mother.
 
-### 3.1 Animal Identity — LOCAL SEED VERIFIED
-
-Seeder: `Questions/AnimalHerd/AnimalIdentityQuestionsSeeder.php` — **9 أسئلة**.
-
-```text
-animal.identity_fields
-animal.internal_code_strategy
-animal.internal_code_unique_scope
-animal.internal_code_lifetime
-animal.external_identifier_cardinality
-animal.external_identifier_types
-animal.temporary_unknown_sex
-animal.breed_requirement
-animal.birth_information_methods
-```
-
-### 3.2 Animal Source / Record Start — LOCAL SEED VERIFIED
-
-Seeder: `Questions/AnimalHerd/AnimalSourceQuestionsSeeder.php` — **7 أسئلة**.
+الحالة:
 
 ```text
-animal.source_origin_categories
-animal.outside_source_types
-animal.internal_source_derivation
-animal.outside_source_fields
-animal.interfarm_source_reference
-animal.pre_entry_history_policy
-animal.other_source_description_required
+3.1 Animal Identity → LOCAL SEED VERIFIED — 9 questions
+3.2 Animal Source / Record Start → LOCAL SEED VERIFIED — 7
+3.3 Pedigree / Family Tree → LOCAL SEED VERIFIED — 10
+3.4 Initial Herd Setup → LOCAL SEED VERIFIED — 11
+3.5 Production Herd / Groups → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED — 10
 ```
 
-### 3.3 Pedigree / Family Tree — LOCAL SEED VERIFIED
-
-Seeder: `Questions/AnimalHerd/AnimalPedigreeQuestionsSeeder.php` — **10 أسئلة**.
+Seeders:
 
 ```text
-animal.pedigree_relationships
-animal.internal_pedigree_derivation
-animal.pedigree_completeness_states
-animal.external_ancestor_strategy
-animal.external_ancestor_fields
-animal.pedigree_evidence_types
-animal.family_tree_build_strategy
-animal.biological_vs_foster_mother
-animal.genetic_line_usage
-animal.offspring_breed_derivation
+Questions/AnimalHerd/AnimalIdentityQuestionsSeeder.php
+Questions/AnimalHerd/AnimalSourceQuestionsSeeder.php
+Questions/AnimalHerd/AnimalPedigreeQuestionsSeeder.php
+Questions/AnimalHerd/InitialHerdSetupQuestionsSeeder.php
+Questions/AnimalHerd/ProductionHerdGroupsQuestionsSeeder.php
 ```
 
-Biological Mother تبقى منفصلة عن Foster Mother؛ القرابة والتحذير/المنع → Settings / Reports.
-
-### 3.4 Initial Herd Setup — LOCAL SEED VERIFIED
-
-Seeder: `Questions/AnimalHerd/InitialHerdSetupQuestionsSeeder.php` — **11 سؤالًا**.
-
-```text
-animal.opening_snapshot_operational_fields
-animal.opening_missing_data_policy
-animal.opening_starting_contexts
-animal.opening_reproductive_contexts
-animal.opening_trusted_prior_history_strategy
-animal.opening_trusted_prior_fact_types
-animal.opening_history_completeness_tracking
-animal.opening_pre_activation_checks
-animal.opening_activation_model
-animal.opening_baseline_snapshot
-animal.opening_task_evaluation_after_activation
-```
-
-### 3.5 Production Herd / Groups — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-
-Seeder: `Questions/AnimalHerd/ProductionHerdGroupsQuestionsSeeder.php` — **10 أسئلة**.
-
-```text
-production_herd.organization_methods
-production_group.record_fields
-production_group.code_policy
-production_group.female_membership_model
-production_group.primary_male_model
-production_group.primary_male_assignment_scope
-production_group.alternate_male_model
-production_group.statuses
-production_group.assignment_vs_mating
-production_group.history_policy
-```
-
-الحدود:
+حدود 3.5:
 
 ```text
 تعريف المجموعة وعلاقاتها → 3.5
@@ -288,7 +223,7 @@ Workflow يجيب عن:
 
 > ماذا حدث؟ ومتى؟ ولماذا؟ ومن نفذه؟
 
-الشجرة المعتمدة:
+الشجرة:
 
 ```text
 4.1 استقبال الحيوان من الخارج وإعادة الإدخال
@@ -319,6 +254,8 @@ Seeder: `Questions/Workflow/AnimalIntakeQuestionsSeeder.php` — **11 سؤالً
 ### 4.2 Housing / Movement / Vacating / Occupancy — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/HousingMovementQuestionsSeeder.php` — **12 سؤالًا**.
+
+المفاتيح:
 
 ```text
 housing_movement.event_types
@@ -388,20 +325,7 @@ mating.attempt_cancellation_model
 Mating Event ≠ Mating Attempt ≠ Reproductive Cycle
 ```
 
-التصور يدعم `Reproductive Cycle → Attempt(s) → Mating Event(s)` مع بقاء القرار النهائي عبر الإجابات.
-
-الحدود:
-
-```text
-Assigned Male / Production Group → 3.5
-Actual Male + Mating Event → 4.4
-جاهزية الأنثى والذكر والعمر/الوزن → Settings 6.5
-عدد التلقيحات والفاصل بينها → Settings 6.5
-Kinship Warning/Block/Override → Settings 6.2/6.5
-Reference Date لموعد الجس → Settings 6.6
-Pregnancy Check / Pregnancy → 4.5
-التقارير الخصوبية → Reports 5.3/5.7
-```
+الحدود: Assigned Male→3.5؛ Actual Mating→4.4؛ الجاهزية/الأعمار/الأوزان/عدد التلقيحات والفاصل/Kinship Rules→Settings؛ Pregnancy Check→4.5؛ التحليل→Reports.
 
 ### 4.5 Pregnancy Check / Follow-up / Birth Preparation — IMPLEMENTED / WAITING LOCAL SEED
 
@@ -422,33 +346,17 @@ pregnancy.followup_event_record_fields
 pregnancy.expected_window_birth_behavior
 ```
 
-القرارات الأساسية:
+قواعد مهمة:
 
 - Pregnancy Check المنفذ فعليًا ≠ Task لم تنفذ.
-- يمكن الاحتفاظ بأكثر من Pregnancy Check داخل نفس Attempt.
-- Positive / Negative / Uncertain نتائج فحص؛ المسارات الناتجة تحسم بالأسئلة.
-- Pregnancy Record مستقل بعد التأكيد ويمكن أن يحتفظ بمرجع Attempt/Paternity/Reference Mating/Expected Birth Window.
-- حالة الحمل لا تعامل كEdit يدوي بلا تاريخ.
-- Follow-up Events الفعلية يمكن ربطها بالحمل، وWeight الفعلي يبقى في 4.3.
+- يمكن وجود أكثر من Check داخل نفس Attempt.
 - دخول Expected Birth Window لا ينشئ ولادة تلقائيًا.
+- Timing / Recheck / Gestation / Expected Window → Settings.
+- Weight الحمل الفعلي → 4.3؛ Birth→4.6؛ الحالات الاستثنائية→4.14/4.13؛ Tasks execution→4.17.
 
-الحدود:
+### 4.6 Birth Registration / Litter Creation — IMPLEMENTED / WAITING LOCAL SEED
 
-```text
-موعد الجس / Recheck / Reference Mating Rule / مدة الحمل / Birth Window → Settings 6.6
-Weight الحمل الفعلي → 4.3
-تسجيل الولادة → 4.6
-الحالات الاستثنائية → 4.14 / 4.13 حسب الحدث
-Tasks Rules → Settings 6.12؛ تنفيذ Tasks → 4.17
-التحليل والتنبيهات → Reports
-```
-
-### 4.6 Birth Registration / Litter Creation — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
-
-Seeder:
-`database/seeders/Questions/Workflow/BirthLitterQuestionsSeeder.php`
-
-عدد الأسئلة: **11**.
+Seeder: `Questions/Workflow/BirthLitterQuestionsSeeder.php` — **11 سؤالًا**.
 
 ```text
 birth.event_record_fields
@@ -464,51 +372,77 @@ birth.no_live_offspring_behavior
 birth.post_registration_transitions
 ```
 
-المبدأ الوظيفي:
+المبدأ:
 
 ```text
-Pregnancy / Reproductive Cycle
-→ Actual Birth Event
-→ Litter Record
-→ Lactation إذا وُجد مواليد أحياء
+Pregnancy / Cycle → Actual Birth Event → Litter Record → Lactation إذا وُجد مواليد أحياء
 ```
 
-القرارات التي تغطيها 4.6:
+- `Total Born / Live Born / Stillborn` أعداد ولادة تاريخية.
+- الحالات الخاصة لا تفترض طرفًا ثالثًا في المعادلة إذا كانت قد تتداخل مع حي/نافق.
+- الولادة خارج النطاق تسجل بتاريخها الحقيقي؛ لا يعدل Mating Date.
+- Litter بدون مواليد أحياء لا يختفي تاريخيًا.
+- Foster Transfer→4.7؛ Weaning/Individualization→4.8؛ Litter Code Pattern→Settings؛ تحليل الولادة→Reports.
 
-- Birth Event يحتفظ بمرجع الأم والحمل والدورة والأبوة والتاريخ الفعلي والموقع والمنفذ حسب الإجابات.
-- أعداد الولادة الأساسية تميز `Total Born / Live Born / Stillborn at Birth`.
-- حسم هل `Total Born` يحسب تلقائيًا من الأحياء + النافقين أم يدخل ثم يتحقق منه.
-- الحالات الخاصة مثل عيب خلقي ظاهر لا تفترض كطرف ثالث في معادلة الإجمالي؛ يمكن تمثيلها كصفة متداخلة إذا اعتمد ذلك.
-- الولادة المبكرة أو المتأخرة تسجل بتاريخها الفعلي؛ لا يعدل Mating Date لتجميل Gestation Length.
-- موقع الولادة التاريخي يمكن أن يخزن كمرجع داخل الحدث أو يستنتج من Occupancy History حسب الإجابة.
-- Litter Record ينشأ من Birth Event، مع حسم Automatic vs Explicit Creation.
-- Litter Record يمكن أن يحتفظ بالكود وBirth Event وBiological Mother وPaternity Reference وCycle وBirth Counts والحالة التاريخية.
-- `litter.code_strategy` يحسم Automatic vs Manual فقط؛ شكل الكود وتكوينه القابل للتهيئة → Settings.
-- الولادة بدون مواليد أحياء لا يجب أن تختفي تاريخيًا؛ يحسم السؤال هل ينشأ Litter مغلق مباشرة أو نموذج آخر.
-- Post-Birth Transitions تراجع إغلاق الحمل بنتيجة ولادة، تسجيل Cycle Outcome، إنشاء/تفعيل Litter، وبدء Lactation فقط عند وجود مواليد أحياء.
+### 4.7 Lactation / Litter Follow-up / Overlapping Cycles — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/LactationOverlapQuestionsSeeder.php`
+
+عدد الأسئلة: **12**.
+
+```text
+lactation.start_model
+lactation.current_alive_count_model
+lactation.followup_event_types
+lactation.mortality_recording_model
+lactation.foster_transfer_model
+lactation.foster_transfer_scopes
+lactation.foster_transfer_record_fields
+lactation.transferred_offspring_tracking_model
+lactation.foster_relationship_model
+lactation.maternal_problem_outcomes
+lactation.concurrent_cycle_link_model
+lactation.end_model
+```
+
+المبادئ والقرارات التي تغطيها المجموعة:
+
+- الرضاعة تبدأ من Litter الناتج من الولادة عند وجود مواليد أحياء، مع حسم Auto vs Explicit Start.
+- `Current Alive Count` لا يعيد كتابة أعداد الولادة؛ يراجع هل يشتق من Birth + Lactation Mortality + Foster Transfers.
+- المتابعات الفعلية يمكن أن تشمل حالة البطن والأم، المواليد الضعيفة، ملاحظات النمو، وربط Weight Record من 4.3.
+- Stillborn at Birth → 4.6؛ Mortality بعد الولادة → حدث جديد. السؤال يحسم هل نستخدم Canonical Mortality Event في 4.13 مرتبطًا بالبطن أم سجلًا خاصًا.
+- Foster Transfer يراجع هل يكون Structured Workflow مستقلًا؛ وعند اعتماده تظهر أسئلة النطاق والحقول وطريقة تتبع المواليد قبل الترقيم الفردي وعلاقة Foster Mother.
+- نقل المولود لا يجب أن يطمس Biological Mother / Original Litter إذا اعتمد نموذج الحفاظ على الأصل؛ Foster Mother علاقة رعاية منفصلة.
+- نقطة مفتوحة من المصدر: كيف نميز بعض المواليد المنقولين قبل الفطام حتى نعيد ربط الأفراد الناتجين بأصلهم الصحيح في 4.8.
+- مشكلة رضاعة/أمومة يمكن أن تنتج إجراءات تشغيلية مثل المتابعة أو النقل لأم حاضنة أو التوزيع أو الرعاية البديلة أو Early Weaning إذا سمحت القواعد؛ السبب الصحي نفسه يبقى في 4.13 عند كونه صحيًا.
+- تداخل الدورات معتمد معماريًا: الأم يمكن أن تكون مرضعة وفي دورة تناسلية جديدة بالتوازي. 4.7 يسأل فقط هل نحتاج Explicit Link إلى Active Litter أم يكفي Temporal Derivation؛ تنفيذ التلقيح نفسه يبقى 4.4.
+- نهاية الرضاعة يجب أن تنتج من Weaning Event في 4.8 أو Terminal Event موثق حسب الإجابة، لا من Status يدوي غامض.
 
 Dependencies:
 
 ```text
-birth.special_condition_representation
-→ birth.offspring_count_fields CONTAINS special_conditions
-
-litter.code_strategy
-→ litter.record_fields CONTAINS litter_code
+lactation.foster_transfer_scopes
+lactation.foster_transfer_record_fields
+lactation.transferred_offspring_tracking_model
+lactation.foster_relationship_model
+→ lactation.foster_transfer_model EQUALS structured_foster_transfer
 ```
 
-حدود 4.6:
+حدود 4.7:
 
 ```text
-Expected Birth Date / Window / تعريف مبكر أو متأخر → Settings 6.6
-مستوى Warning / Block عند البيانات غير المنطقية → Settings 6.2 عند الحاجة؛ المعادلة الحسابية نفسها تحسم في 4.6
-نقل المواليد بين الأمهات / Foster Mother → 4.7
-متابعة الرضاعة والنفوق أثناء الرضاعة → 4.7 / 4.13 حسب الحدث
-الفطام وإنشاء/اعتماد Individual Animals → 4.8
-طريقة توليد شكل Litter Code → Settings 6.2
-قواعد توليد مهام متابعة البطن والفطام وإعادة التلقيح → Settings 6.7 / 6.8 / 6.12
-تنفيذ Tasks → 4.17
-تحليل الولادات وحجم البطن والأحياء والنافقين → Reports 5.4 / 5.7
+Birth Counts / إنشاء Litter → 4.6
+طريقة وزن المواليد قبل الفطام والWeight Record الفعلي → 4.3
+Mortality Canonical Record / Health Cause → 4.13؛ 4.7 يحدد أثره على Litter عند الربط
+أسباب النفوق المرجعية → Master Data
+قواعد اختيار Foster Mother / الحد الأقصى للمواليد / شروط Early Weaning → Settings 6.7 / 6.8
+مواعيد متابعة الرضاعة / إعادة التلقيح أثناء الرضاعة → Settings 6.7 / 6.12
+Mating الفعلي أثناء الرضاعة → نفس 4.4 Workflow
+Pregnancy التالية → 4.5 مع السماح باستمرار Litter الحالية بالتوازي
+Actual Weaning / Individualization → 4.8
+الحالات الاستثنائية التي تقطع المسار → 4.14 عند انطباقها
+تحليل Lactation Mortality / Foster Transfers / Weaned Count → Reports 5.4 / 5.7
 ```
 
 ---
@@ -546,23 +480,25 @@ Open Requirements العامة:
 - Override Policy.
 - Sensitive Record Correction + Audit.
 
-للتلقيح والحمل والولادة خصوصًا:
+ذات الصلة بالتلقيح/الحمل/الولادة/الرضاعة:
 
 ```text
 جاهزية الأنثى والذكر
-العمر والوزن والقيود الصحية
 التلقيح أثناء الرضاعة
 عدد Mating Events والفاصل بينها
 Male Usage Limits / Rest Periods
 Kinship Rules
-موعد Pregnancy Check ونطاقه
-موعد Recheck
-Reference Mating Date Rule
+موعد Pregnancy Check / Recheck
+Reference Mating Rule
 مدة الحمل وExpected Birth Window
 موعد تجهيز Nest Box
 متى تعتبر الولادة مبكرة/متأخرة
-شكل وتكوين Litter Code عند جعله قابلًا للتهيئة
-→ Settings 6.2 / 6.5 / 6.6 / 6.7 / 6.12
+شكل Litter Code
+مواعيد Lactation Follow-up
+موعد إعادة تلقيح الأم أثناء الرضاعة
+شروط Foster Mother وحدود عدد المواليد لديها
+قواعد Early Weaning
+→ Settings 6.5 / 6.6 / 6.7 / 6.8 / 6.12
 ```
 
 ---
@@ -616,6 +552,7 @@ OperationalMeasurementsQuestionsSeeder
 MatingAttemptsQuestionsSeeder
 PregnancyFollowUpQuestionsSeeder
 BirthLitterQuestionsSeeder
+LactationOverlapQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -640,6 +577,7 @@ Question Creation → IN PROGRESS
 4.4 Mating / Attempts → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.5 Pregnancy Check / Follow-up / Birth Preparation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.6 Birth Registration / Litter Creation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.7 Lactation / Litter Follow-up / Overlapping Cycles → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -654,7 +592,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 **التالي:**
 
-`4.7 الرضاعة ومتابعة البطن وتداخل دورات الأم`
+`4.8 الفطام والتحول إلى التتبع الفردي`
 
 ---
 
