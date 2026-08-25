@@ -107,7 +107,7 @@ class GovernoratesQuestionsSeeder extends Seeder
             sectionName: 'المحافظات',
             questions: $questions,
             prune: true,
-            preserveAnswers: false,
+            preserveAnswers: true,
         );
     }
 }
