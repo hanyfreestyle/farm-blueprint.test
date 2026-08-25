@@ -5,6 +5,7 @@ namespace Database\Seeders;
 use Database\Seeders\Questions\Workflow\AnimalIntakeQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\BirthLitterQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\ExceptionalPathRecoveryQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\FarmExitReentryQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\FateExclusionQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\FatteningSaleReadinessQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\GrowthSortingEvaluationQuestionsSeeder;
@@ -37,6 +38,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             FatteningSaleReadinessQuestionsSeeder::class,
             HealthIsolationMortalityQuestionsSeeder::class,
             ExceptionalPathRecoveryQuestionsSeeder::class,
+            FarmExitReentryQuestionsSeeder::class,
         ]);
     }
 }
