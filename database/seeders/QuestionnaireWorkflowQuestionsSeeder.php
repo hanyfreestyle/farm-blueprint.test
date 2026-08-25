@@ -7,6 +7,7 @@ use Database\Seeders\Questions\Workflow\BirthLitterQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\FateExclusionQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\FatteningSaleReadinessQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\GrowthSortingEvaluationQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\HealthIsolationMortalityQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\HousingMovementQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\LactationOverlapQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\MatingAttemptsQuestionsSeeder;
@@ -33,6 +34,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             FateExclusionQuestionsSeeder::class,
             ReplacementApprovalQuestionsSeeder::class,
             FatteningSaleReadinessQuestionsSeeder::class,
+            HealthIsolationMortalityQuestionsSeeder::class,
         ]);
     }
 }
