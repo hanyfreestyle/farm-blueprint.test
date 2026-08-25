@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\Reports\AlertEarlyWarningDetectionQuestionsSeeder;
 use Database\Seeders\Questions\Reports\AnalyticalEntityPagesQuestionsSeeder;
 use Database\Seeders\Questions\Reports\BirthLactationWeaningReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\DailyOperationsDashboardQuestionsSeeder;
@@ -36,6 +37,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
             OperationalTaskPerformanceReportsQuestionsSeeder::class,
             TrendsComparisonsAnalysisQuestionsSeeder::class,
             AnalyticalEntityPagesQuestionsSeeder::class,
+            AlertEarlyWarningDetectionQuestionsSeeder::class,
         ]);
     }
 }
