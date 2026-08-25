@@ -8,6 +8,7 @@ use Database\Seeders\Questions\Reports\FertilityMatingPregnancyReportsQuestionsS
 use Database\Seeders\Questions\Reports\GrowthWeightFatteningReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\HealthMortalityIsolationReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\HerdReadinessMovementReportsQuestionsSeeder;
+use Database\Seeders\Questions\Reports\ProductiveAnimalPerformanceAnalysisQuestionsSeeder;
 use Database\Seeders\Sections\QuestionnaireReportsSectionSeeder;
 use Illuminate\Database\Seeder;
 
@@ -24,6 +25,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
             BirthLactationWeaningReportsQuestionsSeeder::class,
             GrowthWeightFatteningReportsQuestionsSeeder::class,
             HealthMortalityIsolationReportsQuestionsSeeder::class,
+            ProductiveAnimalPerformanceAnalysisQuestionsSeeder::class,
         ]);
     }
 }
