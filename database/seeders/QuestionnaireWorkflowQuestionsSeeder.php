@@ -11,6 +11,7 @@ use Database\Seeders\Questions\Workflow\LactationOverlapQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\MatingAttemptsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\OperationalMeasurementsQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\PregnancyFollowUpQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\ReplacementApprovalQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\WeaningIndividualTrackingQuestionsSeeder;
 use Illuminate\Database\Seeder;
 
@@ -29,6 +30,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             WeaningIndividualTrackingQuestionsSeeder::class,
             GrowthSortingEvaluationQuestionsSeeder::class,
             FateExclusionQuestionsSeeder::class,
+            ReplacementApprovalQuestionsSeeder::class,
         ]);
     }
 }
