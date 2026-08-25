@@ -6,6 +6,7 @@ use Database\Seeders\Questions\Settings\BirthLactationRematingRulesQuestionsSeed
 use Database\Seeders\Questions\Settings\FatteningSaleReadinessRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\GeneralControlOverrideAuditQuestionsSeeder;
 use Database\Seeders\Questions\Settings\GrowthWeightSortingReplacementRulesQuestionsSeeder;
+use Database\Seeders\Questions\Settings\HealthIsolationMortalityExceptionRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\HousingHerdReadinessRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\HousingSiteOperatingRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\MatingFertilityReadinessRulesQuestionsSeeder;
@@ -32,6 +33,7 @@ class QuestionnaireSettingsQuestionsSeeder extends Seeder
             WeaningIndividualTrackingRulesQuestionsSeeder::class,
             GrowthWeightSortingReplacementRulesQuestionsSeeder::class,
             FatteningSaleReadinessRulesQuestionsSeeder::class,
+            HealthIsolationMortalityExceptionRulesQuestionsSeeder::class,
         ]);
     }
 }
