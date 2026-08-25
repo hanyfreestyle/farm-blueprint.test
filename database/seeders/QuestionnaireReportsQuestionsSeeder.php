@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\Reports\BirthLactationWeaningReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\DailyOperationsDashboardQuestionsSeeder;
 use Database\Seeders\Questions\Reports\FertilityMatingPregnancyReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\HerdReadinessMovementReportsQuestionsSeeder;
@@ -18,6 +19,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
             DailyOperationsDashboardQuestionsSeeder::class,
             HerdReadinessMovementReportsQuestionsSeeder::class,
             FertilityMatingPregnancyReportsQuestionsSeeder::class,
+            BirthLactationWeaningReportsQuestionsSeeder::class,
         ]);
     }
 }
