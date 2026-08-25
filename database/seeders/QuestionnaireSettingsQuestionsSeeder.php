@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\Settings\BirthLactationRematingRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\GeneralControlOverrideAuditQuestionsSeeder;
 use Database\Seeders\Questions\Settings\HousingHerdReadinessRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\HousingSiteOperatingRulesQuestionsSeeder;
@@ -24,6 +25,7 @@ class QuestionnaireSettingsQuestionsSeeder extends Seeder
             HousingHerdReadinessRulesQuestionsSeeder::class,
             MatingFertilityReadinessRulesQuestionsSeeder::class,
             PregnancyCheckGestationBirthPreparationRulesQuestionsSeeder::class,
+            BirthLactationRematingRulesQuestionsSeeder::class,
         ]);
     }
 }
