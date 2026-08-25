@@ -266,7 +266,7 @@ Timing / Target / Threshold → Settings
 Analysis → Reports
 ```
 
-يدعم سياقات Intake / Pregnancy / Lactation / Weaning / Growth / Sorting / Replacement / Fattening، مع Batch Entry كوسيلة تشغيل فقط إذا اعتمدت الإجابة.
+يدعم Intake / Pregnancy / Lactation / Weaning / Growth / Sorting / Replacement / Fattening، مع Batch Entry كوسيلة تشغيل فقط إذا اعتمدت الإجابة.
 
 ### 4.4 Mating / Attempts — IMPLEMENTED / WAITING LOCAL SEED
 
@@ -375,35 +375,15 @@ Fate Decision to Fattening
 → Actual Sale / Exit in 4.15
 ```
 
-قاعدة:
-
 ```text
 Sale Readiness ≠ Sale / Exit Event
 ```
 
 Target Age / Weight / Duration / Growth / Readiness Criteria→Settings 6.10؛ actual weight→4.3؛ actual housing→4.2؛ actual sale/exit→4.15؛ health event→4.13.
 
-### 4.13 Health / Isolation / Recovery / Mortality — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 4.13 Health / Isolation / Recovery / Mortality — IMPLEMENTED / WAITING LOCAL SEED
 
-Seeder: `database/seeders/Questions/Workflow/HealthIsolationMortalityQuestionsSeeder.php` — **13 سؤالًا**.
-
-```text
-health.followup_history_model
-health.observation_record_fields
-health.status_categories
-health.operational_restriction_model
-health.isolation_integration_model
-health.isolation_record_fields
-health.recovery_transition_model
-health.recovery_record_fields
-mortality.subject_scopes
-mortality.event_record_fields
-mortality.stage_derivation_model
-mortality.reason_reference_policy
-mortality.post_event_transition_model
-```
-
-المبدأ الوظيفي:
+Seeder: `Questions/Workflow/HealthIsolationMortalityQuestionsSeeder.php` — 13.
 
 ```text
 Health Observation / Review
@@ -418,30 +398,96 @@ Actual Mortality Event
 → Presence / Occupancy / Active Path / Task integrations
 ```
 
-حدود ونقاط 4.13:
+قواعد وحدود:
 
-- **لا يتحول الـMVP إلى Veterinary Treatment Module كامل.** يسجل الحد الأدنى من الأحداث الصحية التي تؤثر على التشغيل.
-- Current Health Summary لا يجب أن يمحو Health History؛ السؤال يحسم Event History vs Current Record with Audit.
-- Health Observation يمكن أن يغطي وقت الملاحظة، المشكلة/الملاحظة، Severity، الحالة الناتجة، Isolation Decision، Operational Restriction Decision، المنفذ والملاحظات حسب الإجابات.
-- الحالات الصحية المبدئية المأخوذة من المرجع: Normal / Under Observation / Sick / Isolated / Recovered؛ اختيارها النهائي يأتي من الإجابات.
-- أي حالات صحية تمنع التلقيح أو النقل أو الإنتاج، ومستوى Warning/Block/Override، تبقى **Settings 6.11**؛ 4.13 يحسم فقط طريقة تمثيل أثرها على الواقعة التشغيلية.
-- **Isolation ≠ Housing Movement**: فترة/قرار العزل Health Workflow، أما النقل الفعلي لقفص العزل فهو Canonical Movement في 4.2 ويشار إليه من سجل العزل حسب الإجابة.
-- Intake Quarantine / Observation عند وصول الحيوان يبدأ في 4.1؛ أي Health Episode / Isolation فعلية تستمر أو تنشأ بسبب الحالة الصحية تتكامل مع 4.13.
-- Review Task generation/timing→Settings 6.12؛ Task execution/lifecycle→4.17.
-- المصدر يضع Recovery → Re-evaluation → Operational Return؛ `health.recovery_transition_model` يحسم هل إعادة التقييم إلزامية قبل استعادة الأهلية أم العودة Rule-based أو تحتاج Release Decision منفصلًا.
-- Recovery Event لا يمحو المشكلة أو العزل السابق؛ يحفظ Historical Link.
-- **Stillborn at Birth → 4.6**؛ **Mortality after Birth → 4.13**.
-- قبل الفطام يمكن أن يكون Canonical Mortality Event مرتبطًا بالبطن وبعدد نافق؛ Individual preweaning mortality لا يفترض إلا إذا كان Temporary Identifier متاحًا من 4.7.
-- `mortality.event_record_fields` يدرس subject/count/discovered_at/age/sex/Last Weight Reference/Housing Reference/Operational Stage/Mortality Reason Reference/recorded_by/notes.
-- Operational Stage يفضل المصدر استنتاجه من Timeline؛ السؤال يحسم Live Derivation vs Stored Snapshot vs Manual.
-- قائمة **أسباب النفوق** موجودة في Master Data ولا تعاد هنا. Master Data الحالية تشمل Disease / Injury / Birth Problems / Unknown / Accident / Other؛ Workflow يحسم Requirement المرجع والتعامل مع Unknown/Other.
-- Mortality Event يجب أن يحافظ على Timeline، ويحدد تكامله مع Presence State، إغلاق Occupancy عبر 4.2، تحديث Litter Count عبر 4.7، وإغلاق/معالجة Active Paths وTasks عبر الأقسام المختصة حسب الإجابة.
-- Mortality Analytics / Rates / abnormal increases → Reports؛ thresholds والفترات وقواعد الإنذار → Settings 6.11 / 6.13.
+- لا يتحول الـMVP إلى Veterinary Treatment Module كامل.
+- Health History لا يمحى بتغير Current Health Summary.
+- Health restrictions rules / Warning / Block / Override→Settings 6.11.
+- Isolation Period/Decision→4.13؛ actual transfer to isolation housing→4.2.
+- Recovery لا يعني Automatic Readiness بالضرورة؛ طريقة العودة يحسمها السؤال.
+- Stillborn at Birth→4.6؛ Mortality after Birth→4.13.
+- MortalityReason values→Master Data؛ actual Mortality Event→4.13.
+- Mortality Stage يدرس كDerived from Timeline / Snapshot / Manual.
+- Mortality Post-event integration يربط Presence / Occupancy / Litter / Active Paths / Tasks دون حذف التاريخ.
+
+### 4.14 Exceptional Cases / Path Reconstruction — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder: `database/seeders/Questions/Workflow/ExceptionalPathRecoveryQuestionsSeeder.php` — **13 سؤالًا**.
+
+```text
+exception_handling.canonical_routing_model
+exception_handling.unmodeled_case_policy
+pregnancy_exception.outcome_categories
+pregnancy_exception.record_fields
+pregnancy_exception.history_integrity_model
+workflow_reconstruction.context_detection_model
+workflow_reconstruction.action_plan_model
+workflow_reconstruction.task_integration_model
+workflow_reconstruction.maternal_death_with_litter_model
+missing_animal.lifecycle_model
+missing_animal.record_fields
+sex_correction.conflict_model
+event_correction.correction_model
+```
+
+المبدأ الوظيفي:
+
+```text
+Normal Workflow
+→ Exceptional Event / Domain Event
+→ Detect affected active context
+→ Preserve history
+→ Determine invalid old steps/tasks
+→ Determine next valid actions
+→ Execute domain actions in their canonical sections
+```
+
+والقاعدة الأساسية:
+
+```text
+Exceptional Case = Event / Orchestration
+وليس مجرد Status
+```
+
+حدود وقرارات 4.14:
+
+- إذا كان الحدث له Canonical Event موجود بالفعل، مثل Mortality في 4.13 أو Foster Transfer في 4.7 أو Weaning في 4.8، فلا يجب افتراض إنشاء سجل منافس؛ `exception_handling.canonical_routing_model` يحسم Domain Event + Reconstruction Layer vs Generic Wrapper vs Domain-only.
+- للحالات غير المغطاة بEvent متخصص، `exception_handling.unmodeled_case_policy` يحسم Structured Generic Exception vs Timeline Note vs Require Dedicated Event.
+- Pregnancy Exceptions التشغيلية المدروسة من المصدر: Observed Abortion، Pregnancy Loss without observed abortion، False Pregnancy / Misdiagnosis، Health-related Pregnancy Termination، Other Documented Exception. التصنيف الطبي الدقيق يظل Open Requirement ولا يفترضه Seeder.
+- Pregnancy Exception Record يمكن أن يحفظ Female / Cycle-Pregnancy / Outcome / Occurred-or-Discovered At / Gestational Age or Stage / Last Pregnancy Check Reference / Known Reason / Health Reference / User / Notes حسب الإجابات.
+- لا يجب تعديل نتيجة Pregnancy Check تاريخية لإخفاء ما كان مسجلًا وقتها دون قرار صريح؛ `pregnancy_exception.history_integrity_model` يحسم Preserve Prior Check + Later Event vs Revision with Audit vs Replacement.
+- Reconstruction يجب ألا يعتمد على Status واحد؛ `context_detection_model` يحسم استنتاج الحمل/الرضاعة/التسكين/المهام/المسارات النشطة من Timeline مع أو بدون إضافات يدوية.
+- `action_plan_model` يحسم وجود Reconstruction Plan موثق مقابل Direct Auto-Rebuild أو Manual Rebuild.
+- Task rules/generation→Settings 6.12؛ actual Task Lifecycle→4.17؛ 4.14 يحسم فقط Integration للمهام التي لم تعد صالحة بعد الاستثناء.
+- نفوق الأم أثناء الرضاعة نفسه يسجل Canonically في 4.13؛ 4.14 يحسم إعادة بناء مسار البطن. المصدر يؤكد أن البطن لا تغلق تلقائيًا لمجرد نفوق الأم، بل يحتاج المواليد إجراء رعاية/نقل/فطام فعلي حسب القواعد.
+- Complete Litter Loss لا يعاد تعريفه كسجل نفوق جديد هنا؛ Mortality→4.13 وCurrent Alive Count/Lactation End→4.7، بينما Reconstruction ينسق إغلاق المهام والخطوة التالية عند الحاجة.
+- Missing Animal ≠ Death / Sale / Exit. السؤال يحسم Missing Event ثم Found Event على نفس Animal Record مقابل Status مؤقت أو Exit/Re-entry model.
+- Missing Record يدرس discovered_at / last known housing / last movement / reporter / found_at / found location / recovery action / notes.
+- Sex Correction: المصدر يسمح بالتصحيح مع Audit قبل وجود تعارض تاريخي، أما التعارض مع أحداث إنتاجية سابقة فيحتاج Exceptional Review حسب القرار. Permissions / general correction policy→Settings 6.2.
+- Wrong Sensitive Event Correction: لا يفترض Hard Delete. `event_correction.correction_model` يحسم Linked Correction Event preserving original vs Edit with Full Audit vs Hard Delete؛ أي آثار تابعة يجب إعادة بنائها عند اعتماد ذلك.
 
 Dependencies:
 
 ```text
-لا توجد Dependencies داخل 4.13 حاليًا؛ Health / Isolation / Recovery / Mortality كلها أجزاء أساسية في نطاق القسم وتحتاج قرارات مستقلة.
+لا توجد Dependencies داخل 4.14 حاليًا؛ القرارات كلها Core Decisions في Exception Handling / Reconstruction.
+```
+
+حدود 4.14:
+
+```text
+Actual Mortality / Health Event → 4.13
+Actual Foster Transfer / Litter management → 4.7
+Actual Weaning → 4.8
+Pregnancy normal checks/follow-up → 4.5
+Birth Event → 4.6
+Actual Housing Movement → 4.2
+Actual Fate/Exclusion → 4.10
+Actual Exit/Re-entry → 4.15
+Task Lifecycle → 4.17
+Task generation/timing → Settings 6.12
+Sensitive correction permissions / override / audit policy → Settings 6.2
+Health/exception thresholds and configurable rules → Settings 6.11
+Exception / abortion / loss analytics and alerts → Reports
 ```
 
 ---
@@ -482,25 +528,24 @@ Open Requirements العامة:
 - Override Policy.
 - Sensitive Record Correction + Audit.
 
-ذات الصلة بالمرحلة الحالية:
+ذات الصلة:
 
 ```text
+6.2 General Control / Override / Audit
+→ Sensitive correction permissions / approval / audit rules
+
 6.4 Housing / Herd Organization / Readiness
 6.5 Mating / Fertility / Reproductive Readiness
 6.9 Growth / Sorting / Replacement
 6.10 Fattening / Sale Readiness
 6.11 Health / Isolation / Mortality / Exceptional Cases
+→ health restrictions / isolation-return rules / exception handling rules / thresholds
+
 6.12 Tasks / Alerts / Timing / Priority
+→ generation / timing / priority / rules after events
+
 6.13 Report / KPI Targets and Thresholds
 ```
-
-6.11 يشمل القواعد التي تحدد:
-
-- أي Health State يوقف أو يقيد أي عملية تشغيلية.
-- متى يجب العزل أو المراجعة أو العودة.
-- أثر الحالة الصحية على Mating / Movement / Production Readiness.
-- Mortality abnormal-rate thresholds والفترات عند اعتمادها.
-- Exceptional health-related rules دون تحويل المشروع إلى Veterinary Module كامل.
 
 ---
 
@@ -560,6 +605,7 @@ FateExclusionQuestionsSeeder
 ReplacementApprovalQuestionsSeeder
 FatteningSaleReadinessQuestionsSeeder
 HealthIsolationMortalityQuestionsSeeder
+ExceptionalPathRecoveryQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -574,7 +620,7 @@ Question Creation → IN PROGRESS
 
 3.1 Animal Identity → LOCAL SEED VERIFIED
 3.2 Animal Source / Record Start → LOCAL SEED VERIFIED
-3.3 Pedigree / Family Tree → LOCAL SEED VERIFIED
+3.3 Animal Pedigree / Family Tree → LOCAL SEED VERIFIED
 3.4 Initial Herd Setup → LOCAL SEED VERIFIED
 3.5 Production Herd / Groups → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 
@@ -591,6 +637,7 @@ Question Creation → IN PROGRESS
 4.11 Replacement / Production Herd Approval → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.12 Fattening / Sale Readiness → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.13 Health / Isolation / Recovery / Mortality → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.14 Exceptional Cases / Path Reconstruction → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -603,7 +650,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 إذا كان AnimalHerd تم Seed له بالفعل، يشغل Workflow Seeder فقط.
 
-**التالي:** `4.14 الحالات الاستثنائية وإعادة بناء المسار`
+**التالي:** `4.15 الخروج من المزرعة وإعادة الدخول`
 
 ---
 
