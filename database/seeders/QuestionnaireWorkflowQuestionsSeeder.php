@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\Questions\Workflow\AnimalIntakeQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\BirthLitterQuestionsSeeder;
+use Database\Seeders\Questions\Workflow\GrowthSortingEvaluationQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\HousingMovementQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\LactationOverlapQuestionsSeeder;
 use Database\Seeders\Questions\Workflow\MatingAttemptsQuestionsSeeder;
@@ -25,6 +26,7 @@ class QuestionnaireWorkflowQuestionsSeeder extends Seeder
             BirthLitterQuestionsSeeder::class,
             LactationOverlapQuestionsSeeder::class,
             WeaningIndividualTrackingQuestionsSeeder::class,
+            GrowthSortingEvaluationQuestionsSeeder::class,
         ]);
     }
 }
