@@ -4,6 +4,8 @@ namespace Database\Seeders;
 
 use Database\Seeders\Questions\MasterData\BreedDataQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\BreedMetricsQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\CagePhysicalTypesQuestionsSeeder;
+use Database\Seeders\Questions\MasterData\CageUsagesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\CitiesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\CoolingSystemsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\ExclusionReasonsQuestionsSeeder;
@@ -23,10 +25,6 @@ class QuestionnaireMasterDataQuestionsSeeder extends Seeder
     public function run(): void
     {
         /*
-         * Current local development workflow:
-         *
-         *   php artisan migrate:refresh --seed
-         *
          * This orchestrator owns reference/master-data question groups only.
          * Structural entities are seeded through QuestionnaireFarmStructureQuestionsSeeder.
          * Operation settings belong to their own main section and are intentionally
@@ -47,6 +45,8 @@ class QuestionnaireMasterDataQuestionsSeeder extends Seeder
             VentilationSystemsQuestionsSeeder::class,
             CoolingSystemsQuestionsSeeder::class,
             HeatingSystemsQuestionsSeeder::class,
+            CagePhysicalTypesQuestionsSeeder::class,
+            CageUsagesQuestionsSeeder::class,
         ]);
     }
 }
