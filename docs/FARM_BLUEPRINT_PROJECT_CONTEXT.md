@@ -403,12 +403,9 @@ Pregnancy Check / Pregnancy → 4.5
 التقارير الخصوبية → Reports 5.3/5.7
 ```
 
-### 4.5 Pregnancy Check / Follow-up / Birth Preparation — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 4.5 Pregnancy Check / Follow-up / Birth Preparation — IMPLEMENTED / WAITING LOCAL SEED
 
-Seeder:
-`database/seeders/Questions/Workflow/PregnancyFollowUpQuestionsSeeder.php`
-
-عدد الأسئلة: **12**.
+Seeder: `Questions/Workflow/PregnancyFollowUpQuestionsSeeder.php` — **12 سؤالًا**.
 
 ```text
 pregnancy_check.history_model
@@ -425,48 +422,93 @@ pregnancy.followup_event_record_fields
 pregnancy.expected_window_birth_behavior
 ```
 
-القرارات التي تغطيها المجموعة:
+القرارات الأساسية:
 
-- هل كل Pregnancy Check يحتفظ كسجل مستقل بحيث يمكن وجود أكثر من فحص داخل نفس Attempt.
-- بيانات الفحص: Attempt/Cycle، وقت التنفيذ، الأيام منذ Reference Mating، النتيجة، المنفذ، والملاحظات.
-- Clinical Results الفعلية: Positive / Negative / Uncertain.
-- الفصل بين `لم يتم الفحص` وبين نتيجة طبية؛ عدم التنفيذ يعالج عبر Task Workflow ولا يفترض حملًا أو عدم حمل.
-- Uncertain Result يمكن أن يبقي Attempt مفتوحة ويسمح Recheck وفق الإجابة.
-- Positive Result يراجع هل ينشئ Pregnancy Record ويغلق Attempt كناجحة تلقائيًا.
-- Negative Result يراجع إغلاق Attempt كغير ناجحة والمسار التالي دون حذف تاريخها.
-- Pregnancy Record يمكن أن يرتبط بالأنثى، Cycle، Successful Attempt، Paternity Reference، Reference Mating Date، Confirmation Date، Expected Birth Date/Window، Current State.
-- Current Pregnancy State يراجع هل يكون Derived من Events + Dates أم Stored Transitioned State، وليس مجرد Edit يدوي بلا تاريخ.
-- Follow-up Events الممكن تسجيلها/الربط بها: الحالة العامة، Pregnancy Weight Reference من 4.3، تجهيز موقع الولادة، Nest Box، اقتراب الولادة.
-- كل Follow-up Event يمكن أن يحفظ وقت التنفيذ والموقع والمرجع والمنفذ والنتيجة/الملاحظات.
-- دخول Expected Birth Window أو تجاوزه لا يعني حدوث ولادة تلقائيًا؛ الولادة الفعلية → 4.6، والنهاية الاستثنائية → 4.14 حسب الإجابة.
+- Pregnancy Check المنفذ فعليًا ≠ Task لم تنفذ.
+- يمكن الاحتفاظ بأكثر من Pregnancy Check داخل نفس Attempt.
+- Positive / Negative / Uncertain نتائج فحص؛ المسارات الناتجة تحسم بالأسئلة.
+- Pregnancy Record مستقل بعد التأكيد ويمكن أن يحتفظ بمرجع Attempt/Paternity/Reference Mating/Expected Birth Window.
+- حالة الحمل لا تعامل كEdit يدوي بلا تاريخ.
+- Follow-up Events الفعلية يمكن ربطها بالحمل، وWeight الفعلي يبقى في 4.3.
+- دخول Expected Birth Window لا ينشئ ولادة تلقائيًا.
+
+الحدود:
+
+```text
+موعد الجس / Recheck / Reference Mating Rule / مدة الحمل / Birth Window → Settings 6.6
+Weight الحمل الفعلي → 4.3
+تسجيل الولادة → 4.6
+الحالات الاستثنائية → 4.14 / 4.13 حسب الحدث
+Tasks Rules → Settings 6.12؛ تنفيذ Tasks → 4.17
+التحليل والتنبيهات → Reports
+```
+
+### 4.6 Birth Registration / Litter Creation — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/BirthLitterQuestionsSeeder.php`
+
+عدد الأسئلة: **11**.
+
+```text
+birth.event_record_fields
+birth.offspring_count_fields
+birth.count_entry_model
+birth.special_condition_representation
+birth.outside_expected_window_behavior
+birth.historical_location_model
+litter.creation_model
+litter.record_fields
+litter.code_strategy
+birth.no_live_offspring_behavior
+birth.post_registration_transitions
+```
+
+المبدأ الوظيفي:
+
+```text
+Pregnancy / Reproductive Cycle
+→ Actual Birth Event
+→ Litter Record
+→ Lactation إذا وُجد مواليد أحياء
+```
+
+القرارات التي تغطيها 4.6:
+
+- Birth Event يحتفظ بمرجع الأم والحمل والدورة والأبوة والتاريخ الفعلي والموقع والمنفذ حسب الإجابات.
+- أعداد الولادة الأساسية تميز `Total Born / Live Born / Stillborn at Birth`.
+- حسم هل `Total Born` يحسب تلقائيًا من الأحياء + النافقين أم يدخل ثم يتحقق منه.
+- الحالات الخاصة مثل عيب خلقي ظاهر لا تفترض كطرف ثالث في معادلة الإجمالي؛ يمكن تمثيلها كصفة متداخلة إذا اعتمد ذلك.
+- الولادة المبكرة أو المتأخرة تسجل بتاريخها الفعلي؛ لا يعدل Mating Date لتجميل Gestation Length.
+- موقع الولادة التاريخي يمكن أن يخزن كمرجع داخل الحدث أو يستنتج من Occupancy History حسب الإجابة.
+- Litter Record ينشأ من Birth Event، مع حسم Automatic vs Explicit Creation.
+- Litter Record يمكن أن يحتفظ بالكود وBirth Event وBiological Mother وPaternity Reference وCycle وBirth Counts والحالة التاريخية.
+- `litter.code_strategy` يحسم Automatic vs Manual فقط؛ شكل الكود وتكوينه القابل للتهيئة → Settings.
+- الولادة بدون مواليد أحياء لا يجب أن تختفي تاريخيًا؛ يحسم السؤال هل ينشأ Litter مغلق مباشرة أو نموذج آخر.
+- Post-Birth Transitions تراجع إغلاق الحمل بنتيجة ولادة، تسجيل Cycle Outcome، إنشاء/تفعيل Litter، وبدء Lactation فقط عند وجود مواليد أحياء.
 
 Dependencies:
 
 ```text
-pregnancy_check.uncertain_result_flow
-→ pregnancy_check.result_categories CONTAINS uncertain
+birth.special_condition_representation
+→ birth.offspring_count_fields CONTAINS special_conditions
 
-pregnancy_check.positive_result_flow
-→ pregnancy_check.result_categories CONTAINS positive
-
-pregnancy_check.negative_result_flow
-→ pregnancy_check.result_categories CONTAINS negative
+litter.code_strategy
+→ litter.record_fields CONTAINS litter_code
 ```
 
-حدود 4.5:
+حدود 4.6:
 
 ```text
-موعد أول Pregnancy Check / نافذة الفحص / موعد Recheck → Settings 6.6
-Reference Mating = أول/آخر/قاعدة أخرى → Settings 6.6
-مدة الحمل وExpected Birth Window → Settings 6.6
-متى يعتبر الحمل/الولادة متأخرًا والتنبيه → Settings 6.6 + 6.12
-Weight الفعلي أثناء الحمل → 4.3 ويرتبط بالحمل بدل Duplicate Value
-الصيانة والتطهير العامة للقفص → 4.16
-تسجيل الولادة وإنشاء البطن → 4.6
-الإجهاض/فقد الحمل/نفوق الأم وأي نهاية استثنائية → 4.14 / 4.13 حسب الحدث
-قواعد توليد المهام → Settings 6.12
-تنفيذ/تأجيل/إغلاق المهمة نفسها → 4.17
-تحليل الحمل والخصوبة والتأخر → Reports 5.3 / 5.12
+Expected Birth Date / Window / تعريف مبكر أو متأخر → Settings 6.6
+مستوى Warning / Block عند البيانات غير المنطقية → Settings 6.2 عند الحاجة؛ المعادلة الحسابية نفسها تحسم في 4.6
+نقل المواليد بين الأمهات / Foster Mother → 4.7
+متابعة الرضاعة والنفوق أثناء الرضاعة → 4.7 / 4.13 حسب الحدث
+الفطام وإنشاء/اعتماد Individual Animals → 4.8
+طريقة توليد شكل Litter Code → Settings 6.2
+قواعد توليد مهام متابعة البطن والفطام وإعادة التلقيح → Settings 6.7 / 6.8 / 6.12
+تنفيذ Tasks → 4.17
+تحليل الولادات وحجم البطن والأحياء والنافقين → Reports 5.4 / 5.7
 ```
 
 ---
@@ -479,6 +521,7 @@ Reports مسؤولة عن فهم وتجميع ومقارنة الأحداث، و
 
 ```text
 5.3 تقارير الخصوبة والتلقيح والحمل
+5.4 تقارير الولادة والرضاعة والفطام
 5.5 تقارير النمو والأوزان والتسمين
 5.7 تحليل أداء الحيوانات الإنتاجية
 5.10 الاتجاهات والمقارنات عبر الزمن
@@ -503,7 +546,7 @@ Open Requirements العامة:
 - Override Policy.
 - Sensitive Record Correction + Audit.
 
-للتلقيح والحمل خصوصًا:
+للتلقيح والحمل والولادة خصوصًا:
 
 ```text
 جاهزية الأنثى والذكر
@@ -517,8 +560,9 @@ Kinship Rules
 Reference Mating Date Rule
 مدة الحمل وExpected Birth Window
 موعد تجهيز Nest Box
-متى تعتبر الولادة متأخرة
-→ Settings 6.5 / 6.6 / 6.12
+متى تعتبر الولادة مبكرة/متأخرة
+شكل وتكوين Litter Code عند جعله قابلًا للتهيئة
+→ Settings 6.2 / 6.5 / 6.6 / 6.7 / 6.12
 ```
 
 ---
@@ -571,6 +615,7 @@ HousingMovementQuestionsSeeder
 OperationalMeasurementsQuestionsSeeder
 MatingAttemptsQuestionsSeeder
 PregnancyFollowUpQuestionsSeeder
+BirthLitterQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -594,6 +639,7 @@ Question Creation → IN PROGRESS
 4.3 Operational Weight / Measurements → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.4 Mating / Attempts → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.5 Pregnancy Check / Follow-up / Birth Preparation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.6 Birth Registration / Litter Creation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -608,7 +654,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 **التالي:**
 
-`4.6 تسجيل الولادة وإنشاء البطن`
+`4.7 الرضاعة ومتابعة البطن وتداخل دورات الأم`
 
 ---
 
