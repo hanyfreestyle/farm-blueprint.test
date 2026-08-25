@@ -3,6 +3,7 @@
 namespace Database\Seeders;
 
 use Database\Seeders\Questions\Reports\DailyOperationsDashboardQuestionsSeeder;
+use Database\Seeders\Questions\Reports\FertilityMatingPregnancyReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\HerdReadinessMovementReportsQuestionsSeeder;
 use Database\Seeders\Sections\QuestionnaireReportsSectionSeeder;
 use Illuminate\Database\Seeder;
@@ -16,6 +17,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
         $this->call([
             DailyOperationsDashboardQuestionsSeeder::class,
             HerdReadinessMovementReportsQuestionsSeeder::class,
+            FertilityMatingPregnancyReportsQuestionsSeeder::class,
         ]);
     }
 }
