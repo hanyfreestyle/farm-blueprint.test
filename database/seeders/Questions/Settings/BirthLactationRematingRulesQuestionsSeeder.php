@@ -402,14 +402,13 @@ class BirthLactationRematingRulesQuestionsSeeder extends Seeder
                     'report_category' => 'maternal_rest_rule',
                     'target_entity' => 'maternal_recovery_rule',
                     'options' => [
-                        ['label' => 'راحة لعدد أيام ثابت ثم يعاد تطبيق شروط الجاهزية', 'value' => 'fixed_rest_days_then_reassess'],
+                        ['label' => 'راحة لعدد أيام محدد ثم يعاد تطبيق شروط الجاهزية', 'value' => 'configured_rest_days_then_reassess'],
                         ['label' => 'لا توجد مدة ثابتة؛ تستمر الراحة حتى تجتاز الأنثى مراجعة الجاهزية', 'value' => 'rest_until_readiness_reassessment_passes'],
-                        ['label' => 'مدة أولية قابلة للضبط ثم مراجعة حالة قبل العودة', 'value' => 'minimum_rest_days_then_condition_review'],
                     ],
                 ],
                 [
                     'seed_key' => 'lactation_rules.periodic_rest_days',
-                    'title' => 'كم يومًا تستمر فترة الراحة الدورية عندما تستخدم مدة زمنية ثابتة أو دنيا؟',
+                    'title' => 'كم يومًا تستمر فترة الراحة الدورية عندما تستخدم مدة زمنية محددة؟',
                     'help_text' => 'هذه القيمة تختلف عن فاصل تأجيل حالة فردية وعن راحة ما بعد الفطام العامة، وتستخدم فقط لسياسة الراحة الدورية بعد عدد من البطون.',
                     'type' => QuestionType::NUMBER,
                     'is_required' => true,
@@ -458,7 +457,7 @@ class BirthLactationRematingRulesQuestionsSeeder extends Seeder
             ['lactation_rules.weaning_next_birth_overlap_detection_enabled', 'lactation_rules.minimum_weaning_birth_separation_days', QuestionDependencyOperator::EQUALS, '1'],
             ['lactation_rules.weaning_next_birth_overlap_detection_enabled', 'lactation_rules.weaning_birth_overlap_enforcement_model', QuestionDependencyOperator::EQUALS, '1'],
             ['lactation_rules.foster_max_offspring_enabled', 'lactation_rules.foster_max_total_offspring', QuestionDependencyOperator::EQUALS, '1'],
-            ['lactation_rules.periodic_rest_duration_model', 'lactation_rules.periodic_rest_days', QuestionDependencyOperator::EQUALS, 'fixed_rest_days_then_reassess'],
+            ['lactation_rules.periodic_rest_duration_model', 'lactation_rules.periodic_rest_days', QuestionDependencyOperator::EQUALS, 'configured_rest_days_then_reassess'],
         ];
 
         foreach ($dependencies as [$parentSeedKey, $childSeedKey, $operator, $value]) {
