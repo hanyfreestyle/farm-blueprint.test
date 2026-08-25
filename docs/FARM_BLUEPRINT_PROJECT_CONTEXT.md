@@ -134,7 +134,9 @@ Master Data تشمل: الأنشطة التشغيلية، الأغراض الإ�
 
 - Breed Master Data ≠ Animal Pedigree.
 - قوائم الأسباب تعرف القيم المرجعية؛ الاستخدام الفعلي يسجل في Workflow.
-- `أسباب النقل` و`أسباب النفوق` لا يعاد تعريفهما داخل Workflow.
+- `أسباب النقل` و`أسباب النفوق` و`أسباب الاستبعاد` و`أسباب الخروج` لا يعاد تعريف قيمها داخل Workflow.
+- `ExclusionReason` يشرح لماذا حدث الاستبعاد؛ `Exclusion Decision` يسجل الحيوان والوقت والمسار والمصير التالي؛ `ExitReason` يخص الخروج الفعلي من المزرعة.
+- `Excluded ≠ Exited`.
 
 Farm Structure:
 
@@ -255,38 +257,11 @@ Seeder: `Questions/Workflow/AnimalIntakeQuestionsSeeder.php` — **11 سؤالً
 
 Seeder: `Questions/Workflow/HousingMovementQuestionsSeeder.php` — **12 سؤالًا**.
 
-```text
-housing_movement.event_types
-housing_movement.record_fields
-housing_movement.location_reference_model
-housing_movement.transfer_atomicity
-housing_movement.single_active_occupancy
-housing_movement.batch_transfer_support
-housing_movement.batch_transfer_scopes
-housing_movement.batch_individual_history
-housing_movement.reason_requirement_scope
-housing_movement.transfer_reason_reference
-housing_movement.time_tracking_model
-housing_movement.occupied_structure_relocation_support
-```
-
 الإشغال Derived من الحركات؛ السعة/Housing Rules→Settings؛ أسباب النقل→Master Data؛ تجهيز/صيانة الموقع→4.16.
 
 ### 4.3 Operational Weight / Measurements — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/OperationalMeasurementsQuestionsSeeder.php` — **9 أسئلة**.
-
-```text
-operational_measurement.subject_types
-operational_measurement.record_fields
-operational_measurement.weight_unit_policy
-operational_measurement.context_types
-operational_measurement.single_source_linking
-operational_measurement.age_handling
-operational_measurement.preweaning_weight_model
-operational_measurement.batch_entry_support
-operational_measurement.batch_individual_records
-```
 
 ```text
 الوزن الفعلي → 4.3
@@ -298,132 +273,55 @@ operational_measurement.batch_individual_records
 
 Seeder: `Questions/Workflow/MatingAttemptsQuestionsSeeder.php` — **12 سؤالًا**.
 
-المبدأ:
-
 ```text
 Mating Event ≠ Mating Attempt ≠ Reproductive Cycle
 ```
 
-Assigned Male→3.5؛ Actual Mating→4.4؛ الجاهزية/الأعمار/الأوزان/عدد التلقيحات والفاصل/Kinship Rules→Settings؛ Pregnancy Check→4.5؛ التحليل→Reports.
+Assigned Male→3.5؛ Actual Mating→4.4؛ قواعد الجاهزية/التكرار/Kinship→Settings؛ Pregnancy Check→4.5؛ التحليل→Reports.
 
 ### 4.5 Pregnancy Check / Follow-up / Birth Preparation — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/PregnancyFollowUpQuestionsSeeder.php` — **12 سؤالًا**.
 
-قواعد مهمة:
-
-- Pregnancy Check المنفذ فعليًا ≠ Task لم تنفذ.
-- يمكن وجود أكثر من Check داخل نفس Attempt.
-- دخول Expected Birth Window لا ينشئ ولادة تلقائيًا.
-- Timing / Recheck / Gestation / Expected Window → Settings.
-- Weight الحمل الفعلي → 4.3؛ Birth→4.6؛ الحالات الاستثنائية→4.14/4.13؛ Tasks execution→4.17.
+Pregnancy Check المنفذ ≠ Task غير منفذة؛ يمكن أكثر من Check داخل Attempt؛ دخول Expected Birth Window لا ينشئ ولادة؛ Timing / Recheck / Gestation / Expected Window→Settings؛ Weight→4.3؛ Birth→4.6؛ Exceptions→4.14/4.13؛ Tasks→4.17.
 
 ### 4.6 Birth Registration / Litter Creation — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/BirthLitterQuestionsSeeder.php` — **11 سؤالًا**.
 
 ```text
-birth.event_record_fields
-birth.offspring_count_fields
-birth.count_entry_model
-birth.special_condition_representation
-birth.outside_expected_window_behavior
-birth.historical_location_model
-litter.creation_model
-litter.record_fields
-litter.code_strategy
-birth.no_live_offspring_behavior
-birth.post_registration_transitions
-```
-
-```text
 Pregnancy / Cycle → Actual Birth Event → Litter Record → Lactation إذا وُجد مواليد أحياء
 ```
 
-- `Total Born / Live Born / Stillborn` أعداد ولادة تاريخية.
-- الحالات الخاصة لا تفترض طرفًا ثالثًا في المعادلة إذا كانت قد تتداخل مع حي/نافق.
-- الولادة خارج النطاق تسجل بتاريخها الحقيقي؛ لا يعدل Mating Date.
-- Litter بدون مواليد أحياء لا يختفي تاريخيًا.
-- Foster Transfer→4.7؛ Weaning/Individualization→4.8؛ Litter Code Pattern→Settings؛ تحليل الولادة→Reports.
+Birth Counts تاريخية؛ الحالات الخاصة لا تفسد معادلة الأحياء/النافقين؛ الولادة خارج النطاق تسجل بتاريخها الحقيقي؛ Foster→4.7؛ Weaning→4.8؛ Litter Code Pattern→Settings.
 
 ### 4.7 Lactation / Litter Follow-up / Overlapping Cycles — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/LactationOverlapQuestionsSeeder.php` — **12 سؤالًا**.
 
-```text
-lactation.start_model
-lactation.current_alive_count_model
-lactation.followup_event_types
-lactation.mortality_recording_model
-lactation.foster_transfer_model
-lactation.foster_transfer_scopes
-lactation.foster_transfer_record_fields
-lactation.transferred_offspring_tracking_model
-lactation.foster_relationship_model
-lactation.maternal_problem_outcomes
-lactation.concurrent_cycle_link_model
-lactation.end_model
-```
-
-- Current Alive Count لا يعيد كتابة Birth Counts؛ ينتج من الأحداث حسب الإجابة.
-- Stillborn→4.6؛ Mortality بعد الولادة حدث جديد ويرتبط 4.13 حسب النموذج المعتمد.
-- Foster Transfer يحافظ على Biological Mother / Original Litter إذا اعتمد نموذج الأصل الصحيح.
-- Temporary Tracking للمواليد المنقولين قبل الفطام يحسم في 4.7 ثم Resolution إلى Final Animal Identity في 4.8.
-- التلقيح أثناء الرضاعة يستخدم نفس 4.4؛ 4.7 يسجل فقط علاقة التداخل بالبطن النشطة.
-
-Dependencies:
-
-```text
-lactation.foster_transfer_scopes
-lactation.foster_transfer_record_fields
-lactation.transferred_offspring_tracking_model
-lactation.foster_relationship_model
-→ lactation.foster_transfer_model EQUALS structured_foster_transfer
-```
+- Current Alive Count ينتج من الأحداث ولا يعيد كتابة Birth Counts.
+- Foster Transfer يحافظ على Biological Mother / Original Litter حسب النموذج المعتمد.
+- Temporary Preweaning Tracking يحسم في 4.7 ثم Final Origin Resolution في 4.8.
+- Mating أثناء الرضاعة يستخدم 4.4؛ 4.7 يحدد تداخل الدورة مع البطن النشطة.
 
 ### 4.8 Weaning / Individual Tracking — IMPLEMENTED / WAITING LOCAL SEED
 
 Seeder: `Questions/Workflow/WeaningIndividualTrackingQuestionsSeeder.php` — **12 سؤالًا**.
 
 ```text
-weaning.operation_structure
-weaning.event_record_fields
-weaning.count_reconciliation_model
-weaning.partial_weaning_model
-weaning.individual_creation_model
-weaning.inherited_animal_fields
-weaning.preweaning_origin_resolution_model
-weaning.sex_capture_model
-weaning.weight_integration_model
-weaning.housing_integration_model
-weaning.summary_persistence_model
-weaning.post_completion_transition_model
+Litter Tracking → Actual Weaning Event → Individual Animal Records → Growth / Sorting
 ```
 
-المبدأ:
-
-```text
-Litter Tracking
-→ Actual Weaning Event
-→ Individual Animal Records
-→ Growth / Sorting
-```
-
-- الفطام ليس Status فقط؛ هو عملية تحول رئيسية.
+- الفطام عملية تحول وليس Status فقط.
 - اختلاف Expected Alive Count عن Actual Weaned Count لا يختفي بصمت.
-- Partial Weaning Requirement مفتوح ويعالج كسؤال صريح.
-- كل مفطوم يصبح Animal Record مستقلًا بنفس قواعد الهوية في 3.1.
-- البيانات الموثوقة تورث ولا يعاد إدخالها يدويًا.
-- Foster Origin Resolution يتم عند تكوين الهوية النهائية.
+- Partial Weaning سؤال صريح.
+- كل مفطوم يصبح Animal Record مستقلًا.
 - Weaning Weight→4.3 Integration؛ Housing→4.2 Integration.
 - موعد/عمر/وزن الفطام وEarly Weaning والفصل بين الجنسين→Settings.
 
-### 4.9 Growth / Sorting / Re-evaluation — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+### 4.9 Growth / Sorting / Re-evaluation — IMPLEMENTED / WAITING LOCAL SEED
 
-Seeder:
-`database/seeders/Questions/Workflow/GrowthSortingEvaluationQuestionsSeeder.php`
-
-عدد الأسئلة: **10**.
+Seeder: `Questions/Workflow/GrowthSortingEvaluationQuestionsSeeder.php` — **10 أسئلة**.
 
 ```text
 growth_sorting.program_entry_model
@@ -438,7 +336,7 @@ growth_sorting.reevaluation_model
 growth_sorting.reevaluation_record_fields
 ```
 
-المبدأ الوظيفي:
+المبدأ:
 
 ```text
 Weaning / Individual Animal
@@ -448,41 +346,86 @@ Weaning / Individual Animal
 → Actual Fate Decision in 4.10
 ```
 
-القرارات التي تغطيها 4.9:
+- الأعمار مثل 45/70 يومًا و3 أشهر أمثلة؛ المراحل ومعاييرها→Settings 6.9.
+- كل تقييم يحتفظ بتاريخه ولا يمسح التقييم السابق.
+- Derived Growth Metrics مصدرها Weight Records في 4.3.
+- نتائج 4.9 مبدئية: استمرار، ترشيح إحلال، توصية تسمين، توصية استبعاد، إعادة تقييم.
+- Sorting Result لا ينفذ المصير؛ 4.10 يسجل القرار الفعلي.
 
-- حسم هل يبدأ Growth/Sorting تلقائيًا بعد الفطام أم بإجراء مستقل.
-- الأعمار مثل 45 يومًا و70 يومًا و3 أشهر أمثلة وليست قيمًا ثابتة؛ حدث التقييم يراجع هل يرتبط بمرحلة معرفة في Settings أم بنموذج آخر.
-- تاريخ الفرز لا يمسح عند تغير النتيجة لاحقًا؛ السؤال يحسم Independent Evaluation Events vs Current Record with Audit vs Overwrite.
-- Evaluation Record يمكن أن يحتفظ بالحيوان والمرحلة والوقت والعمر ومراجع الأوزان ومؤشرات النمو والسياق الصحي والنسب والتقييم السابق والمنفذ والملاحظات.
-- المعلومات التي تظهر أثناء التقييم يمكن أن تشمل Weight History / Derived Growth / Sex / Health / Pedigree / Parent Performance / Litter-Sibling Context / Previous Evaluations، بينما درجة تأثير كل عنصر ومعايير القبول تبقى Settings.
-- Derived Growth Metrics مثل الزيادة اليومية مصدرها Weight Records في 4.3؛ السؤال يحسم Live Derivation vs Snapshot with Source References vs Manual Values.
-- نتائج الفرز هنا **مبدئية** مثل الاستمرار، مرشح مبدئي للإحلال، توصية بالتسمين، توصية بالاستبعاد، أو إعادة تقييم.
-- Source + Architecture يؤكدان أن Sorting Result لا تنفذ المصير وحدها؛ `growth_sorting.result_to_fate_link_model` يحسم فقط طريقة إنشاء Pending/Draft/No Automatic Fate Record في 4.10.
-- انخفاض النمو مؤشر داخل التقييم ولا يعني Auto Exclusion بمجرده.
-- Re-evaluation لا يجب أن تمحو نتيجة التقييم السابق؛ عند اختيارها يمكن حفظ السبب والموعد المقترح وما يجب متابعته وربطها بالتقييم المصدر.
+### 4.10 Fate Decision / Exclusion from Path — IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+
+Seeder:
+`database/seeders/Questions/Workflow/FateExclusionQuestionsSeeder.php`
+
+عدد الأسئلة: **11**.
+
+```text
+fate_decision.record_fields
+fate_decision.source_reference_model
+fate_decision.history_model
+fate_decision.outcome_categories
+fate_decision.downstream_transition_model
+exclusion.scope_categories
+exclusion.reason_reference_requirement
+exclusion.other_reason_detail_policy
+exclusion.next_destination_model
+exclusion.next_destination_categories
+exclusion.source_path_closure_model
+```
+
+المبدأ الوظيفي:
+
+```text
+Evaluation / Review
+→ Actual Fate Decision
+→ Downstream Transition
+→ 4.11 Replacement OR 4.12 Fattening OR 4.15 Exit / other path
+```
+
+وقاعدة الاستبعاد:
+
+```text
+ExclusionReason = لماذا تم الاستبعاد؟ (Master Data)
+Exclusion Decision = من أي مسار؟ متى؟ من قرر؟ وما المصير التالي؟ (4.10)
+Exit = واقعة خروج فعلية من المزرعة (4.15)
+
+Excluded ≠ Exited
+```
+
+القرارات التي تغطيها 4.10:
+
+- Fate Decision Record يمكن أن يحتفظ بالحيوان ووقت القرار والعمر وWeight Reference وسياق القرار وSource Reference ونوع القرار والمنفذ والملاحظات حسب الإجابات.
+- القرار يمكن أن يرتبط صراحة بالسجل/التقييم الذي أدى إليه أو يستنتج من Timeline حسب النموذج المعتمد.
+- تاريخ قرارات المصير لا يمسح؛ يحسم السؤال Independent Decisions with Supersession vs Current Decision with Full Audit.
+- Outcome Categories الفعلية تشمل مسار مرشح الإحلال، مسار التسمين، الاستبعاد من المسار الحالي، استمرار المتابعة/إعادة التقييم، أو مسار آخر موثق حسب الإجابات.
+- القرار لا يكرر تنفيذ الـWorkflow التالي؛ `fate_decision.downstream_transition_model` يحسم Pending Transition vs Auto Start Context vs Manual Start.
+- الاستبعاد يمكن أن يخرج الحيوان من Growth/Sorting أو Replacement Candidate أو Production/Breeding Path أو مسار تشغيلي آخر حسب الإجابات دون إنهاء هوية الحيوان أو وجوده تلقائيًا.
+- قائمة أسباب الاستبعاد لا تعاد داخل 4.10؛ `exclusion.reason_reference_requirement` يحسم هل مرجع Master Data إلزامي أو اختياري مع تبرير.
+- لأن Master Data تحتوي `سبب آخر`، تم إضافة سؤال صريح يحسم هل يحتاج Other Reason Detail إلزامي/اختياري/غير مطلوب؛ لا يتم افتراض Free Text تلقائيًا.
+- `Excluded` لا يستخدم كنهاية غامضة؛ يجب أن يكون هناك Next Destination Model واضح حسب الإجابة.
+- Next Destination Categories المدعومة للدراسة: Fattening، Planned Sale/Exit، Temporary Follow-up، Planned Final Exit، Other Documented Destination.
+- `exclusion.source_path_closure_model` يحسم متى يغلق المسار المستبعد منه بالنسبة للحيوان مقارنة ببدء أو اكتمال الـWorkflow التالي.
 
 Dependencies:
 
 ```text
-growth_sorting.reevaluation_model
-growth_sorting.reevaluation_record_fields
-→ growth_sorting.preliminary_result_categories CONTAINS reevaluation
+لا توجد Dependencies داخل 4.10 حاليًا؛ الاستبعاد جزء أصيل من نطاق القسم وليس ميزة اختيارية جانبية.
 ```
 
-حدود 4.9:
+حدود 4.10:
 
 ```text
-Actual Weight Record → 4.3
-موعد/عمر كل Sorting Stage والأوزان المستهدفة والمعايير والThresholds → Settings 6.9
-اختلاف معايير الذكر والأنثى ودرجة تأثير Health/Pedigree/Parent Performance → Settings 6.9
-Task Generation ومواعيد الفرز/إعادة التقييم → Settings 6.12؛ Task Lifecycle → 4.17
-Growth Curves / Sibling Comparison / Analytics → Reports 5.5 / 5.7 / 5.10
-Preliminary Sorting Result / Re-evaluation → 4.9
-Actual Fate Decision / Exclusion from a path → 4.10
-Actual Replacement Approval → 4.11
-Actual Fattening Workflow → 4.12
-Actual Housing Movement الناتج عن القرار → 4.2
-Health Events → 4.13
+Preliminary Sorting / Re-evaluation → 4.9
+Actual Fate Decision / Exclusion Decision → 4.10
+ExclusionReason definitions / values → Master Data
+Actual Replacement Candidate Follow-up & Production Herd Approval → 4.11
+Actual Fattening Start / Follow-up / Sale Readiness → 4.12
+Health Events that may motivate a decision → 4.13
+Actual Exit / Sale / Removal from Farm → 4.15
+Actual Housing Movement required by a decision → 4.2
+Task generation → Settings 6.12؛ Task Lifecycle → 4.17
+Thresholds / automatic recommendation rules / approval criteria → Settings حسب المجال
+Decision / Exclusion analytics → Reports 5.2 / 5.5 / 5.7 / 5.10
 ```
 
 ---
@@ -494,6 +437,7 @@ Reports مسؤولة عن فهم وتجميع ومقارنة الأحداث، و
 ذات الصلة بالمرحلة الحالية:
 
 ```text
+5.2 تقارير القطيع والجاهزية
 5.3 تقارير الخصوبة والتلقيح والحمل
 5.4 تقارير الولادة والرضاعة والفطام
 5.5 تقارير النمو والأوزان والتسمين
@@ -525,29 +469,17 @@ Open Requirements العامة:
 ```text
 جاهزية الأنثى والذكر
 التلقيح أثناء الرضاعة
-عدد Mating Events والفاصل بينها
-Male Usage Limits / Rest Periods
-Kinship Rules
-موعد Pregnancy Check / Recheck
-Reference Mating Rule
-مدة الحمل وExpected Birth Window
-موعد تجهيز Nest Box
-متى تعتبر الولادة مبكرة/متأخرة
-شكل Litter Code
-مواعيد Lactation Follow-up
-موعد إعادة تلقيح الأم أثناء الرضاعة
-شروط Foster Mother وحدود عدد المواليد لديها
-موعد الفطام المستهدف
-الحد الأدنى للعمر/الوزن أو Weight Requirement للفطام
-قواعد Early Weaning
-توقيت وقواعد الفصل بين الجنسين
-قواعد Housing Eligibility / Capacity عند الفطام
-تعريف مراحل Growth / Sorting وأعمارها أو شروط استحقاقها
-Weight / Growth Targets وThresholds لكل مرحلة
-Evaluation Criteria ودرجة تأثير كل مؤشر
+Mating limits / Kinship Rules
+Pregnancy Check / Recheck / Gestation / Birth Window
+Lactation / Foster / Weaning Rules
+Housing Eligibility / Capacity
+Growth / Sorting Stages and Criteria
+Weight / Growth Targets and Thresholds
 اختلاف معايير الذكور والإناث
-قواعد إعادة التقييم ومواعيدها عند الحاجة
-→ Settings 6.4 / 6.5 / 6.6 / 6.7 / 6.8 / 6.9 / 6.12
+Re-evaluation Rules
+Decision Recommendation / Approval Criteria عند جعلها قابلة للضبط
+Task Generation / Timing / Priority
+→ Settings 6.4 / 6.5 / 6.6 / 6.7 / 6.8 / 6.9 / 6.12 وغيرها حسب المجال
 ```
 
 ---
@@ -604,6 +536,7 @@ BirthLitterQuestionsSeeder
 LactationOverlapQuestionsSeeder
 WeaningIndividualTrackingQuestionsSeeder
 GrowthSortingEvaluationQuestionsSeeder
+FateExclusionQuestionsSeeder
 ```
 
 Reports / Settings Orchestrators ما زالت بلا Question Seeders فعلية حتى يبدأ تصميمها.
@@ -631,6 +564,7 @@ Question Creation → IN PROGRESS
 4.7 Lactation / Litter Follow-up / Overlapping Cycles → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.8 Weaning / Individual Tracking → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 4.9 Growth / Sorting / Re-evaluation → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
+4.10 Fate Decision / Exclusion from Path → IMPLEMENTED ON GITHUB / WAITING LOCAL SEED
 ```
 
 لتحديث البيئة المحلية دون فقد الإجابات:
@@ -645,7 +579,7 @@ php artisan db:seed --class=QuestionnaireWorkflowQuestionsSeeder
 
 **التالي:**
 
-`4.10 تحديد المصير والاستبعاد من المسار`
+`4.11 الإحلال والاعتماد داخل القطيع الإنتاجي`
 
 ---
 
