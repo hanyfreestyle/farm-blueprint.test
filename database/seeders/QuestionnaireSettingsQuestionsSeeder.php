@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Database\Seeders\Questions\Settings\BirthLactationRematingRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\GeneralControlOverrideAuditQuestionsSeeder;
+use Database\Seeders\Questions\Settings\GrowthWeightSortingReplacementRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\HousingHerdReadinessRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\HousingSiteOperatingRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\MatingFertilityReadinessRulesQuestionsSeeder;
@@ -28,6 +29,7 @@ class QuestionnaireSettingsQuestionsSeeder extends Seeder
             PregnancyCheckGestationBirthPreparationRulesQuestionsSeeder::class,
             BirthLactationRematingRulesQuestionsSeeder::class,
             WeaningIndividualTrackingRulesQuestionsSeeder::class,
+            GrowthWeightSortingReplacementRulesQuestionsSeeder::class,
         ]);
     }
 }
