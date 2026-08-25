@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use Database\Seeders\Questions\Reports\AnalyticalEntityPagesQuestionsSeeder;
 use Database\Seeders\Questions\Reports\BirthLactationWeaningReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\DailyOperationsDashboardQuestionsSeeder;
 use Database\Seeders\Questions\Reports\FertilityMatingPregnancyReportsQuestionsSeeder;
@@ -34,6 +35,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
             HousingOccupancyCapacityOperationsReportsQuestionsSeeder::class,
             OperationalTaskPerformanceReportsQuestionsSeeder::class,
             TrendsComparisonsAnalysisQuestionsSeeder::class,
+            AnalyticalEntityPagesQuestionsSeeder::class,
         ]);
     }
 }
