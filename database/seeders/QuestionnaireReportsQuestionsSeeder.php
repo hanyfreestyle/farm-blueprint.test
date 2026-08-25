@@ -12,6 +12,7 @@ use Database\Seeders\Questions\Reports\HousingOccupancyCapacityOperationsReports
 use Database\Seeders\Questions\Reports\OperationalTaskPerformanceReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\PedigreeReplacementReportsQuestionsSeeder;
 use Database\Seeders\Questions\Reports\ProductiveAnimalPerformanceAnalysisQuestionsSeeder;
+use Database\Seeders\Questions\Reports\TrendsComparisonsAnalysisQuestionsSeeder;
 use Database\Seeders\Sections\QuestionnaireReportsSectionSeeder;
 use Illuminate\Database\Seeder;
 
@@ -32,6 +33,7 @@ class QuestionnaireReportsQuestionsSeeder extends Seeder
             PedigreeReplacementReportsQuestionsSeeder::class,
             HousingOccupancyCapacityOperationsReportsQuestionsSeeder::class,
             OperationalTaskPerformanceReportsQuestionsSeeder::class,
+            TrendsComparisonsAnalysisQuestionsSeeder::class,
         ]);
     }
 }
