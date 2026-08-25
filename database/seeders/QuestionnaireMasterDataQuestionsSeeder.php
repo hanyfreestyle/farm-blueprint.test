@@ -22,12 +22,15 @@ use Database\Seeders\Questions\MasterData\OperationalTaskTypesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\ProductionPurposesQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\TransferReasonsQuestionsSeeder;
 use Database\Seeders\Questions\MasterData\VentilationSystemsQuestionsSeeder;
+use Database\Seeders\Sections\QuestionnaireMasterDataSectionSeeder;
 use Illuminate\Database\Seeder;
 
 class QuestionnaireMasterDataQuestionsSeeder extends Seeder
 {
     public function run(): void
     {
+        $this->call(QuestionnaireMasterDataSectionSeeder::class);
+
         $this->call([
             OperationalActivitiesQuestionsSeeder::class,
             ProductionPurposesQuestionsSeeder::class,
