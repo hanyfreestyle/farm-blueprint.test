@@ -4,12 +4,12 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 10:47:15
+- وقت آخر تحديث: 2026-08-26 10:51:50
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
 - الأسئلة القابلة حاليًا: 822
-- الأسئلة المجاب عنها: 0
+- الأسئلة المجاب عنها: 6
 - ملفات الإجابات المصدرة: 75
 - ملفات الشرح الموجودة: 0
 
@@ -24,7 +24,7 @@
 
 | # | القسم الفرعي | ملف الإجابات | حالة التصدير | التقدم | ملف الشرح | حالة الشرح |
 |---|---|---|---|---|---|---|
-| 1.1 | الأنشطة التشغيلية | [answers/01-master-data/01-operational-activities.md](answers/01-master-data/01-operational-activities.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/01-operational-activities.md` | ❌ لم يتم الإنشاء |
+| 1.1 | الأنشطة التشغيلية | [answers/01-master-data/01-operational-activities.md](answers/01-master-data/01-operational-activities.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/01-operational-activities.md` | ❌ لم يتم الإنشاء |
 | 1.2 | الأغراض الإنتاجية | [answers/01-master-data/02-production-purposes.md](answers/01-master-data/02-production-purposes.md) | ✅ تم التصدير | 0 / 7 | `guides/01-master-data/02-production-purposes.md` | ❌ لم يتم الإنشاء |
 | 1.3 | مؤشرات السلالات | [answers/01-master-data/03-breed-metrics.md](answers/01-master-data/03-breed-metrics.md) | ✅ تم التصدير | 0 / 8 | `guides/01-master-data/03-breed-metrics.md` | ❌ لم يتم الإنشاء |
 | 1.4 | بيانات السلالات | [answers/01-master-data/04-breeds.md](answers/01-master-data/04-breeds.md) | ✅ تم التصدير | 0 / 14 | `guides/01-master-data/04-breeds.md` | ❌ لم يتم الإنشاء |
