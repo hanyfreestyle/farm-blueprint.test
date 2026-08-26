@@ -4,14 +4,14 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 13:38:00
+- وقت آخر تحديث: 2026-08-26 13:53:30
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
 - الأسئلة القابلة حاليًا: 872
-- الأسئلة المجاب عنها: 392
+- الأسئلة المجاب عنها: 439
 - ملفات الإجابات المصدرة: 75
-- ملفات الشرح الموجودة: 33
+- ملفات الشرح الموجودة: 36
 
 ### معنى الحالات
 
@@ -73,16 +73,16 @@
 | 4.2 | التسكين والنقل والإخلاء وإدارة الإشغال | [answers/04-workflow/02-housing-movements.md](answers/04-workflow/02-housing-movements.md) | ✅ تم التصدير | 10 / 10 | [guides/04-workflow/02-housing-movements.md](guides/04-workflow/02-housing-movements.md) | ✅ تم الإنشاء |
 | 4.3 | الوزن والقياسات التشغيلية | [answers/04-workflow/03-operational-measurements.md](answers/04-workflow/03-operational-measurements.md) | ✅ تم التصدير | 8 / 8 | [guides/04-workflow/03-operational-measurements.md](guides/04-workflow/03-operational-measurements.md) | ✅ تم الإنشاء |
 | 4.4 | التلقيح وإدارة المحاولات | [answers/04-workflow/04-matings.md](answers/04-workflow/04-matings.md) | ✅ تم التصدير | 12 / 12 | [guides/04-workflow/04-matings.md](guides/04-workflow/04-matings.md) | ✅ تم الإنشاء |
-| 4.5 | فحص الحمل ومتابعة الحمل وتجهيز الولادة | [answers/04-workflow/05-pregnancy-checks.md](answers/04-workflow/05-pregnancy-checks.md) | ✅ تم التصدير | 12 / 12 | `guides/04-workflow/05-pregnancy-checks.md` | ❌ لم يتم الإنشاء |
-| 4.6 | تسجيل الولادة وإنشاء البطن | [answers/04-workflow/06-births.md](answers/04-workflow/06-births.md) | ✅ تم التصدير | 11 / 11 | `guides/04-workflow/06-births.md` | ❌ لم يتم الإنشاء |
-| 4.7 | الرضاعة ومتابعة البطن وتداخل دورات الأم | [answers/04-workflow/07-lactations.md](answers/04-workflow/07-lactations.md) | ✅ تم التصدير | 12 / 12 | `guides/04-workflow/07-lactations.md` | ❌ لم يتم الإنشاء |
+| 4.5 | فحص الحمل ومتابعة الحمل وتجهيز الولادة | [answers/04-workflow/05-pregnancy-checks.md](answers/04-workflow/05-pregnancy-checks.md) | ✅ تم التصدير | 12 / 12 | [guides/04-workflow/05-pregnancy-checks.md](guides/04-workflow/05-pregnancy-checks.md) | ✅ تم الإنشاء |
+| 4.6 | تسجيل الولادة وإنشاء البطن | [answers/04-workflow/06-births.md](answers/04-workflow/06-births.md) | ✅ تم التصدير | 11 / 11 | [guides/04-workflow/06-births.md](guides/04-workflow/06-births.md) | ✅ تم الإنشاء |
+| 4.7 | الرضاعة ومتابعة البطن وتداخل دورات الأم | [answers/04-workflow/07-lactations.md](answers/04-workflow/07-lactations.md) | ✅ تم التصدير | 12 / 12 | [guides/04-workflow/07-lactations.md](guides/04-workflow/07-lactations.md) | ✅ تم الإنشاء |
 | 4.8 | الفطام والتحول إلى التتبع الفردي | [answers/04-workflow/08-weanings.md](answers/04-workflow/08-weanings.md) | ✅ تم التصدير | 12 / 12 | `guides/04-workflow/08-weanings.md` | ❌ لم يتم الإنشاء |
 | 4.9 | النمو والفرز وإعادة التقييم | [answers/04-workflow/09-growth-sortings.md](answers/04-workflow/09-growth-sortings.md) | ✅ تم التصدير | 10 / 10 | `guides/04-workflow/09-growth-sortings.md` | ❌ لم يتم الإنشاء |
 | 4.10 | تحديد المصير والاستبعاد من المسار | [answers/04-workflow/10-exclusions.md](answers/04-workflow/10-exclusions.md) | ✅ تم التصدير | 11 / 11 | `guides/04-workflow/10-exclusions.md` | ❌ لم يتم الإنشاء |
-| 4.11 | الإحلال والاعتماد داخل القطيع الإنتاجي | [answers/04-workflow/11-replacements.md](answers/04-workflow/11-replacements.md) | ✅ تم التصدير | 0 / 11 | `guides/04-workflow/11-replacements.md` | ❌ لم يتم الإنشاء |
-| 4.12 | التسمين والجاهزية للبيع | [answers/04-workflow/12-fattenings.md](answers/04-workflow/12-fattenings.md) | ✅ تم التصدير | 0 / 10 | `guides/04-workflow/12-fattenings.md` | ❌ لم يتم الإنشاء |
-| 4.13 | الصحة والعزل والتعافي والنفوق | [answers/04-workflow/13-healths.md](answers/04-workflow/13-healths.md) | ✅ تم التصدير | 0 / 13 | `guides/04-workflow/13-healths.md` | ❌ لم يتم الإنشاء |
-| 4.14 | الحالات الاستثنائية وإعادة بناء المسار | [answers/04-workflow/14-workflow-reconstructions.md](answers/04-workflow/14-workflow-reconstructions.md) | ✅ تم التصدير | 0 / 13 | `guides/04-workflow/14-workflow-reconstructions.md` | ❌ لم يتم الإنشاء |
+| 4.11 | الإحلال والاعتماد داخل القطيع الإنتاجي | [answers/04-workflow/11-replacements.md](answers/04-workflow/11-replacements.md) | ✅ تم التصدير | 11 / 11 | `guides/04-workflow/11-replacements.md` | ❌ لم يتم الإنشاء |
+| 4.12 | التسمين والجاهزية للبيع | [answers/04-workflow/12-fattenings.md](answers/04-workflow/12-fattenings.md) | ✅ تم التصدير | 10 / 10 | `guides/04-workflow/12-fattenings.md` | ❌ لم يتم الإنشاء |
+| 4.13 | الصحة والعزل والتعافي والنفوق | [answers/04-workflow/13-healths.md](answers/04-workflow/13-healths.md) | ✅ تم التصدير | 13 / 13 | `guides/04-workflow/13-healths.md` | ❌ لم يتم الإنشاء |
+| 4.14 | الحالات الاستثنائية وإعادة بناء المسار | [answers/04-workflow/14-workflow-reconstructions.md](answers/04-workflow/14-workflow-reconstructions.md) | ✅ تم التصدير | 13 / 13 | `guides/04-workflow/14-workflow-reconstructions.md` | ❌ لم يتم الإنشاء |
 | 4.15 | الخروج من المزرعة وإعادة الدخول | [answers/04-workflow/15-farm-exits.md](answers/04-workflow/15-farm-exits.md) | ✅ تم التصدير | 0 / 11 | `guides/04-workflow/15-farm-exits.md` | ❌ لم يتم الإنشاء |
 | 4.16 | تشغيل وصيانة وتجهيز مواقع الإيواء | [answers/04-workflow/16-housing-site-maintenances.md](answers/04-workflow/16-housing-site-maintenances.md) | ✅ تم التصدير | 0 / 9 | `guides/04-workflow/16-housing-site-maintenances.md` | ❌ لم يتم الإنشاء |
 | 4.17 | تنفيذ وإدارة المهام التشغيلية | [answers/04-workflow/17-operational-tasks.md](answers/04-workflow/17-operational-tasks.md) | ✅ تم التصدير | 0 / 12 | `guides/04-workflow/17-operational-tasks.md` | ❌ لم يتم الإنشاء |
