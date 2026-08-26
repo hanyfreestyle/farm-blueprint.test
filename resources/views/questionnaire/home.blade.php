@@ -35,6 +35,11 @@
                 </button>
               </form>
 
+              <a class="btn btn-questionnaire-secondary" href="{{ route('questionnaire-export.browse') }}">
+                <i class="fa-solid fa-folder-tree"></i>
+                <span>تصفح ملفات الدراسة</span>
+              </a>
+
               <a class="btn btn-questionnaire-primary" href="{{ route('technical-report.preview') }}">
                 <i class="fa-solid fa-file-lines"></i>
                 <span>عرض التقرير الفني</span>
