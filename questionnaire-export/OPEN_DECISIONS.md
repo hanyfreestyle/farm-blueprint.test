@@ -58,10 +58,10 @@ Implementation Boundary
 | 2. هيكل المزرعة | Reviewed |
 | 3. بيانات الحيوان وتكوين القطيع | Reviewed |
 | 4. الحركات ودورة التشغيل الفعلية | Reviewed |
-| 5. التقارير والتحليلات والتنبيهات ومؤشرات الأداء | Pending Review |
+| 5. التقارير والتحليلات والتنبيهات ومؤشرات الأداء | Reviewed |
 | 6. الإعدادات وقواعد التشغيل | Pending Review |
 
-> تمت مراجعة الـGuides الحالية للأقسام 1 و2 و3 و4. يتم دمج النقاط المتكررة، ولا تُحوّل حدود التفسير العامة إلى Open Decision إلا إذا كانت تؤثر على Requirement نهائي أو تمنع ربط الأقسام ببعضها بصورة واضحة. النقاط التي مكان حسمها الطبيعي Settings تظل Deferred ولا يتم اختراع قيمها من Workflow.
+> تمت مراجعة الأقسام 1 و2 و3 و4 و5. في القسم الخامس لا توجد Guides حالية تحت `questionnaire-export/guides/05-reports/`، لذلك تمت المراجعة من ملفات الإجابات الحالية الـ16 المصدرة في `answers/05-reports/` مع الرجوع إلى `FARM_BLUEPRINT_PROJECT_CONTEXT.md` والـWorkflow Guides والجزء المقابل من `تصور_مشروع_الارانب.md`. يتم دمج النقاط المتكررة، ولا تُحوّل حدود التفسير العامة إلى Open Decision إلا إذا كانت تؤثر على Requirement نهائي أو تمنع ربط الأقسام ببعضها بصورة واضحة. النقاط التي مكان حسمها الطبيعي Settings تظل Deferred ولا يتم اختراع قيمها من Reports أو Workflow.
 
 ---
 
@@ -1398,6 +1398,549 @@ operational_task.execution_routing_model
 **الأثر:** Settings لا يجوز أن تضيف Approval Step عامة بعد التنفيذ أو تجعل اكتمال المهمة معلقًا على Reviewer ثانٍ دون إعادة فتح قرار 4.17.
 
 **المطلوب عند مراجعة 6.12:** التحقق أن قواعد المهام والتصعيد والصلاحيات لا تعيد إدخال Post-execution Approval ضمنيًا.
+
+---
+
+# القسم الخامس — التقارير والتحليلات والتنبيهات ومؤشرات الأداء
+
+## OD-057 — تقرير الخصوبة يلغي تحليل المحاولات والدورات بينما يعتمد عليها في بقية المؤشرات
+
+**الحالة:** Open  
+**النوع:** Blocking Internal Report Conflict  
+**الأولوية:** Critical before Fertility Report Requirements  
+**القسم:** 5.3 تقارير الخصوبة والتلقيح والحمل
+
+**Question Keys:**
+
+```text
+fertility_report.mating_counting_granularity
+fertility_report.primary_views
+fertility_report.core_metrics
+pregnancy_check_report.aggregation_model
+fertility_report.success_rate_model
+```
+
+**القرارات الحالية:**
+
+```text
+fertility_report.mating_counting_granularity
+= mating_events_only
+→ الاعتماد على Mating Events فقط دون تحليل مستقل للمحاولات أو الدورات
+```
+
+لكن نفس القسم يعتمد صراحة مؤشرات وتحليلات تحتاج `Mating Attempt` و`Reproductive Cycle` كوحدات تحليل مستقلة، مثل:
+
+```text
+mating_attempts_count
+average_attempts_to_pregnancy
+females_requiring_multiple_attempts
+single final attempt outcome for pregnancy-check aggregation
+cycles_started
+cycles_ending_in_birth
+attempt-level success/failure
+```
+
+كما أن Workflow 4.4 يثبت أصلًا:
+
+```text
+Mating Event ≠ Mating Attempt ≠ Reproductive Cycle
+```
+
+**المشكلة:** لا يمكن تنفيذ هذه المقاييس مع الحفاظ على معنى Q2 الحرفي الذي يلغي التحليل المستقل للمحاولات والدورات.
+
+**المطلوب حسمه:** هل التقرير يدعم المقاييس المنفصلة للأحداث والمحاولات والدورات، أم يعتمد Events فقط ويجب إزالة/إعادة تعريف كل المؤشرات القائمة على Attempts/Cycles.
+
+**مصدر التفاصيل:** `questionnaire-export/answers/05-reports/03-fertility-reports.md`
+
+---
+
+## OD-058 — مراحل النمو الثابتة في 5.5 تتعارض مع المراحل القابلة للضبط في Workflow والمرجع
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict  
+**الأولوية:** Critical before Growth Report / KPI freeze  
+**الأقسام المتأثرة:** 5.5 تقارير النمو + 4.9 النمو والفرز + Settings 6.9 + 5.15 KPIs
+
+**Question Keys:**
+
+```text
+growth_report.stage_model
+growth_report.core_metrics
+growth_sorting.stage_reference_model
+farm_kpi.growth_metrics
+```
+
+**القرارات الحالية:**
+
+```text
+5.5:
+growth_report.stage_model = fixed_standard_age_stages
+→ 45 يومًا / 70 يومًا / 3 أشهر كمراحل ثابتة لكل المزارع
+```
+
+وفي نفس 5.5 توجد مؤشرات باسم:
+
+```text
+weight_at_configured_stages
+gain_between_configured_stages
+```
+
+بينما 4.9 يعتمد:
+
+```text
+growth_sorting.stage_reference_model = reference_configured_sorting_stage
+```
+
+والمرجع الوظيفي ينص صراحة أن أعمار ومراحل النمو نفسها **قابلة للتعديل من الإعدادات** وأن 45/70 يومًا/3 أشهر أمثلة وليست Constants نهائية.
+
+**المشكلة:** لا يمكن أن تكون نفس مراحل التحليل Fixed عالميًا وConfigured حسب التشغيل في الوقت نفسه، كما أن KPI `average_weight_at_sorting_stages` سيتأثر مباشرة بنموذج المرحلة النهائي.
+
+**المطلوب حسمه:** اعتماد مصدر واحد لمراحل النمو التي تستخدمها Workflow والتقارير وKPIs: مراحل Configured، أو مراحل Fixed مع تعديل Workflow/Settings/مصطلحات المؤشرات بما يتوافق معها.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/answers/05-reports/05-growth-reports.md
+questionnaire-export/guides/04-workflow/09-growth-sortings.md
+docs/تصور_مشروع_الارانب.md
+```
+
+---
+
+## OD-059 — غياب بيانات الأداء يعامل كصفر رغم أن المشروع يميز بين Unknown وZero
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict / Data Semantics  
+**الأولوية:** Critical before Productive Performance scoring  
+**الأقسام المتأثرة:** 5.7 أداء الحيوانات الإنتاجية + 3.2 مصدر الحيوان + 3.4 القطيع الافتتاحي
+
+**Question Key:**
+
+```text
+productive_animal_performance.missing_data_handling
+```
+
+**القرار الحالي:**
+
+```text
+treat_missing_as_zero
+```
+
+**المشكلة:** المشروع يعتمد في الحيوانات الخارجية والقطيع الافتتاحي أن التاريخ السابق قد يكون غير معروف أو غير مكتمل، وأن:
+
+```text
+Missing history ≠ Event did not happen
+Unknown ≠ Zero
+```
+
+لكن 5.7 سيحول غياب بيانات مثل حمل/ولادة/فطام/إجهاض/نمو إلى صفر فعلي يدخل في تقييم الحيوان ومقارنته، وهو ما قد يخفض أداء الحيوان لمجرد أن النظام لم يكن يملك تاريخه السابق.
+
+ويصبح الأثر أخطر لأن 5.7 اختار أيضًا `transparent_weighted_composite_score` كتقييم إجمالي؛ أي أن الأصفار الناتجة عن Missing Data قد تدخل مباشرة في الدرجة المركبة.
+
+**المطلوب حسمه:** التمييز الصريح بين القيمة الصفرية الموثقة وبين البيانات غير المتاحة، وتحديد سياسة حساب/استبعاد المؤشر عند نقص البيانات مع إظهار Sample/Data Availability بصورة تمنع المقارنة المضللة.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/answers/05-reports/07-productive-animal-performances.md
+questionnaire-export/guides/03-animal-herd/02-animals.md
+questionnaire-export/guides/03-animal-herd/04-animals.md
+```
+
+---
+
+## OD-060 — الدرجة المركبة لأداء الحيوان معتمدة لكن أوزانها وتطبيعها غير معرفة
+
+**الحالة:** Deferred  
+**النوع:** Requirement Gap / Calculation Model  
+**الأولوية:** High / Before performance classification implementation  
+**الأقسام المتأثرة:** 5.7 + Settings 6.13 عند الحاجة
+
+**Question Key:**
+
+```text
+productive_animal_performance.classification_model
+```
+
+**القرار الحالي:**
+
+```text
+transparent_weighted_composite_score
+→ درجة مركبة من مؤشرات وأوزان واضحة مع إظهار مكوناتها
+```
+
+**غير المحسوم:** لا توجد في 5.7 قرارات تحدد:
+
+```text
+- Weight لكل مؤشر
+- Normalization بين مؤشرات بوحدات ومقاييس مختلفة
+- Direction لكل مؤشر: الأعلى أفضل أم الأقل أفضل
+- Minimum Data Coverage اللازمة لإصدار الدرجة
+- التعامل مع Metric غير متاحة
+- هل توجد أوزان مختلفة حسب Sex / Role / Farm
+```
+
+و6.13 حاليًا غير مجاب عنه، ويركز على Targets/Ranges/Benchmarks ولا توجد إجابة معتمدة بعد تغلق هذا النموذج.
+
+**المطلوب حسمه:** تعريف نموذج Composite Score كامل وقابل للتدقيق قبل اعتباره Classification تنفيذية، مع ربطه صراحة بسياسة Missing Data بعد حسم `OD-059`.
+
+**مصدر التفاصيل:** `questionnaire-export/answers/05-reports/07-productive-animal-performances.md`
+
+---
+
+## OD-061 — 5.9 يفترض أثر Parent مشتقًا دون Child Events بينما 4.16 ينشئ Child Actions مستقلة
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict / Availability Source of Truth  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 5.9 تقارير الإشغال + 4.16 تشغيل المواقع + `OD-052`
+
+**Question Keys:**
+
+```text
+housing_report.parent_site_unavailability_effect
+housing_site_operation.parent_child_history_model
+```
+
+**القرارات الحالية:**
+
+```text
+4.16:
+parent_child_history_model = independent_child_actions
+→ عملية Parent تنشئ Action مستقلة لكل Child متأثر
+```
+
+بينما سؤال 5.9 نفسه يقرر إظهار أثر عدم إتاحة Barn/Battery على المواقع التابعة **دون اعتبار كل قفص حدث صيانة مستقل**، ويصف الشرح الأثر بأنه Derived من Parent.
+
+**المشكلة:** يوجد نموذجان مختلفان لمصدر الحقيقة التاريخي لحالة Child:
+
+```text
+Parent Event → Derived Child Effective Availability
+```
+
+مقابل:
+
+```text
+Parent Event → Independent Child Actions
+```
+
+ولا يجوز أن يحسب التقرير السعة من نموذج يختلف عن التاريخ Canonical المعتمد في Workflow.
+
+**المطلوب حسمه:** توحيد الفرق بين Parent Historical Event، Child Historical Action، وDerived Effective Availability، ثم جعل 5.9 يقرأ المصدر النهائي نفسه بدل افتراض نموذج مستقل.
+
+**ملاحظة:** هذه النقطة توسع أثر `OD-052` ولا تلغيه؛ `OD-052` سيحسم أيضًا تكامل Settings 6.3.
+
+---
+
+## OD-062 — الصفحة التحليلية تخفي البيانات التاريخية الناقصة دون إظهار وجود فجوة
+
+**الحالة:** Open  
+**النوع:** Cross-section Conflict / Information Integrity  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 5.12 الصفحات التحليلية + 3.2 + 3.4 + 5.14 جودة البيانات
+
+**Question Key:**
+
+```text
+analytical_entity_page.incomplete_data_model
+```
+
+**القرار الحالي:**
+
+```text
+hide_missing_sections
+→ إخفاء الأجزاء التي لا تحتوي بيانات دون إظهار وجود فجوة
+```
+
+**المشكلة:** هذا قد يجعل المستخدم غير قادر على التمييز بين:
+
+```text
+Not Applicable
+```
+
+و:
+
+```text
+Applicable but Unknown / Missing / history starts later
+```
+
+بينما المشروع يحافظ صراحة على `History before system start may be incomplete` للحيوانات الافتتاحية، وعلى أن تاريخ الحيوان الخارجي يبدأ من أول Entry موثق، و5.14 نفسها تعتبر نقص البيانات قضية جودة يجب كشفها لا إخفاءها.
+
+**المطلوب حسمه:** فصل حالة `Not Applicable` التي يمكن إخفاؤها عن حالة `Unknown / Incomplete History` التي تحتاج إشارة واضحة، دون اختراع بيانات أو تقديرات لملء الفراغ.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/answers/05-reports/12-analytical-entity-pages.md
+questionnaire-export/guides/03-animal-herd/02-animals.md
+questionnaire-export/guides/03-animal-herd/04-animals.md
+```
+
+---
+
+## OD-063 — سجل التنبيه مطلوب تاريخيًا لكن 5.13 يحتفظ بالحالة الحالية فقط
+
+**الحالة:** Open  
+**النوع:** Blocking Internal Conflict / Audit Integrity  
+**الأولوية:** Critical before Alert model freeze  
+**القسم:** 5.13 التنبيهات والإنذار المبكر
+
+**Question Keys:**
+
+```text
+alert.lifecycle_states
+alert.lifecycle_history_model
+alert.resolution_model
+```
+
+**القرارات الحالية:**
+
+```text
+Lifecycle states:
+new / viewed / under_review / handled / no_longer_active
+```
+
+لكن:
+
+```text
+alert.lifecycle_history_model = current_state_only
+→ يحتفظ النظام بالحالة الحالية فقط
+```
+
+**التعارض الداخلي:** شرح السؤال نفسه ينص أن القسم يحتاج `Alert History` وأن تغيير الحالة لا يجب أن يمحو من شاهد التنبيه أو من راجعه أو متى عولج أو متى زالت الحالة. والمرجع الوظيفي يطلب سجلًا يوضح:
+
+```text
+هل تمت مراجعته؟
+من راجعه؟
+الإجراء المتخذ
+تاريخ الإغلاق
+```
+
+كما أن `auto_close_only_when_condition_clears` يحتاج التمييز تاريخيًا بين المعالجة وبين زوال الشرط.
+
+**المطلوب حسمه:** هل Alert Lifecycle Append-only Events، أم Current State + Key Lifecycle Timestamps/Audit، أم إسقاط Requirement التاريخ؛ ولا يمكن اعتماد `current_state_only` مع متطلبات Audit الحالية في الوقت نفسه.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/answers/05-reports/13-alerts.md
+docs/تصور_مشروع_الارانب.md
+```
+
+---
+
+## OD-064 — فحوص جودة البيانات القابلة للضبط تستخدم قيمة ثابتة عالميًا
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict / Settings Boundary  
+**الأولوية:** Critical before Data Quality rules freeze  
+**الأقسام المتأثرة:** 5.14 جودة البيانات + Settings + 3.1/4.3 حسب الفحص
+
+**Question Key:**
+
+```text
+data_quality_report.rule_driven_checks_model
+```
+
+**القرار الحالي:**
+
+```text
+use_global_fixed_value
+```
+
+لسيناريوهات مثل:
+
+```text
+مدة غياب الوزن التي تجعل الوزن Stale
+العمر/المرحلة التي يصبح بعدها غياب الجنس مشكلة
+```
+
+**التعارض:** نص السؤال نفسه يقرر أن هذه القيم قد تختلف حسب التشغيل ويجب ألا تكون Hardcoded داخل التقرير. كما أن Project Context يضع Targets/Thresholds/Periods القابلة للضبط في Settings، والمرجع الوظيفي يسجل هذه الحدود ضمن «نقاط تحتاج مراجعة» وليس Constants عامة.
+
+**المطلوب حسمه:** هل هذه القيم Configurable Rules من Settings، أم Fixed System Values مقصودة فعليًا؛ وإذا كانت Fixed يجب إعادة توحيد حدود Architecture والشرح والمصدر الذي يثبت قيمتها الفعلية.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/answers/05-reports/14-data-quality-reports.md
+docs/FARM_BLUEPRINT_PROJECT_CONTEXT.md
+docs/تصور_مشروع_الارانب.md
+```
+
+---
+
+## OD-065 — KPIs تنشئ معادلات مستقلة لمؤشرات موجودة بالفعل في التقارير المتخصصة
+
+**الحالة:** Open  
+**النوع:** Blocking Analytical Source-of-Truth Conflict  
+**الأولوية:** Critical before KPI formula freeze  
+**الأقسام المتأثرة:** 5.15 KPIs + 5.2–5.10 التقارير المتخصصة + Settings 6.13
+
+**Question Key:**
+
+```text
+farm_kpi.calculation_source_model
+```
+
+**القرار الحالي:**
+
+```text
+independent_kpi_formula
+→ لكل KPI معادلة مستقلة حتى لو كان له مؤشر مشابه في تقرير متخصص
+```
+
+**المشكلة:** نفس المفهوم موجود بالفعل في تقارير متخصصة، مثل:
+
+```text
+pregnancy_rate
+average_weaning_weight
+average_daily_growth_rate
+mortality_rate
+on_time_task_completion_rate
+cage_occupancy_rate
+projected_capacity_shortage
+```
+
+وبالتالي يسمح القرار الحالي بوجود رقمين مختلفين تحت نفس الاسم بحسب ما إذا فتح المستخدم التقرير المتخصص أو شاشة KPI. وهذا يناقض الغرض المذكور في سؤال 5.15 نفسه: منع منطق حساب موازٍ لنفس المؤشر.
+
+**المطلوب حسمه:** هل KPI يعيد استخدام تعريف المؤشر المتخصص كمصدر حساب واحد، أم يسمح بتعريف مستقل فقط إذا لم يوجد مؤشر سابق، أم أن الاستقلال مقصود ويجب عندها إعطاء المؤشر اسمًا/دلالة مختلفة تمنع اعتباره نفس المقياس.
+
+**ملاحظة:** 6.13 غير مجاب عنه حاليًا، ولا يجوز استخدامه لافتراض Resolution قبل حسم هذه النقطة.
+
+**مصدر التفاصيل:** `questionnaire-export/answers/05-reports/15-farm-kpis.md`
+
+---
+
+## OD-066 — درجة الخطورة الصحية مستخدمة في التقارير دون نموذج قيم معتمد
+
+**الحالة:** Deferred  
+**النوع:** Requirement Gap / Cross-section Integration  
+**الأولوية:** High / Before health analytics and thresholds  
+**الأقسام المتأثرة:** 4.13 الصحة + 5.6 تقارير الصحة + Settings 6.11/6.13 عند الحاجة
+
+**Question Keys:**
+
+```text
+health.observation_record_fields
+health_report.metrics
+health_report.analysis_dimensions
+```
+
+**القرارات الحالية:** `severity` موجودة على Health Observation، و5.6 يعتمد `cases_by_severity` ويستخدم Severity كبعد تحليلي، كما يستخدمها في سياق العزل.
+
+**غير المحسوم:** 4.13 لا يحدد حتى الآن:
+
+```text
+- قيم/مستويات Severity
+- هل القائمة Fixed أم Managed
+- ترتيبها Ordinal
+- هل يمكن مقارنتها عدديًا
+- هل Severity للحالة نفسها تختلف عن Alert Severity
+```
+
+**المشكلة:** لا يمكن تجميع الحالات «حسب الخطورة» أو بناء Thresholds موثوقة دون Semantic Model موحد للقيمة.
+
+**المطلوب حسمه:** تعريف Severity Model الصحي ومصدره، مع فصله صراحة عن مستويات أولوية/خطورة Alert إذا كانا مفهومين مختلفين.
+
+---
+
+## OD-067 — تقرير القرابة يحتاج نموذج حساب وقواعد لم تُحسم بعد
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap / Calculation Requirement  
+**الأولوية:** High / Before kinship analytics  
+**الأقسام المتأثرة:** 3.3 النسب + 4.4 التلقيح + 5.8 تقارير النسب + Settings 6.5
+
+**Question Keys:**
+
+```text
+mating.runtime_kinship_check
+pedigree_report.kinship_analysis_model
+```
+
+**القرارات الحالية:** 4.4 يطلب Runtime Kinship Check، و5.8 يطلب عرض:
+
+```text
+relationship level
++ common ancestry
++ current rule result: allowed / warning / not allowed
+```
+
+**غير المحسوم:** لا توجد إجابات معتمدة حتى الآن تحدد طريقة حساب مستوى القرابة، Depth/Scope البيانات المستخدمة، أو Rules التي تحول العلاقة إلى Allowed/Warning/Blocked. هذه التفاصيل مكانها الطبيعي Pedigree/Settings وليست تقريرًا يخترعها.
+
+**المطلوب حسمه:** نموذج Kinship Computation/Classification ومصدر Rules قبل تحويل 5.8 إلى Requirement حسابي نهائي.
+
+---
+
+## OD-068 — Project Context ما زال يسجل 15 Report Subsections بينما التصدير الحالي يحتوي 16
+
+**الحالة:** Deferred  
+**النوع:** Documentation / Architecture Consistency Gap  
+**الأولوية:** Low / Before final documentation freeze  
+**المصادر المتأثرة:** `FARM_BLUEPRINT_PROJECT_CONTEXT.md` + `questionnaire-export/answers/05-reports/`
+
+**الوضع الحالي:** Project Context ما زال يحتوي:
+
+```text
+Reports = 15
+```
+
+بينما التصدير الحالي يحتوي 16 ملفًا من `5.1` حتى `5.16`، ومنها:
+
+```text
+5.16 خصائص التقارير والتصفية والتصدير
+```
+
+كما أن بعض قائمة أرقام Reports المختصرة داخل Project Context تعكس ترقيمًا أقدم من الشجرة الحالية.
+
+**المشكلة:** لا يخلق ذلك تعارضًا وظيفيًا في الإجابات نفسها، لكنه قد يجعل أي مراجعة لاحقة تعتمد على العدد/الترقيم القديم وتفوت Subsection موجودة فعليًا.
+
+**المطلوب حسمه لاحقًا:** تحديث Project Context/Architecture Documentation ليعكس شجرة Reports الحالية بعد ثباتها، دون تعديل الملف الآن خارج الطلب الحالي.
+
+---
+
+## نقاط القسم الخامس المرتبطة بقرارات مفتوحة سابقة — بدون إنشاء IDs مكررة
+
+### `OD-022` — Genetic Line
+
+5.8 يعتمد `genetic_line_spread` و`individuals_per_line`، لذلك لا يمكن تنفيذ تحليل انتشار الخطوط الوراثية قبل تعريف نموذج `GeneticLine` نفسه في `OD-022`.
+
+### `OD-033` — الأبوة عند تعدد الذكور
+
+أثر القرار يمتد الآن إلى:
+
+```text
+5.3 Male Fertility Metrics
+5.7 Male Performance / Offspring Performance
+5.8 Pedigree / Genetic Spread
+5.12 Male Analytical Page
+```
+
+إسناد حمل أو بطن أو أبناء أو نتائج نمو لذكر معين يجب ألا يتجاوز درجة ثقة الأبوة المعتمدة نهائيًا.
+
+### `OD-042` — مصدر نفوق المواليد أثناء الرضاعة
+
+5.4 و5.6 يعتمدان على فصل وتحليل نفوق ما بعد الولادة وعلى Drilldown إلى Canonical Mortality Records. لذلك يجب حسم مصدر النفوق مرة واحدة قبل تثبيت معدلات النفوق والبقاء وعدم السماح بعد مزدوج.
+
+### `OD-043` — مرحلة النفوق
+
+5.6 و5.15 يعتمدان `mortality_by_stage`. إذا بقيت المرحلة مدخلة يدويًا ستعتمد التحليلات على Snapshot بشرية؛ وإذا أصبحت Derived فيجب أن يستخدم التقرير المصدر المشتق نفسه. لا ينشئ التقرير Stage Logic مستقلة.
+
+### `OD-049` — Presence عند إعادة الدخول
+
+5.1 و5.2 يعتمدان أعداد الحيوانات الموجودة حاليًا وميزان حركة القطيع. توقيت بداية Presence بعد Re-entry سيغير الرصيد الحالي وOpening/Closing Balance، لذلك لا تثبت معادلات الأعداد قبل حسم `OD-049`.
+
+### `OD-050` — Exit مقابل Occupancy
+
+5.2 ميزان القطيع و5.9 السعة والإشغال قد يعرضان حالتين متعارضتين إذا أصبح الحيوان خارج المزرعة بينما Occupancy ما زالت Active. يجب أن تقرأ التقارير State Model النهائي نفسه بعد حسم `OD-050`.
+
+### `OD-052` — Parent / Child Availability
+
+5.9 يعتمد السعة التشغيلية المتاحة، لذلك نتيجة `OD-052` تحدد كيف يحسب التقرير أثر Barn/Battery غير المتاح على الأقفاص التابعة دون مضاعفة Child Actions وDerived Parent Effects.
+
+### `OD-054` — Task Execution State مقابل Schedule State
+
+5.1 و5.10 يعتمدان `Today / Overdue / Completed / Late Completed`. يجب أن تظل Schedule State مشتقة ومنفصلة عن Execution Lifecycle، ويجب أن تستخدم التقارير الـExecution Enum النهائي بعد حسم `OD-054`.
 
 ---
 
