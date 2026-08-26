@@ -3,6 +3,7 @@
 use App\Http\Controllers\Questionnaire\QuestionnaireAnswerController;
 use App\Http\Controllers\Questionnaire\QuestionnairePageController;
 use App\Http\Controllers\Questionnaire\QuestionnaireTechnicalReportController;
+use App\Http\Controllers\Questionnaire\QuestionnaireTreeExportController;
 use Illuminate\Support\Facades\Route;
 
 Route::get('/', [QuestionnairePageController::class, 'home'])->name('home');
@@ -16,6 +17,7 @@ Route::get('/implementation-prep-report', [QuestionnaireTechnicalReportControlle
 Route::get('/implementation-prep-report/download', [QuestionnaireTechnicalReportController::class, 'implementationPrepDownload'])->name('implementation-prep-report.download');
 Route::get('/final-requirements-input', [QuestionnaireTechnicalReportController::class, 'finalRequirementsInputPreview'])->name('final-requirements-input.preview');
 Route::get('/final-requirements-input/download', [QuestionnaireTechnicalReportController::class, 'finalRequirementsInputDownload'])->name('final-requirements-input.download');
+Route::post('/questionnaire-export/tree', QuestionnaireTreeExportController::class)->name('questionnaire-export.tree');
 Route::post('/questionnaire/questions/{question}/answer', [QuestionnaireAnswerController::class, 'store'])->name('questionnaire.answers.store');
 Route::post('/questionnaire/questions/{question}/continue', [QuestionnaireAnswerController::class, 'continue'])->name('questionnaire.answers.continue');
 Route::delete('/study/{mainSection}/{subsection}/questions/{question}/answer', [QuestionnaireAnswerController::class, 'destroy'])->name('study.question.answer.destroy');
