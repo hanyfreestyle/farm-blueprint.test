@@ -4,14 +4,14 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 14:07:25
+- وقت آخر تحديث: 2026-08-26 14:31:21
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
 - الأسئلة القابلة حاليًا: 872
-- الأسئلة المجاب عنها: 471
+- الأسئلة المجاب عنها: 568
 - ملفات الإجابات المصدرة: 75
-- ملفات الشرح الموجودة: 39
+- ملفات الشرح الموجودة: 43
 
 ### معنى الحالات
 
@@ -79,10 +79,10 @@
 | 4.8 | الفطام والتحول إلى التتبع الفردي | [answers/04-workflow/08-weanings.md](answers/04-workflow/08-weanings.md) | ✅ تم التصدير | 12 / 12 | [guides/04-workflow/08-weanings.md](guides/04-workflow/08-weanings.md) | ✅ تم الإنشاء |
 | 4.9 | النمو والفرز وإعادة التقييم | [answers/04-workflow/09-growth-sortings.md](answers/04-workflow/09-growth-sortings.md) | ✅ تم التصدير | 10 / 10 | [guides/04-workflow/09-growth-sortings.md](guides/04-workflow/09-growth-sortings.md) | ✅ تم الإنشاء |
 | 4.10 | تحديد المصير والاستبعاد من المسار | [answers/04-workflow/10-exclusions.md](answers/04-workflow/10-exclusions.md) | ✅ تم التصدير | 11 / 11 | [guides/04-workflow/10-exclusions.md](guides/04-workflow/10-exclusions.md) | ✅ تم الإنشاء |
-| 4.11 | الإحلال والاعتماد داخل القطيع الإنتاجي | [answers/04-workflow/11-replacements.md](answers/04-workflow/11-replacements.md) | ✅ تم التصدير | 11 / 11 | `guides/04-workflow/11-replacements.md` | ❌ لم يتم الإنشاء |
-| 4.12 | التسمين والجاهزية للبيع | [answers/04-workflow/12-fattenings.md](answers/04-workflow/12-fattenings.md) | ✅ تم التصدير | 10 / 10 | `guides/04-workflow/12-fattenings.md` | ❌ لم يتم الإنشاء |
-| 4.13 | الصحة والعزل والتعافي والنفوق | [answers/04-workflow/13-healths.md](answers/04-workflow/13-healths.md) | ✅ تم التصدير | 13 / 13 | `guides/04-workflow/13-healths.md` | ❌ لم يتم الإنشاء |
-| 4.14 | الحالات الاستثنائية وإعادة بناء المسار | [answers/04-workflow/14-workflow-reconstructions.md](answers/04-workflow/14-workflow-reconstructions.md) | ✅ تم التصدير | 13 / 13 | `guides/04-workflow/14-workflow-reconstructions.md` | ❌ لم يتم الإنشاء |
+| 4.11 | الإحلال والاعتماد داخل القطيع الإنتاجي | [answers/04-workflow/11-replacements.md](answers/04-workflow/11-replacements.md) | ✅ تم التصدير | 11 / 11 | [guides/04-workflow/11-replacements.md](guides/04-workflow/11-replacements.md) | ✅ تم الإنشاء |
+| 4.12 | التسمين والجاهزية للبيع | [answers/04-workflow/12-fattenings.md](answers/04-workflow/12-fattenings.md) | ✅ تم التصدير | 10 / 10 | [guides/04-workflow/12-fattenings.md](guides/04-workflow/12-fattenings.md) | ✅ تم الإنشاء |
+| 4.13 | الصحة والعزل والتعافي والنفوق | [answers/04-workflow/13-healths.md](answers/04-workflow/13-healths.md) | ✅ تم التصدير | 13 / 13 | [guides/04-workflow/13-healths.md](guides/04-workflow/13-healths.md) | ✅ تم الإنشاء |
+| 4.14 | الحالات الاستثنائية وإعادة بناء المسار | [answers/04-workflow/14-workflow-reconstructions.md](answers/04-workflow/14-workflow-reconstructions.md) | ✅ تم التصدير | 13 / 13 | [guides/04-workflow/14-workflow-reconstructions.md](guides/04-workflow/14-workflow-reconstructions.md) | ✅ تم الإنشاء |
 | 4.15 | الخروج من المزرعة وإعادة الدخول | [answers/04-workflow/15-farm-exits.md](answers/04-workflow/15-farm-exits.md) | ✅ تم التصدير | 11 / 11 | `guides/04-workflow/15-farm-exits.md` | ❌ لم يتم الإنشاء |
 | 4.16 | تشغيل وصيانة وتجهيز مواقع الإيواء | [answers/04-workflow/16-housing-site-maintenances.md](answers/04-workflow/16-housing-site-maintenances.md) | ✅ تم التصدير | 9 / 9 | `guides/04-workflow/16-housing-site-maintenances.md` | ❌ لم يتم الإنشاء |
 | 4.17 | تنفيذ وإدارة المهام التشغيلية | [answers/04-workflow/17-operational-tasks.md](answers/04-workflow/17-operational-tasks.md) | ✅ تم التصدير | 12 / 12 | `guides/04-workflow/17-operational-tasks.md` | ❌ لم يتم الإنشاء |
@@ -91,14 +91,14 @@
 
 | # | القسم الفرعي | ملف الإجابات | حالة التصدير | التقدم | ملف الشرح | حالة الشرح |
 |---|---|---|---|---|---|---|
-| 5.1 | لوحة التحكم ومتابعة التشغيل اليومي | [answers/05-reports/01-daily-dashboards.md](answers/05-reports/01-daily-dashboards.md) | ✅ تم التصدير | 0 / 12 | `guides/05-reports/01-daily-dashboards.md` | ❌ لم يتم الإنشاء |
-| 5.2 | تقارير القطيع والجاهزية وحركة القطيع | [answers/05-reports/02-herd-reports.md](answers/05-reports/02-herd-reports.md) | ✅ تم التصدير | 0 / 13 | `guides/05-reports/02-herd-reports.md` | ❌ لم يتم الإنشاء |
-| 5.3 | تقارير الخصوبة والتلقيح والحمل | [answers/05-reports/03-fertility-reports.md](answers/05-reports/03-fertility-reports.md) | ✅ تم التصدير | 0 / 12 | `guides/05-reports/03-fertility-reports.md` | ❌ لم يتم الإنشاء |
-| 5.4 | تقارير الولادة والرضاعة والفطام | [answers/05-reports/04-lactation-reports.md](answers/05-reports/04-lactation-reports.md) | ✅ تم التصدير | 0 / 12 | `guides/05-reports/04-lactation-reports.md` | ❌ لم يتم الإنشاء |
-| 5.5 | تقارير النمو والأوزان والتسمين | [answers/05-reports/05-growth-reports.md](answers/05-reports/05-growth-reports.md) | ✅ تم التصدير | 0 / 12 | `guides/05-reports/05-growth-reports.md` | ❌ لم يتم الإنشاء |
-| 5.6 | تقارير الصحة والنفوق والعزل | [answers/05-reports/06-mortality-reports.md](answers/05-reports/06-mortality-reports.md) | ✅ تم التصدير | 0 / 13 | `guides/05-reports/06-mortality-reports.md` | ❌ لم يتم الإنشاء |
-| 5.7 | تحليل أداء الحيوانات الإنتاجية | [answers/05-reports/07-productive-animal-performances.md](answers/05-reports/07-productive-animal-performances.md) | ✅ تم التصدير | 0 / 11 | `guides/05-reports/07-productive-animal-performances.md` | ❌ لم يتم الإنشاء |
-| 5.8 | تقارير النسب والإحلال | [answers/05-reports/08-pedigree-reports.md](answers/05-reports/08-pedigree-reports.md) | ✅ تم التصدير | 0 / 12 | `guides/05-reports/08-pedigree-reports.md` | ❌ لم يتم الإنشاء |
+| 5.1 | لوحة التحكم ومتابعة التشغيل اليومي | [answers/05-reports/01-daily-dashboards.md](answers/05-reports/01-daily-dashboards.md) | ✅ تم التصدير | 12 / 12 | `guides/05-reports/01-daily-dashboards.md` | ❌ لم يتم الإنشاء |
+| 5.2 | تقارير القطيع والجاهزية وحركة القطيع | [answers/05-reports/02-herd-reports.md](answers/05-reports/02-herd-reports.md) | ✅ تم التصدير | 13 / 13 | `guides/05-reports/02-herd-reports.md` | ❌ لم يتم الإنشاء |
+| 5.3 | تقارير الخصوبة والتلقيح والحمل | [answers/05-reports/03-fertility-reports.md](answers/05-reports/03-fertility-reports.md) | ✅ تم التصدير | 12 / 12 | `guides/05-reports/03-fertility-reports.md` | ❌ لم يتم الإنشاء |
+| 5.4 | تقارير الولادة والرضاعة والفطام | [answers/05-reports/04-lactation-reports.md](answers/05-reports/04-lactation-reports.md) | ✅ تم التصدير | 12 / 12 | `guides/05-reports/04-lactation-reports.md` | ❌ لم يتم الإنشاء |
+| 5.5 | تقارير النمو والأوزان والتسمين | [answers/05-reports/05-growth-reports.md](answers/05-reports/05-growth-reports.md) | ✅ تم التصدير | 12 / 12 | `guides/05-reports/05-growth-reports.md` | ❌ لم يتم الإنشاء |
+| 5.6 | تقارير الصحة والنفوق والعزل | [answers/05-reports/06-mortality-reports.md](answers/05-reports/06-mortality-reports.md) | ✅ تم التصدير | 13 / 13 | `guides/05-reports/06-mortality-reports.md` | ❌ لم يتم الإنشاء |
+| 5.7 | تحليل أداء الحيوانات الإنتاجية | [answers/05-reports/07-productive-animal-performances.md](answers/05-reports/07-productive-animal-performances.md) | ✅ تم التصدير | 11 / 11 | `guides/05-reports/07-productive-animal-performances.md` | ❌ لم يتم الإنشاء |
+| 5.8 | تقارير النسب والإحلال | [answers/05-reports/08-pedigree-reports.md](answers/05-reports/08-pedigree-reports.md) | ✅ تم التصدير | 12 / 12 | `guides/05-reports/08-pedigree-reports.md` | ❌ لم يتم الإنشاء |
 | 5.9 | تقارير الإشغال والسعة وتشغيل مواقع الإيواء | [answers/05-reports/09-housing-reports.md](answers/05-reports/09-housing-reports.md) | ✅ تم التصدير | 0 / 12 | `guides/05-reports/09-housing-reports.md` | ❌ لم يتم الإنشاء |
 | 5.10 | تقارير الأداء التشغيلي وتنفيذ المهام | [answers/05-reports/10-operational-task-performance-reports.md](answers/05-reports/10-operational-task-performance-reports.md) | ✅ تم التصدير | 0 / 13 | `guides/05-reports/10-operational-task-performance-reports.md` | ❌ لم يتم الإنشاء |
 | 5.11 | الاتجاهات والمقارنات والتحليل عبر الزمن | [answers/05-reports/11-trends-comparisons-reports.md](answers/05-reports/11-trends-comparisons-reports.md) | ✅ تم التصدير | 0 / 12 | `guides/05-reports/11-trends-comparisons-reports.md` | ❌ لم يتم الإنشاء |
