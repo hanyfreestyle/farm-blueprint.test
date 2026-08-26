@@ -55,13 +55,13 @@ Implementation Boundary
 | القسم الرئيسي | الحالة |
 |---|---|
 | 1. إدارة البيانات الأساسية | Reviewed |
-| 2. هيكل المزرعة | Pending Review |
+| 2. هيكل المزرعة | Reviewed |
 | 3. بيانات الحيوان وتكوين القطيع | Pending Review |
 | 4. الحركات ودورة التشغيل الفعلية | Pending Review |
 | 5. التقارير والتحليلات والتنبيهات ومؤشرات الأداء | Pending Review |
 | 6. الإعدادات وقواعد التشغيل | Pending Review |
 
-> تمت مراجعة الـGuides الحالية للقسم الأول، مع دمج النقاط المتكررة وعدم تحويل حدود التفسير العامة إلى Open Decision إلا عندما كان هناك قرار فعلي ناقص أو تعارض أو فجوة يمكن أن تؤثر على الـBlueprint النهائي.
+> تمت مراجعة الـGuides الحالية للقسمين الأول والثاني، مع دمج النقاط المتكررة وعدم تحويل حدود التفسير العامة إلى Open Decision إلا عندما كان هناك قرار فعلي ناقص أو تعارض أو فجوة يمكن أن تؤثر على الـBlueprint النهائي. مراجعة القسم الثاني وسعت `OD-001` وكشفت أن `OD-004` أصبح محسومًا من خلال قرار صريح في 2.3.
 
 ---
 
@@ -69,12 +69,12 @@ Implementation Boundary
 
 ## Blocking Conflicts
 
-### OD-001 — مكان مواصفات النوع الفيزيائي للقفص
+### OD-001 — مكان مواصفات النوع الفيزيائي للقفص ودور `CagePhysicalType`
 
 **الحالة:** Open  
-**النوع:** Blocking Conflict  
+**النوع:** Blocking Conflict / Cross-section Conflict  
 **الأولوية:** Blocking before Final Requirements  
-**القسم:** 1.16 أنواع الأقفاص الفيزيائية
+**الأقسام المتأثرة:** 1.16 أنواع الأقفاص الفيزيائية + 2.4 بيانات القفص / العين
 
 **Question Keys:**
 
@@ -82,11 +82,15 @@ Implementation Boundary
 cage_physical_type.fields
 cage_physical_type.required_fields
 cage_physical_type.attribute_model
+cage.physical_profile_strategy
+cage.capacity_strategy
 ```
 
 **القرارات الحالية:**
 
 ```text
+1.16:
+
 cage_physical_type.fields
 → dimensions
 → physical_features
@@ -107,20 +111,52 @@ cage_physical_type.attribute_model
 → المواصفات التفصيلية تكون خارج CagePhysicalType
 ```
 
+وفي المقابل قرر قسم 2.4:
+
+```text
+cage.physical_profile_strategy
+= per_cage_physical_specs
+
+→ المواصفات الفيزيائية تسجل مباشرة على القفص
+→ لا يعتمد القرار الحالي على اختيار CagePhysicalType كمرجع لكل Cage
+
+cage.capacity_strategy
+= from_physical_profile_with_pre_activation_override
+
+→ السعة مرتبطة بالمواصفات الفيزيائية الفعلية للقفص
+```
+
 **المشكلة:**
 
-لا يمكن بناء Schema / Requirement نهائي واحد يجمع القرارين في الوقت نفسه. لم يُحسم هل `dimensions` و`default_capacity` و`physical_features` خصائص للنوع الفيزيائي أم خصائص للتكوين الفعلي للبطارية/القفص.
+لم يعد التعارض متعلقًا فقط بمكان `dimensions/default_capacity/physical_features` داخل `CagePhysicalType`، بل أصبح أيضًا متعلقًا **بدور الكيان نفسه في نموذج القفص الفعلي**.
+
+لا يمكن حاليًا تثبيت Requirement نهائي يقرر أيًا من التالي:
+
+```text
+Cage → CagePhysicalType relationship is required
+```
+
+أو:
+
+```text
+Cage has direct physical specifications only
+and does not use CagePhysicalType as its physical source
+```
+
+كما لا يمكن تحديد المصدر النهائي للسعة والمواصفات قبل حسم العلاقة بين القرارات.
 
 **المطلوب حسمه:**
 
 ```text
-A) CagePhysicalType يحمل المواصفات الأساسية
-   → dimensions/default_capacity وربما physical_features تبقى داخله
+A) CagePhysicalType مرجع فعلي للقفص ويحمل أو يساهم في المواصفات الأساسية
+   → يحدد دور dimensions/default_capacity/physical_features داخله
+   → ويحدد هل يسمح Override على Cage
 
 أو
 
-B) CagePhysicalType مجرد اسم/وصف مرجعي
-   → المواصفات تنتقل إلى Battery/Cage Configuration
+B) المواصفات الفيزيائية مباشرة على Cage / Battery Structure
+   → يعاد تقييم دور CagePhysicalType نفسه
+   → ولا تستخدم مواصفاته كمصدر متنافس
 ```
 
 **مصادر التفاصيل:**
@@ -128,6 +164,8 @@ B) CagePhysicalType مجرد اسم/وصف مرجعي
 ```text
 questionnaire-export/guides/01-master-data/16-cage-physical-types.md
 questionnaire-export/answers/01-master-data/16-cage-physical-types.md
+questionnaire-export/guides/02-farm-structure/04-cages.md
+questionnaire-export/answers/02-farm-structure/04-cages.md
 ```
 
 **القرار النهائي:** لم يحسم بعد.
@@ -196,7 +234,7 @@ questionnaire-export/guides/01-master-data/04-breeds.md
 ### OD-003 — حالة السلالة `inactive` غير مضمونة رغم سياسة التعطيل
 
 **الحالة:** Open  
-**النوع:** Lifecycle Conflict  
+**النوع:** Requirement Gap  
 **الأولوية:** High  
 **القسم:** 1.4 بيانات السلالات
 
@@ -250,38 +288,52 @@ questionnaire-export/guides/01-master-data/04-breeds.md
 
 ### OD-004 — طريقة إدارة قاموس الأنواع الفيزيائية للبطاريات
 
-**الحالة:** Open  
-**النوع:** Requirement Gap  
-**الأولوية:** Medium  
-**القسم:** 1.18 الأنواع الفيزيائية للبطاريات
+**الحالة:** Resolved  
+**النوع:** Requirement Gap تم حسمه بقرار عابر بين الأقسام  
+**الأولوية:** Resolved  
+**الأقسام المتأثرة:** 1.18 الأنواع الفيزيائية للبطاريات + 2.3 بيانات البطارية
 
 **Question Keys:**
 
 ```text
-لا يوجد Question Key مستقل يحسم Fixed vs Managed
+1.18 → لم يكن يوجد Question Key مستقل يحسم Fixed vs Managed
+2.3 → battery.physical_type_management
 ```
 
-**الوضع الحالي:**
+**الوضع الذي فتح النقطة:**
 
-`BatteryType` معرف ككيان Master Data مرجعي، لكن مجموعة الأسئلة الحالية لا تحسم صراحة هل القاموس:
+في 1.18 كان `BatteryType` معرفًا ككيان Master Data مرجعي، لكن مجموعة الأسئلة الخاصة به لم تحسم صراحة هل القاموس Fixed أم Managed.
+
+**القرار الذي حسمها:**
+
+قسم 2.3 قرر صراحة:
 
 ```text
-Fixed / system-defined
-أم
-Managed from admin
+battery.physical_type_management
+= managed
+
+Battery Physical Type
+→ Managed Master Data
+→ قابلة للإضافة والتعديل من لوحة التحكم
 ```
 
-**المطلوب حسمه:**
+**القرار النهائي:**
 
-تحديد Management Mode النهائي للقاموس وصلاحية إضافة/تعديل تعريفات جديدة.
+```text
+BatteryType Management Mode = Managed Master Data
+```
 
-**مصدر التفاصيل:**
+يظل هذا القرار خاصًا **بطريقة إدارة القاموس** ولا يحسم Initial Dataset، وهي مسجلة بصورة مستقلة في `OD-005`.
+
+**مصادر التفاصيل:**
 
 ```text
 questionnaire-export/guides/01-master-data/18-battery-types.md
+questionnaire-export/guides/02-farm-structure/03-batteries.md
+questionnaire-export/answers/02-farm-structure/03-batteries.md
 ```
 
-**القرار النهائي:** لم يحسم بعد.
+**Resolved By:** `battery.physical_type_management` في 2.3.
 
 ---
 
@@ -306,7 +358,7 @@ battery_type.initial_values
 
 **المشكلة:**
 
-يمكن اعتماد بنية `BatteryType`، لكن لا يمكن إنشاء Dataset فعلية للأنواع دون اختراع قيم غير مدعومة بالمصدر.
+يمكن اعتماد بنية `BatteryType` وطريقة إدارتها كـManaged Master Data، لكن لا يمكن إنشاء Dataset فعلية للأنواع دون اختراع قيم غير مدعومة بالمصدر.
 
 **المطلوب حسمه:**
 
@@ -618,6 +670,353 @@ questionnaire-export/guides/01-master-data/04-breeds.md
 
 ---
 
+# القسم الثاني — هيكل المزرعة
+
+## Blocking Conflicts
+
+### OD-013 — إلزام علاقات العنبر عند الإنشاء يتعارض مع القرارات المتخصصة
+
+**الحالة:** Open  
+**النوع:** Blocking Conflict  
+**الأولوية:** Blocking before Final Requirements  
+**القسم:** 2.2 بيانات العنبر
+
+**Question Keys:**
+
+```text
+barn.required_fields
+barn.settings_profile_requirement
+barn.ventilation_relation
+barn.cooling_relation
+barn.heating_relation
+```
+
+**القرارات الحالية:**
+
+```text
+barn.required_fields
+→ يعتبر عند إنشاء Barn أن:
+   settings_profile
+   ventilation_system
+   cooling_system
+   heating_system
+   مطلوبة
+```
+
+لكن الأسئلة المتخصصة تقرر:
+
+```text
+barn.settings_profile_requirement
+= required_before_operation
+→ يمكن إنشاء Barn قبل ربط Settings Profile
+
+barn.ventilation_relation
+= optional_multiple
+
+barn.cooling_relation
+= optional_multiple
+
+barn.heating_relation
+= optional_multiple
+```
+
+**المشكلة:**
+
+لا يمكن للعلاقات الأربع أن تكون في الوقت نفسه:
+
+```text
+Required on Create
+```
+
+و:
+
+```text
+Required later / Optional
+```
+
+ولا يمكن تثبيت Validation إنشاء العنبر قبل حسم أي قرار هو المقصود.
+
+**المطلوب حسمه:**
+
+```text
+A) تعديل barn.required_fields
+   → Settings Profile يبقى Required Before Operation
+   → Environment Systems تبقى Optional Multiple
+
+أو
+
+B) اعتماد الإلزام عند الإنشاء
+   → تعديل القرارات المتخصصة لتصبح متوافقة معه
+```
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/guides/02-farm-structure/02-barns.md
+questionnaire-export/answers/02-farm-structure/02-barns.md
+```
+
+**القرار النهائي:** لم يحسم بعد.
+
+---
+
+## Integration / Requirement Gaps
+
+### OD-014 — تعدد ملفات إعدادات التشغيل النشطة للعنبر دون قاعدة دمج أو أولوية
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap  
+**الأولوية:** High / Before Settings model freeze  
+**الأقسام المتأثرة:** 2.2 بيانات العنبر + قسم الإعدادات وقواعد التشغيل
+
+**Question Keys:**
+
+```text
+barn.multiple_active_settings_profiles
+barn.settings_profile_requirement
+```
+
+**القرار الحالي:**
+
+```text
+Barn
+→ يسمح بأكثر من Operational Settings Profile فعال في نفس الوقت
+```
+
+لكن لم يُحسم داخل 2.2:
+
+```text
+- أي Profile له الأولوية إذا تعارضت القيم
+- هل القيم تدمج أم يطبق كل Profile على نطاق مختلف
+- Effective Dates
+- Versioning
+- أي Profile يحكم أي عملية عند وجود أكثر من واحد
+```
+
+**المشكلة:**
+
+السماح بأكثر من Profile فعال يمكن أن ينتج أكثر من قيمة نافذة لنفس القاعدة إذا لم يوجد نظام Scope / Precedence / Resolution واضح.
+
+**المطلوب حسمه لاحقًا:**
+
+يجب أن يقرر قسم Settings النموذج الذي يمنع وجود قاعدتين نهائيتين متعارضتين لنفس السياق، دون افتراض Merge Logic من قسم Barn.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/02-farm-structure/02-barns.md
+```
+
+**القرار النهائي:** مؤجل لمراجعة قسم الإعدادات.
+
+---
+
+### OD-015 — آلية تقاعد البطارية غير ممثلة صراحة ضمن الحالات الحالية
+
+**الحالة:** Open  
+**النوع:** Requirement Gap  
+**الأولوية:** High  
+**القسم:** 2.3 بيانات البطارية
+
+**Question Keys:**
+
+```text
+battery.statuses
+battery.status_management
+battery.physical_reconfiguration_after_history
+battery.delete_policy
+```
+
+**القرارات الحالية:**
+
+```text
+battery.statuses
+→ active
+→ stopped
+→ maintenance
+
+battery.status_management
+= managed
+```
+
+وفي الوقت نفسه:
+
+```text
+battery.physical_reconfiguration_after_history
+→ Retire old Battery + create new Battery
+
+battery.delete_policy
+→ no hard delete / retire or take out of service only
+```
+
+**المشكلة:**
+
+الـLifecycle يعتمد مفهوم `Retire Battery` بصورة صريحة، لكن القيم الحالية لا تتضمن `retired` ولا يوجد قرار متخصص يحدد هل التقاعد:
+
+```text
+- Status محددة
+- Action ينتج حالة Managed جديدة
+- استخدام stopped كحالة نهائية
+- أو آلية Lifecycle مستقلة
+```
+
+كون قائمة الحالات Managed يجعل إضافة قيمة ممكنة، لكنه لا يجعل `retired` قيمة مضمونة أو يحدد معناها تلقائيًا.
+
+**المطلوب حسمه:**
+
+تحديد التمثيل النهائي لتقاعد Battery بما يحافظ على الفرق بين:
+
+```text
+Stopped temporarily
+Maintenance temporarily
+Retired permanently from future operation
+```
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/02-farm-structure/03-batteries.md
+questionnaire-export/answers/02-farm-structure/03-batteries.md
+```
+
+**القرار النهائي:** لم يحسم بعد.
+
+---
+
+### OD-016 — الحالات الإضافية للبطارية Managed لكن دلالتها التشغيلية غير معرفة
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap  
+**الأولوية:** Medium / Before allowing custom statuses  
+**الأقسام المتأثرة:** 2.3 بيانات البطارية + Settings / Lifecycle Rules
+
+**Question Keys:**
+
+```text
+battery.statuses
+battery.status_management
+battery.status_change_requires_empty
+battery.status_change_requires_inactive_cages
+battery.non_operational_child_effect
+```
+
+**القرار الحالي:**
+
+```text
+battery.status_management
+= managed
+
+Initial/current values
+= active / stopped / maintenance
+```
+
+Business Rules الحالية معرّفة صراحة أساسًا للحالات المعروفة مثل `stopped` و`maintenance`.
+
+**المشكلة:**
+
+إذا أضاف المستخدم Status جديدة من لوحة الإدارة، فلا يوجد قرار يحدد:
+
+```text
+- هل تمنع التسكين
+- هل تتطلب إخلاء البطارية
+- هل تتطلب أن تكون الأقفاص غير تشغيلية
+- هل تنتقل عدم الإتاحة إلى الأقفاص التابعة
+- ما الانتقالات المسموحة منها وإليها
+```
+
+ولا يجوز اشتقاق هذه الدلالات من اسم الحالة فقط.
+
+**المطلوب حسمه لاحقًا:**
+
+إما:
+
+```text
+A) تقييد الحالات ذات الدلالة التشغيلية إلى مجموعة System-defined
+```
+
+أو:
+
+```text
+B) السماح بالحالات Managed مع نموذج قواعد يحدد Semantics لكل Status
+```
+
+أو اعتماد نموذج آخر صريح يمنع Status إدارية بلا دلالة تشغيلية معروفة.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/02-farm-structure/03-batteries.md
+```
+
+**القرار النهائي:** مؤجل لحين مراجعة Settings / Lifecycle Rules.
+
+---
+
+## Cross-section Physical Model
+
+> لا توجد نقطة جديدة منفصلة هنا؛ تعارض 2.4 الخاص بتمثيل المواصفات الفيزيائية للقفص تم دمجه داخل `OD-001` حتى لا يتكرر نفس القرار في أكثر من موضع.
+
+---
+
+## Implementation Boundaries
+
+### OD-017 — نطاق السماح بتعديل كود المزرعة بعد بدء التاريخ التشغيلي
+
+**الحالة:** Deferred  
+**النوع:** Implementation Boundary  
+**الأولوية:** Medium / Before identity rules freeze  
+**القسم:** 2.1 بيانات المزرعة
+
+**Question Key:**
+
+```text
+farm.code_strategy
+```
+
+**القرار الحالي:**
+
+```text
+automatic_editable
+
+→ النظام يولد الكود تلقائيًا
+→ المستخدم المخول يستطيع تعديله
+```
+
+**غير المحسوم:**
+
+السؤال لا يحدد **متى تتوقف قابلية التعديل** أو هل تظل متاحة بعد وجود تاريخ تشغيلي وعلاقات كثيرة بالمزرعة.
+
+الاحتمالات غير المحسومة تشمل مثلًا:
+
+```text
+- editable only during creation / before first operation
+- editable later with audit/history
+- editable دائمًا ما دام uniqueness محفوظًا
+```
+
+**المشكلة:**
+
+Farm Code جزء من الهوية التشغيلية الظاهرة، وتغييرها بعد وجود تاريخ قد يؤثر على الروابط البشرية والتقارير والمراجع الخارجية، حتى لو ظلت الـPrimary Key الداخلية ثابتة.
+
+**المطلوب حسمه:**
+
+تحديد Lifecycle واضح لقابلية تعديل Farm Code بعد الإنشاء، مع الحفاظ على `farm.unique_rule` وعدم إعادة كتابة التاريخ بصورة مضللة.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/02-farm-structure/01-farms.md
+```
+
+**القرار النهائي:** مؤجل قبل تثبيت Identity / Audit Requirements.
+
+---
+
 # Resolved Decisions
 
-لا توجد نقاط من هذا السجل تم حسمها بعد.
+## OD-004 — طريقة إدارة قاموس الأنواع الفيزيائية للبطاريات
+
+**الحالة:** Resolved  
+**القرار:** `BatteryType` هي Managed Master Data قابلة للإدارة من لوحة التحكم.  
+**مصدر الحسم:** `battery.physical_type_management` في قسم 2.3 بيانات البطارية.  
+**ملاحظة:** Initial Dataset ما زالت غير محسومة بصورة مستقلة في `OD-005`.
