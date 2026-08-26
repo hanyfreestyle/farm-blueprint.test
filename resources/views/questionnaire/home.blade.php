@@ -23,6 +23,18 @@
 
           @if ($canAccessTechnicalReport)
             <div class="home-actions">
+              <form method="POST" action="{{ route('questionnaire-export.tree') }}" class="m-0">
+                @csrf
+                <button
+                  type="submit"
+                  class="btn btn-questionnaire-secondary"
+                  title="تحديث ملفات questionnaire-export من حالة قاعدة البيانات الحالية"
+                >
+                  <i class="fa-solid fa-arrows-rotate"></i>
+                  <span>تحديث شجرة الأسئلة والإجابات</span>
+                </button>
+              </form>
+
               <a class="btn btn-questionnaire-primary" href="{{ route('technical-report.preview') }}">
                 <i class="fa-solid fa-file-lines"></i>
                 <span>عرض التقرير الفني</span>
@@ -46,6 +58,20 @@
           @endif
         </div>
       </header>
+
+      @if (session('questionnaire_export_success'))
+        <div class="alert alert-success mt-3" role="alert">
+          <i class="fa-solid fa-circle-check me-1"></i>
+          {{ session('questionnaire_export_success') }}
+        </div>
+      @endif
+
+      @if (session('questionnaire_export_error'))
+        <div class="alert alert-danger mt-3" role="alert">
+          <i class="fa-solid fa-triangle-exclamation me-1"></i>
+          {{ session('questionnaire_export_error') }}
+        </div>
+      @endif
 
       <section class="overall-progress-card">
         <div class="overall-progress-head">
