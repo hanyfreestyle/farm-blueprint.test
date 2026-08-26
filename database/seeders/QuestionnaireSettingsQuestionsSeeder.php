@@ -11,6 +11,7 @@ use Database\Seeders\Questions\Settings\HousingHerdReadinessRulesQuestionsSeeder
 use Database\Seeders\Questions\Settings\HousingSiteOperatingRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\MatingFertilityReadinessRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\PregnancyCheckGestationBirthPreparationRulesQuestionsSeeder;
+use Database\Seeders\Questions\Settings\ReportKpiTargetsSettingsQuestionsSeeder;
 use Database\Seeders\Questions\Settings\SettingsScopeArchitectureQuestionsSeeder;
 use Database\Seeders\Questions\Settings\TaskAlertSchedulingPriorityRulesQuestionsSeeder;
 use Database\Seeders\Questions\Settings\WeaningIndividualTrackingRulesQuestionsSeeder;
@@ -36,6 +37,7 @@ class QuestionnaireSettingsQuestionsSeeder extends Seeder
             FatteningSaleReadinessRulesQuestionsSeeder::class,
             HealthIsolationMortalityExceptionRulesQuestionsSeeder::class,
             TaskAlertSchedulingPriorityRulesQuestionsSeeder::class,
+            ReportKpiTargetsSettingsQuestionsSeeder::class,
         ]);
     }
 }
