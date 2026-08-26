@@ -4,14 +4,14 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 12:24:09
+- وقت آخر تحديث: 2026-08-26 12:52:58
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
-- الأسئلة القابلة حاليًا: 826
-- الأسئلة المجاب عنها: 239
+- الأسئلة القابلة حاليًا: 850
+- الأسئلة المجاب عنها: 284
 - ملفات الإجابات المصدرة: 75
-- ملفات الشرح الموجودة: 21
+- ملفات الشرح الموجودة: 24
 
 ### معنى الحالات
 
@@ -51,19 +51,19 @@
 | # | القسم الفرعي | ملف الإجابات | حالة التصدير | التقدم | ملف الشرح | حالة الشرح |
 |---|---|---|---|---|---|---|
 | 2.1 | بيانات المزرعة | [answers/02-farm-structure/01-farms.md](answers/02-farm-structure/01-farms.md) | ✅ تم التصدير | 10 / 10 | [guides/02-farm-structure/01-farms.md](guides/02-farm-structure/01-farms.md) | ✅ تم الإنشاء |
-| 2.2 | بيانات العنبر | [answers/02-farm-structure/02-barns.md](answers/02-farm-structure/02-barns.md) | ✅ تم التصدير | 22 / 22 | `guides/02-farm-structure/02-barns.md` | ❌ لم يتم الإنشاء |
-| 2.3 | بيانات البطارية | [answers/02-farm-structure/03-batteries.md](answers/02-farm-structure/03-batteries.md) | ✅ تم التصدير | 45 / 45 | `guides/02-farm-structure/03-batteries.md` | ❌ لم يتم الإنشاء |
-| 2.4 | بيانات القفص / العين | [answers/02-farm-structure/04-cages.md](answers/02-farm-structure/04-cages.md) | ✅ تم التصدير | 25 / 25 | `guides/02-farm-structure/04-cages.md` | ❌ لم يتم الإنشاء |
+| 2.2 | بيانات العنبر | [answers/02-farm-structure/02-barns.md](answers/02-farm-structure/02-barns.md) | ✅ تم التصدير | 22 / 22 | [guides/02-farm-structure/02-barns.md](guides/02-farm-structure/02-barns.md) | ✅ تم الإنشاء |
+| 2.3 | بيانات البطارية | [answers/02-farm-structure/03-batteries.md](answers/02-farm-structure/03-batteries.md) | ✅ تم التصدير | 45 / 45 | [guides/02-farm-structure/03-batteries.md](guides/02-farm-structure/03-batteries.md) | ✅ تم الإنشاء |
+| 2.4 | بيانات القفص / العين | [answers/02-farm-structure/04-cages.md](answers/02-farm-structure/04-cages.md) | ✅ تم التصدير | 25 / 25 | [guides/02-farm-structure/04-cages.md](guides/02-farm-structure/04-cages.md) | ✅ تم الإنشاء |
 
 ## 3. بيانات الحيوان وتكوين القطيع
 
 | # | القسم الفرعي | ملف الإجابات | حالة التصدير | التقدم | ملف الشرح | حالة الشرح |
 |---|---|---|---|---|---|---|
-| 3.1 | بيانات وهوية الحيوان | [answers/03-animal-herd/01-animals.md](answers/03-animal-herd/01-animals.md) | ✅ تم التصدير | 0 / 1 | `guides/03-animal-herd/01-animals.md` | ❌ لم يتم الإنشاء |
-| 3.2 | مصدر الحيوان وبداية السجل | [answers/03-animal-herd/02-animals.md](answers/03-animal-herd/02-animals.md) | ✅ تم التصدير | 0 / 1 | `guides/03-animal-herd/02-animals.md` | ❌ لم يتم الإنشاء |
-| 3.3 | النسب وشجرة العائلة | [answers/03-animal-herd/03-animals.md](answers/03-animal-herd/03-animals.md) | ✅ تم التصدير | 0 / 9 | `guides/03-animal-herd/03-animals.md` | ❌ لم يتم الإنشاء |
-| 3.4 | القطيع الافتتاحي وتهيئة نقطة البداية | [answers/03-animal-herd/04-animals.md](answers/03-animal-herd/04-animals.md) | ✅ تم التصدير | 0 / 9 | `guides/03-animal-herd/04-animals.md` | ❌ لم يتم الإنشاء |
-| 3.5 | تكوين القطيع الإنتاجي وتنظيم المجموعات | [answers/03-animal-herd/05-production-groups.md](answers/03-animal-herd/05-production-groups.md) | ✅ تم التصدير | 0 / 1 | `guides/03-animal-herd/05-production-groups.md` | ❌ لم يتم الإنشاء |
+| 3.1 | بيانات وهوية الحيوان | [answers/03-animal-herd/01-animals.md](answers/03-animal-herd/01-animals.md) | ✅ تم التصدير | 9 / 9 | `guides/03-animal-herd/01-animals.md` | ❌ لم يتم الإنشاء |
+| 3.2 | مصدر الحيوان وبداية السجل | [answers/03-animal-herd/02-animals.md](answers/03-animal-herd/02-animals.md) | ✅ تم التصدير | 7 / 7 | `guides/03-animal-herd/02-animals.md` | ❌ لم يتم الإنشاء |
+| 3.3 | النسب وشجرة العائلة | [answers/03-animal-herd/03-animals.md](answers/03-animal-herd/03-animals.md) | ✅ تم التصدير | 9 / 9 | `guides/03-animal-herd/03-animals.md` | ❌ لم يتم الإنشاء |
+| 3.4 | القطيع الافتتاحي وتهيئة نقطة البداية | [answers/03-animal-herd/04-animals.md](answers/03-animal-herd/04-animals.md) | ✅ تم التصدير | 10 / 10 | `guides/03-animal-herd/04-animals.md` | ❌ لم يتم الإنشاء |
+| 3.5 | تكوين القطيع الإنتاجي وتنظيم المجموعات | [answers/03-animal-herd/05-production-groups.md](answers/03-animal-herd/05-production-groups.md) | ✅ تم التصدير | 10 / 10 | `guides/03-animal-herd/05-production-groups.md` | ❌ لم يتم الإنشاء |
 
 ## 4. الحركات ودورة التشغيل الفعلية
 
