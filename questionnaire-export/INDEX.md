@@ -4,14 +4,14 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 13:10:19
+- وقت آخر تحديث: 2026-08-26 13:15:41
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
-- الأسئلة القابلة حاليًا: 861
-- الأسئلة المجاب عنها: 324
+- الأسئلة القابلة حاليًا: 864
+- الأسئلة المجاب عنها: 336
 - ملفات الإجابات المصدرة: 75
-- ملفات الشرح الموجودة: 28
+- ملفات الشرح الموجودة: 29
 
 ### معنى الحالات
 
@@ -63,7 +63,7 @@
 | 3.2 | مصدر الحيوان وبداية السجل | [answers/03-animal-herd/02-animals.md](answers/03-animal-herd/02-animals.md) | ✅ تم التصدير | 7 / 7 | [guides/03-animal-herd/02-animals.md](guides/03-animal-herd/02-animals.md) | ✅ تم الإنشاء |
 | 3.3 | النسب وشجرة العائلة | [answers/03-animal-herd/03-animals.md](answers/03-animal-herd/03-animals.md) | ✅ تم التصدير | 9 / 9 | [guides/03-animal-herd/03-animals.md](guides/03-animal-herd/03-animals.md) | ✅ تم الإنشاء |
 | 3.4 | القطيع الافتتاحي وتهيئة نقطة البداية | [answers/03-animal-herd/04-animals.md](answers/03-animal-herd/04-animals.md) | ✅ تم التصدير | 10 / 10 | [guides/03-animal-herd/04-animals.md](guides/03-animal-herd/04-animals.md) | ✅ تم الإنشاء |
-| 3.5 | تكوين القطيع الإنتاجي وتنظيم المجموعات | [answers/03-animal-herd/05-production-groups.md](answers/03-animal-herd/05-production-groups.md) | ✅ تم التصدير | 10 / 10 | `guides/03-animal-herd/05-production-groups.md` | ❌ لم يتم الإنشاء |
+| 3.5 | تكوين القطيع الإنتاجي وتنظيم المجموعات | [answers/03-animal-herd/05-production-groups.md](answers/03-animal-herd/05-production-groups.md) | ✅ تم التصدير | 10 / 10 | [guides/03-animal-herd/05-production-groups.md](guides/03-animal-herd/05-production-groups.md) | ✅ تم الإنشاء |
 
 ## 4. الحركات ودورة التشغيل الفعلية
 
@@ -73,7 +73,7 @@
 | 4.2 | التسكين والنقل والإخلاء وإدارة الإشغال | [answers/04-workflow/02-housing-movements.md](answers/04-workflow/02-housing-movements.md) | ✅ تم التصدير | 10 / 10 | `guides/04-workflow/02-housing-movements.md` | ❌ لم يتم الإنشاء |
 | 4.3 | الوزن والقياسات التشغيلية | [answers/04-workflow/03-operational-measurements.md](answers/04-workflow/03-operational-measurements.md) | ✅ تم التصدير | 8 / 8 | `guides/04-workflow/03-operational-measurements.md` | ❌ لم يتم الإنشاء |
 | 4.4 | التلقيح وإدارة المحاولات | [answers/04-workflow/04-matings.md](answers/04-workflow/04-matings.md) | ✅ تم التصدير | 12 / 12 | `guides/04-workflow/04-matings.md` | ❌ لم يتم الإنشاء |
-| 4.5 | فحص الحمل ومتابعة الحمل وتجهيز الولادة | [answers/04-workflow/05-pregnancy-checks.md](answers/04-workflow/05-pregnancy-checks.md) | ✅ تم التصدير | 0 / 9 | `guides/04-workflow/05-pregnancy-checks.md` | ❌ لم يتم الإنشاء |
+| 4.5 | فحص الحمل ومتابعة الحمل وتجهيز الولادة | [answers/04-workflow/05-pregnancy-checks.md](answers/04-workflow/05-pregnancy-checks.md) | ✅ تم التصدير | 12 / 12 | `guides/04-workflow/05-pregnancy-checks.md` | ❌ لم يتم الإنشاء |
 | 4.6 | تسجيل الولادة وإنشاء البطن | [answers/04-workflow/06-births.md](answers/04-workflow/06-births.md) | ✅ تم التصدير | 0 / 9 | `guides/04-workflow/06-births.md` | ❌ لم يتم الإنشاء |
 | 4.7 | الرضاعة ومتابعة البطن وتداخل دورات الأم | [answers/04-workflow/07-lactations.md](answers/04-workflow/07-lactations.md) | ✅ تم التصدير | 0 / 8 | `guides/04-workflow/07-lactations.md` | ❌ لم يتم الإنشاء |
 | 4.8 | الفطام والتحول إلى التتبع الفردي | [answers/04-workflow/08-weanings.md](answers/04-workflow/08-weanings.md) | ✅ تم التصدير | 0 / 12 | `guides/04-workflow/08-weanings.md` | ❌ لم يتم الإنشاء |
