@@ -56,20 +56,18 @@ Implementation Boundary
 |---|---|
 | 1. إدارة البيانات الأساسية | Reviewed |
 | 2. هيكل المزرعة | Reviewed |
-| 3. بيانات الحيوان وتكوين القطيع | Pending Review |
+| 3. بيانات الحيوان وتكوين القطيع | Reviewed |
 | 4. الحركات ودورة التشغيل الفعلية | Pending Review |
 | 5. التقارير والتحليلات والتنبيهات ومؤشرات الأداء | Pending Review |
 | 6. الإعدادات وقواعد التشغيل | Pending Review |
 
-> تمت مراجعة الـGuides الحالية للقسمين الأول والثاني، مع دمج النقاط المتكررة وعدم تحويل حدود التفسير العامة إلى Open Decision إلا عندما كان هناك قرار فعلي ناقص أو تعارض أو فجوة يمكن أن تؤثر على الـBlueprint النهائي. مراجعة القسم الثاني وسعت `OD-001` وكشفت أن `OD-004` أصبح محسومًا من خلال قرار صريح في 2.3.
+> تمت مراجعة الـGuides الحالية للأقسام 1 و2 و3. يتم دمج النقاط المتكررة، ولا تُحوّل حدود التفسير العامة إلى Open Decision إلا إذا كانت تؤثر على Requirement نهائي أو تمنع ربط الأقسام ببعضها بصورة واضحة.
 
 ---
 
 # القسم الأول — إدارة البيانات الأساسية
 
-## Blocking Conflicts
-
-### OD-001 — مكان مواصفات النوع الفيزيائي للقفص ودور `CagePhysicalType`
+## OD-001 — مكان مواصفات النوع الفيزيائي للقفص ودور `CagePhysicalType`
 
 **الحالة:** Open  
 **النوع:** Blocking Conflict / Cross-section Conflict  
@@ -90,91 +88,37 @@ cage.capacity_strategy
 
 ```text
 1.16:
+fields → dimensions + physical_features + default_capacity
+required_fields → dimensions + default_capacity
+attribute_model = name_description_only
 
-cage_physical_type.fields
-→ dimensions
-→ physical_features
-→ default_capacity
-موجودة ضمن خصائص النوع
-
-cage_physical_type.required_fields
-→ dimensions
-→ default_capacity
-إلزامية داخل النوع
-
-لكن:
-
-cage_physical_type.attribute_model
-= name_description_only
-
-→ النوع الفيزيائي يحتفظ بالاسم والوصف فقط
-→ المواصفات التفصيلية تكون خارج CagePhysicalType
+2.4:
+cage.physical_profile_strategy = per_cage_physical_specs
+cage.capacity_strategy = from_physical_profile_with_pre_activation_override
 ```
 
-وفي المقابل قرر قسم 2.4:
-
-```text
-cage.physical_profile_strategy
-= per_cage_physical_specs
-
-→ المواصفات الفيزيائية تسجل مباشرة على القفص
-→ لا يعتمد القرار الحالي على اختيار CagePhysicalType كمرجع لكل Cage
-
-cage.capacity_strategy
-= from_physical_profile_with_pre_activation_override
-
-→ السعة مرتبطة بالمواصفات الفيزيائية الفعلية للقفص
-```
-
-**المشكلة:**
-
-لم يعد التعارض متعلقًا فقط بمكان `dimensions/default_capacity/physical_features` داخل `CagePhysicalType`، بل أصبح أيضًا متعلقًا **بدور الكيان نفسه في نموذج القفص الفعلي**.
-
-لا يمكن حاليًا تثبيت Requirement نهائي يقرر أيًا من التالي:
-
-```text
-Cage → CagePhysicalType relationship is required
-```
-
-أو:
-
-```text
-Cage has direct physical specifications only
-and does not use CagePhysicalType as its physical source
-```
-
-كما لا يمكن تحديد المصدر النهائي للسعة والمواصفات قبل حسم العلاقة بين القرارات.
+**المشكلة:** لا يمكن تثبيت المصدر النهائي للمواصفات والسعة، ولا تحديد هل `CagePhysicalType` مرجع فعلي للقفص أم أن المواصفات تعيش مباشرة على القفص/تكوين البطارية.
 
 **المطلوب حسمه:**
 
 ```text
-A) CagePhysicalType مرجع فعلي للقفص ويحمل أو يساهم في المواصفات الأساسية
-   → يحدد دور dimensions/default_capacity/physical_features داخله
-   → ويحدد هل يسمح Override على Cage
-
+A) CagePhysicalType مرجع فعلي ويحمل/يساهم في المواصفات والسعة
 أو
-
-B) المواصفات الفيزيائية مباشرة على Cage / Battery Structure
-   → يعاد تقييم دور CagePhysicalType نفسه
-   → ولا تستخدم مواصفاته كمصدر متنافس
+B) المواصفات مباشرة على Cage / Battery Structure ويعاد تقييم دور CagePhysicalType
 ```
 
 **مصادر التفاصيل:**
 
 ```text
 questionnaire-export/guides/01-master-data/16-cage-physical-types.md
-questionnaire-export/answers/01-master-data/16-cage-physical-types.md
 questionnaire-export/guides/02-farm-structure/04-cages.md
-questionnaire-export/answers/02-farm-structure/04-cages.md
 ```
 
 **القرار النهائي:** لم يحسم بعد.
 
 ---
 
-## Semantic / Lifecycle Conflicts
-
-### OD-002 — `متعدد الأغراض` مقابل ربط السلالة بأكثر من غرض إنتاجي
+## OD-002 — `متعدد الأغراض` مقابل ربط السلالة بأكثر من غرض إنتاجي
 
 **الحالة:** Open  
 **النوع:** Semantic Overlap  
@@ -188,37 +132,15 @@ production_purpose.initial_values
 breed.multiple_production_purposes
 ```
 
-**القرارات الحالية:**
-
-```text
-ProductionPurpose Initial Dataset
-→ يوجد تعريف مستقل: multi_purpose / متعدد الأغراض
-
-وفي نفس الوقت:
-
-Breed
-→ يسمح بربط السلالة بأكثر من ProductionPurpose Record
-```
-
-**المشكلة:**
-
-يوجد احتمال لتمثيل نفس المعنى بطريقتين:
+**المشكلة:** يمكن تمثيل السلالة متعددة الأغراض بطريقتين متداخلتين:
 
 ```text
 Breed → [meat, breeding_production]
-```
-
-مقابل:
-
-```text
+أو
 Breed → [multi_purpose]
 ```
 
-وقد يؤدي ذلك إلى غموض في البحث والتقارير والقواعد التي تعتمد على الغرض الإنتاجي.
-
-**المطلوب حسمه:**
-
-هل `multi_purpose` غرض مستقل له معنى وظيفي خاص، أم أن تعدد علاقات السلالة مع الأغراض يغني عنه، أم يسمح بالنموذجين مع تعريف واضح للفرق بينهما.
+**المطلوب حسمه:** هل `multi_purpose` غرض مستقل بمعنى وظيفي خاص، أم أن تعدد العلاقات يغني عنه، أم يسمح بالنموذجين مع تعريف الفرق.
 
 **مصادر التفاصيل:**
 
@@ -231,7 +153,7 @@ questionnaire-export/guides/01-master-data/04-breeds.md
 
 ---
 
-### OD-003 — حالة السلالة `inactive` غير مضمونة رغم سياسة التعطيل
+## OD-003 — حالة السلالة `inactive` غير مضمونة رغم سياسة التعطيل
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
@@ -246,33 +168,9 @@ breed.status_management
 breed.retirement_policy
 ```
 
-**القرارات الحالية:**
+**الوضع الحالي:** `breed.statuses` يحتوي `active` فقط، بينما `retirement_policy = disable_only` يفترض وجود معنى واضح لـ`inactive`.
 
-```text
-breed.statuses
-→ active فقط ضمن القيم الحالية
-
-breed.status_management
-→ managed
-
-breed.retirement_policy
-→ disable_only
-→ السلالة تتحول إلى غير نشطة عند إخراجها من الاستخدام
-```
-
-**المشكلة:**
-
-سياسة التقاعد تحتاج حالة `inactive` أو معنى مكافئًا مضمون الوجود، بينما القائمة الأساسية الحالية لا تضمن إلا `active`. كون القائمة Managed لا يحسم هل `inactive` قيمة System-required أم قيمة يجب أن ينشئها المستخدم يدويًا.
-
-**المطلوب حسمه:**
-
-تحديد ما إذا كانت `inactive`:
-
-```text
-- حالة أساسية ثابتة يضمنها النظام
-- قيمة مبدئية تضاف للقائمة Managed
-- أو أن التعطيل يمثل بآلية أخرى غير status value
-```
+**المطلوب حسمه:** هل `inactive` حالة System-required، أم قيمة مبدئية في القائمة Managed، أم أن التعطيل يمثل بآلية منفصلة عن Status.
 
 **مصدر التفاصيل:**
 
@@ -284,85 +182,36 @@ questionnaire-export/guides/01-master-data/04-breeds.md
 
 ---
 
-## Requirement Gaps
-
-### OD-004 — طريقة إدارة قاموس الأنواع الفيزيائية للبطاريات
+## OD-004 — طريقة إدارة قاموس الأنواع الفيزيائية للبطاريات
 
 **الحالة:** Resolved  
-**النوع:** Requirement Gap تم حسمه بقرار عابر بين الأقسام  
-**الأولوية:** Resolved  
-**الأقسام المتأثرة:** 1.18 الأنواع الفيزيائية للبطاريات + 2.3 بيانات البطارية
+**النوع:** Requirement Gap تم حسمه عابرًا بين الأقسام  
+**الأقسام المتأثرة:** 1.18 + 2.3
 
-**Question Keys:**
-
-```text
-1.18 → لم يكن يوجد Question Key مستقل يحسم Fixed vs Managed
-2.3 → battery.physical_type_management
-```
-
-**الوضع الذي فتح النقطة:**
-
-في 1.18 كان `BatteryType` معرفًا ككيان Master Data مرجعي، لكن مجموعة الأسئلة الخاصة به لم تحسم صراحة هل القاموس Fixed أم Managed.
-
-**القرار الذي حسمها:**
-
-قسم 2.3 قرر صراحة:
+**مصدر الحسم:**
 
 ```text
-battery.physical_type_management
-= managed
-
-Battery Physical Type
-→ Managed Master Data
-→ قابلة للإضافة والتعديل من لوحة التحكم
+battery.physical_type_management = managed
 ```
 
-**القرار النهائي:**
+**القرار النهائي:** `BatteryType` هي Managed Master Data قابلة للإدارة من لوحة التحكم.
 
-```text
-BatteryType Management Mode = Managed Master Data
-```
-
-يظل هذا القرار خاصًا **بطريقة إدارة القاموس** ولا يحسم Initial Dataset، وهي مسجلة بصورة مستقلة في `OD-005`.
-
-**مصادر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/18-battery-types.md
-questionnaire-export/guides/02-farm-structure/03-batteries.md
-questionnaire-export/answers/02-farm-structure/03-batteries.md
-```
-
-**Resolved By:** `battery.physical_type_management` في 2.3.
+**ملاحظة:** Initial Dataset ما زالت مفتوحة في `OD-005`.
 
 ---
 
-### OD-005 — لا توجد Initial Dataset معتمدة للأنواع الفيزيائية للبطاريات
+## OD-005 — لا توجد Initial Dataset معتمدة للأنواع الفيزيائية للبطاريات
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
 **الأولوية:** Medium  
-**القسم:** 1.18 الأنواع الفيزيائية للبطاريات
+**القسم:** 1.18
 
-**Question Key:**
+**Question Key:** `battery_type.initial_values`
 
-```text
-battery_type.initial_values
-```
+**الوضع الحالي:** لا توجد قيم مبدئية محددة.
 
-**القرار الحالي:**
-
-```text
-لا توجد قيم مبدئية محددة حاليًا
-```
-
-**المشكلة:**
-
-يمكن اعتماد بنية `BatteryType` وطريقة إدارتها كـManaged Master Data، لكن لا يمكن إنشاء Dataset فعلية للأنواع دون اختراع قيم غير مدعومة بالمصدر.
-
-**المطلوب حسمه:**
-
-اعتماد أسماء/قيم الأنواع الفيزيائية التي يجب أن تبدأ بها المنظومة، أو اعتماد قرار صريح بأن القائمة تبدأ فارغة ويتم إدخالها ميدانيًا.
+**المطلوب حسمه:** اعتماد قيم البداية أو اعتماد أن القاموس يبدأ فارغًا ويُملأ إداريًا.
 
 **مصدر التفاصيل:**
 
@@ -370,36 +219,18 @@ battery_type.initial_values
 questionnaire-export/guides/01-master-data/18-battery-types.md
 ```
 
-**القرار النهائي:** لم يحسم بعد.
-
 ---
 
-### OD-006 — طريقة إدارة قاموس أنواع المهام التشغيلية
+## OD-006 — طريقة إدارة قاموس أنواع المهام التشغيلية
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
 **الأولوية:** Medium  
-**القسم:** 1.19 أنواع المهام التشغيلية
+**القسم:** 1.19
 
-**Question Keys:**
+**الوضع الحالي:** توجد 35 قيمة مبدئية، لكن لا يوجد Question Key يحسم هل `OperationalTaskType` Fixed أم Managed.
 
-```text
-لا يوجد Question Key مستقل يحسم Fixed vs Managed
-```
-
-**الوضع الحالي:**
-
-تم اعتماد 35 نوع مهمة مبدئيًا، لكن لم يحسم هل `OperationalTaskType`:
-
-```text
-Fixed / system-defined catalogue
-أم
-Managed from admin
-```
-
-**المطلوب حسمه:**
-
-تحديد Management Mode النهائي، مع مراعاة أن تعريف نوع المهمة مستقل عن قواعد توليد المهمة في Settings وعن المهمة الفعلية في Workflow.
+**المطلوب حسمه:** Management Mode النهائي للقاموس.
 
 **مصدر التفاصيل:**
 
@@ -407,18 +238,16 @@ Managed from admin
 questionnaire-export/guides/01-master-data/19-operational-task-types.md
 ```
 
-**القرار النهائي:** لم يحسم بعد.
-
 ---
 
-### OD-007 — Mapping أنواع المهام إلى التصنيفات غير محسوم
+## OD-007 — Mapping أنواع المهام إلى التصنيفات غير محسوم
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
 **الأولوية:** Medium  
-**القسم:** 1.19 أنواع المهام التشغيلية
+**القسم:** 1.19
 
-**Question Keys ذات الصلة:**
+**Question Keys:**
 
 ```text
 operational_task_type.fields
@@ -426,255 +255,85 @@ operational_task_type.categories
 operational_task_type.initial_values
 ```
 
-**القرارات الحالية:**
+**الوضع الحالي:** تم اعتماد 9 تصنيفات و35 نوع مهمة، لكن لا يوجد Mapping معتمد بينها، كما لم تُحسم Cardinality التصنيف.
 
-تم اعتماد:
-
-```text
-9 Task Categories
-35 Initial Task Types
-```
-
-لكن لا يوجد قرار يحدد:
-
-```text
-أي Task Type يتبع أي Category
-```
-
-كما لم تحسم Cardinality العلاقة هل النوع يملك Category واحدة فقط أم أكثر، ووجود `category` كحقل لا يكفي وحده لاستنتاج النموذج النهائي.
-
-**المطلوب حسمه:**
-
-- Mapping الفعلي للأنواع المبدئية إلى التصنيفات.
-- Cardinality النهائية للتصنيف.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/19-operational-task-types.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
+**المطلوب حسمه:** تحديد Category لكل نوع مبدئي وهل النوع يتبع تصنيفًا واحدًا أم أكثر.
 
 ---
 
-### OD-008 — طريقة إدارة قاموس أسباب العزل
+## OD-008 — طريقة إدارة قاموس أسباب العزل
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
 **الأولوية:** Medium  
-**القسم:** 1.20 أسباب العزل
+**القسم:** 1.20
 
-**Question Keys:**
+**الوضع الحالي:** `IsolationReason` قاموس مرجعي لكن Fixed vs Managed غير محسوم.
 
-```text
-لا يوجد Question Key مستقل يحسم Fixed vs Managed
-```
-
-**الوضع الحالي:**
-
-`IsolationReason` معرف كقاموس مرجعي، لكن لا يوجد قرار صريح يحدد هل القيم ثابتة في النظام أم قابلة للإدارة من لوحة التحكم.
-
-**المطلوب حسمه:**
-
-تحديد Management Mode النهائي للقاموس.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/20-isolation-reasons.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
+**المطلوب حسمه:** Management Mode النهائي.
 
 ---
 
-### OD-009 — لا توجد Initial Dataset معتمدة لأسباب العزل
+## OD-009 — لا توجد Initial Dataset معتمدة لأسباب العزل
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
 **الأولوية:** High  
-**القسم:** 1.20 أسباب العزل
+**القسم:** 1.20
 
-**Question Key:**
+**Question Key:** `isolation_reason.initial_values`
 
-```text
-isolation_reason.initial_values
-```
-
-**القرار الحالي:**
-
-```text
-غير محدد
-```
-
-**المشكلة:**
-
-البنية المرجعية محسومة، لكن لا توجد أسباب عزل فعلية يمكن Seedها دون اختراع متطلبات طبية/تشغيلية غير معتمدة.
-
-**المطلوب حسمه:**
-
-اعتماد Initial Dataset لأسباب العزل الصحي، أو اعتماد قرار صريح بأن القاموس يبدأ فارغًا ويتم إدخاله إداريًا.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/20-isolation-reasons.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
+**المطلوب حسمه:** اعتماد أسباب العزل الصحي المبدئية أو اعتماد أن القاموس يبدأ فارغًا.
 
 ---
 
-### OD-010 — لا توجد Initial Dataset معتمدة لتصنيفات المشاكل الصحية
+## OD-010 — لا توجد Initial Dataset معتمدة لتصنيفات المشاكل الصحية
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
 **الأولوية:** High  
-**القسم:** 1.21 تصنيفات المشاكل / الملاحظات الصحية
+**القسم:** 1.21
 
-**Question Key:**
+**Question Key:** `health_problem_category.initial_values`
 
-```text
-health_problem_category.initial_values
-```
-
-**القرار الحالي:**
-
-```text
-غير محدد حاليًا
-```
-
-**المشكلة:**
-
-تم حسم بنية القاموس ومستوى التفصيل ودعم أكثر من تصنيف للحالة الصحية، لكن لا توجد قائمة أولية معتمدة يمكن استخدامها في Seed أو Requirements للبيانات المبدئية.
-
-**المطلوب حسمه:**
-
-اعتماد قائمة التصنيفات الصحية المبدئية دون تحويل المشروع إلى نظام بيطري تفصيلي غير مدعوم بالتصور الحالي.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/21-health-problem-categories.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
+**المطلوب حسمه:** اعتماد قائمة أولية للتصنيفات الصحية دون توسيع المشروع إلى نظام بيطري غير مطلوب.
 
 ---
 
-## Scope / Integration Decisions
-
-### OD-011 — أسباب العزل لا تغطي حجر/ملاحظة الاستقبال حاليًا
+## OD-011 — أسباب العزل لا تغطي حجر/ملاحظة الاستقبال حاليًا
 
 **الحالة:** Deferred  
 **النوع:** Scope Decision / Integration Gap  
 **الأولوية:** Medium  
-**الأقسام المتأثرة:** 1.20 أسباب العزل + Workflow استقبال الحيوان
+**الأقسام المتأثرة:** 1.20 + Workflow 4.1
 
-**Question Key:**
+**Question Key:** `isolation_reason.scopes`
 
-```text
-isolation_reason.scopes
-```
+**القرار الحالي:** `health_isolation` فقط.
 
-**القرار الحالي:**
-
-```text
-health_isolation فقط
-```
-
-ولم يتم اعتماد:
-
-```text
-intake_quarantine_observation
-other
-```
-
-**المعنى الحالي:**
-
-قائمة `IsolationReason` تستخدم للعزل الصحي فقط، ولا تعتبر مصدرًا مرجعيًا لأسباب حجر/ملاحظة الحيوان أثناء الاستقبال.
-
-**النقطة المفتوحة:**
-
-إذا احتاج Workflow الاستقبال إلى أسباب حجر/ملاحظة مرجعية، فلا يوجد مصدر Master Data معتمد لها حاليًا.
-
-**المطلوب حسمه لاحقًا:**
-
-```text
-- توسيع IsolationReason ليغطي Intake Quarantine
-أو
-- إنشاء/استخدام مصدر مرجعي آخر لأسباب حجر الاستقبال
-أو
-- إبقاء أسباب مرحلة الاستقبال دون قاموس مرجعي إذا كان ذلك هو القرار المقصود
-```
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/20-isolation-reasons.md
-```
-
-**القرار النهائي:** مؤجل لحين مراجعة التكامل مع Workflow/Settings.
+**المطلوب حسمه لاحقًا:** هل حجر الاستقبال يستخدم نفس القاموس بعد توسيع Scope، أم مصدرًا مرجعيًا آخر، أم لا يحتاج قاموسًا مرجعيًا.
 
 ---
 
-## Cross-cutting Implementation Boundaries
-
-### OD-012 — تطبيق فريدة الاسم على الحقول متعددة اللغات
+## OD-012 — تطبيق فريدة الاسم على الحقول متعددة اللغات
 
 **الحالة:** Deferred  
 **النوع:** Implementation Boundary  
-**الأولوية:** Low / Before implementation schema freeze  
-**الأقسام المتأثرة:** عدة قواميس Master Data التي تعتمد `unique_name`
+**الأولوية:** Low / Before schema freeze
 
-**أمثلة Question Keys:**
+**الأقسام المتأثرة:** قواميس Master Data التي تعتمد `unique_name`.
 
-```text
-operational_activity.unique_name
-production_purpose.unique_name
-breed_metric.unique_name
-breed.unique_name
-```
+**القرار الوظيفي:** منع تكرار الاسم.
 
-**القرار الوظيفي المحسوم:**
+**غير المحسوم:** قواعد Uniqueness لكل لغة، التطبيع النصي، Case Handling، والتعامل مع اختلاف العربية والإنجليزية.
 
-```text
-يجب منع تكرار الاسم
-```
-
-**غير المحسوم:**
-
-طريقة تطبيق ذلك على أسماء عربية/إنجليزية متعددة اللغات، مثل:
-
-```text
-- uniqueness لكل لغة بصورة مستقلة
-- normalization / case handling
-- قاعدة التعامل مع اختلاف لغة دون الأخرى
-```
-
-**المطلوب حسمه:**
-
-تحديد قاعدة تنفيذ موحدة قبل تثبيت Constraints النهائية لقاعدة البيانات، دون تغيير القرار الوظيفي الأساسي بمنع التكرار.
-
-**مصادر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/01-operational-activities.md
-questionnaire-export/guides/01-master-data/02-production-purposes.md
-questionnaire-export/guides/01-master-data/03-breed-metrics.md
-questionnaire-export/guides/01-master-data/04-breeds.md
-```
-
-**القرار النهائي:** مؤجل لمرحلة تثبيت نموذج البيانات/الترجمة.
+**المطلوب حسمه:** قاعدة تنفيذ موحدة قبل تثبيت Constraints النهائية.
 
 ---
 
 # القسم الثاني — هيكل المزرعة
 
-## Blocking Conflicts
-
-### OD-013 — إلزام علاقات العنبر عند الإنشاء يتعارض مع القرارات المتخصصة
+## OD-013 — إلزام علاقات العنبر عند الإنشاء يتعارض مع القرارات المتخصصة
 
 **الحالة:** Open  
 **النوع:** Blocking Conflict  
@@ -691,83 +350,27 @@ barn.cooling_relation
 barn.heating_relation
 ```
 
-**القرارات الحالية:**
+**التعارض:**
 
 ```text
 barn.required_fields
-→ يعتبر عند إنشاء Barn أن:
-   settings_profile
-   ventilation_system
-   cooling_system
-   heating_system
-   مطلوبة
+→ settings_profile + ventilation + cooling + heating مطلوبة عند Create
+
+لكن:
+settings_profile = required_before_operation
+ventilation/cooling/heating = optional_multiple
 ```
 
-لكن الأسئلة المتخصصة تقرر:
-
-```text
-barn.settings_profile_requirement
-= required_before_operation
-→ يمكن إنشاء Barn قبل ربط Settings Profile
-
-barn.ventilation_relation
-= optional_multiple
-
-barn.cooling_relation
-= optional_multiple
-
-barn.heating_relation
-= optional_multiple
-```
-
-**المشكلة:**
-
-لا يمكن للعلاقات الأربع أن تكون في الوقت نفسه:
-
-```text
-Required on Create
-```
-
-و:
-
-```text
-Required later / Optional
-```
-
-ولا يمكن تثبيت Validation إنشاء العنبر قبل حسم أي قرار هو المقصود.
-
-**المطلوب حسمه:**
-
-```text
-A) تعديل barn.required_fields
-   → Settings Profile يبقى Required Before Operation
-   → Environment Systems تبقى Optional Multiple
-
-أو
-
-B) اعتماد الإلزام عند الإنشاء
-   → تعديل القرارات المتخصصة لتصبح متوافقة معه
-```
-
-**مصادر التفاصيل:**
-
-```text
-questionnaire-export/guides/02-farm-structure/02-barns.md
-questionnaire-export/answers/02-farm-structure/02-barns.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
+**المطلوب حسمه:** هل تُعدّل `required_fields` لتتوافق مع القرارات المتخصصة، أم تصبح العلاقات المتخصصة Required on Create.
 
 ---
 
-## Integration / Requirement Gaps
-
-### OD-014 — تعدد ملفات إعدادات التشغيل النشطة للعنبر دون قاعدة دمج أو أولوية
+## OD-014 — تعدد ملفات إعدادات التشغيل النشطة للعنبر دون قاعدة دمج أو أولوية
 
 **الحالة:** Deferred  
 **النوع:** Integration Gap  
 **الأولوية:** High / Before Settings model freeze  
-**الأقسام المتأثرة:** 2.2 بيانات العنبر + قسم الإعدادات وقواعد التشغيل
+**الأقسام المتأثرة:** 2.2 + Settings
 
 **Question Keys:**
 
@@ -776,47 +379,18 @@ barn.multiple_active_settings_profiles
 barn.settings_profile_requirement
 ```
 
-**القرار الحالي:**
+**المشكلة:** يسمح بأكثر من Settings Profile فعال، لكن لا توجد قاعدة Precedence/Scope/Merge/Effective Date تمنع تعارض القيم.
 
-```text
-Barn
-→ يسمح بأكثر من Operational Settings Profile فعال في نفس الوقت
-```
-
-لكن لم يُحسم داخل 2.2:
-
-```text
-- أي Profile له الأولوية إذا تعارضت القيم
-- هل القيم تدمج أم يطبق كل Profile على نطاق مختلف
-- Effective Dates
-- Versioning
-- أي Profile يحكم أي عملية عند وجود أكثر من واحد
-```
-
-**المشكلة:**
-
-السماح بأكثر من Profile فعال يمكن أن ينتج أكثر من قيمة نافذة لنفس القاعدة إذا لم يوجد نظام Scope / Precedence / Resolution واضح.
-
-**المطلوب حسمه لاحقًا:**
-
-يجب أن يقرر قسم Settings النموذج الذي يمنع وجود قاعدتين نهائيتين متعارضتين لنفس السياق، دون افتراض Merge Logic من قسم Barn.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/02-farm-structure/02-barns.md
-```
-
-**القرار النهائي:** مؤجل لمراجعة قسم الإعدادات.
+**المطلوب حسمه:** نموذج Resolution واضح في Settings.
 
 ---
 
-### OD-015 — آلية تقاعد البطارية غير ممثلة صراحة ضمن الحالات الحالية
+## OD-015 — آلية تقاعد البطارية غير ممثلة صراحة ضمن الحالات الحالية
 
 **الحالة:** Open  
 **النوع:** Requirement Gap  
 **الأولوية:** High  
-**القسم:** 2.3 بيانات البطارية
+**القسم:** 2.3
 
 **Question Keys:**
 
@@ -827,68 +401,18 @@ battery.physical_reconfiguration_after_history
 battery.delete_policy
 ```
 
-**القرارات الحالية:**
+**الوضع الحالي:** الحالات `active/stopped/maintenance`، بينما إعادة التكوين بعد التاريخ وDelete Policy تعتمد مفهوم `Retire old Battery`.
 
-```text
-battery.statuses
-→ active
-→ stopped
-→ maintenance
-
-battery.status_management
-= managed
-```
-
-وفي الوقت نفسه:
-
-```text
-battery.physical_reconfiguration_after_history
-→ Retire old Battery + create new Battery
-
-battery.delete_policy
-→ no hard delete / retire or take out of service only
-```
-
-**المشكلة:**
-
-الـLifecycle يعتمد مفهوم `Retire Battery` بصورة صريحة، لكن القيم الحالية لا تتضمن `retired` ولا يوجد قرار متخصص يحدد هل التقاعد:
-
-```text
-- Status محددة
-- Action ينتج حالة Managed جديدة
-- استخدام stopped كحالة نهائية
-- أو آلية Lifecycle مستقلة
-```
-
-كون قائمة الحالات Managed يجعل إضافة قيمة ممكنة، لكنه لا يجعل `retired` قيمة مضمونة أو يحدد معناها تلقائيًا.
-
-**المطلوب حسمه:**
-
-تحديد التمثيل النهائي لتقاعد Battery بما يحافظ على الفرق بين:
-
-```text
-Stopped temporarily
-Maintenance temporarily
-Retired permanently from future operation
-```
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/02-farm-structure/03-batteries.md
-questionnaire-export/answers/02-farm-structure/03-batteries.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
+**المطلوب حسمه:** هل `retired` Status مستقلة، أم Action/Lifecycle منفصل، أم تمثيل آخر يحافظ على الفرق بين التوقف المؤقت والتقاعد النهائي.
 
 ---
 
-### OD-016 — الحالات الإضافية للبطارية Managed لكن دلالتها التشغيلية غير معرفة
+## OD-016 — الحالات الإضافية للبطارية Managed لكن دلالتها التشغيلية غير معرفة
 
 **الحالة:** Deferred  
 **النوع:** Integration Gap  
-**الأولوية:** Medium / Before allowing custom statuses  
-**الأقسام المتأثرة:** 2.3 بيانات البطارية + Settings / Lifecycle Rules
+**الأولوية:** Medium  
+**الأقسام المتأثرة:** 2.3 + Settings/Lifecycle Rules
 
 **Question Keys:**
 
@@ -900,115 +424,412 @@ battery.status_change_requires_inactive_cages
 battery.non_operational_child_effect
 ```
 
-**القرار الحالي:**
+**المشكلة:** إضافة Status جديدة ممكنة إداريًا، لكن Semantics الخاصة بالتسكين والإخلاء وتأثير الأب على الأقفاص والانتقالات غير معرفة.
 
-```text
-battery.status_management
-= managed
-
-Initial/current values
-= active / stopped / maintenance
-```
-
-Business Rules الحالية معرّفة صراحة أساسًا للحالات المعروفة مثل `stopped` و`maintenance`.
-
-**المشكلة:**
-
-إذا أضاف المستخدم Status جديدة من لوحة الإدارة، فلا يوجد قرار يحدد:
-
-```text
-- هل تمنع التسكين
-- هل تتطلب إخلاء البطارية
-- هل تتطلب أن تكون الأقفاص غير تشغيلية
-- هل تنتقل عدم الإتاحة إلى الأقفاص التابعة
-- ما الانتقالات المسموحة منها وإليها
-```
-
-ولا يجوز اشتقاق هذه الدلالات من اسم الحالة فقط.
-
-**المطلوب حسمه لاحقًا:**
-
-إما:
-
-```text
-A) تقييد الحالات ذات الدلالة التشغيلية إلى مجموعة System-defined
-```
-
-أو:
-
-```text
-B) السماح بالحالات Managed مع نموذج قواعد يحدد Semantics لكل Status
-```
-
-أو اعتماد نموذج آخر صريح يمنع Status إدارية بلا دلالة تشغيلية معروفة.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/02-farm-structure/03-batteries.md
-```
-
-**القرار النهائي:** مؤجل لحين مراجعة Settings / Lifecycle Rules.
+**المطلوب حسمه:** إما حالات System-defined ذات دلالة ثابتة، أو نموذج Rules يحدد معنى كل Status Managed.
 
 ---
 
-## Cross-section Physical Model
-
-> لا توجد نقطة جديدة منفصلة هنا؛ تعارض 2.4 الخاص بتمثيل المواصفات الفيزيائية للقفص تم دمجه داخل `OD-001` حتى لا يتكرر نفس القرار في أكثر من موضع.
-
----
-
-## Implementation Boundaries
-
-### OD-017 — نطاق السماح بتعديل كود المزرعة بعد بدء التاريخ التشغيلي
+## OD-017 — نطاق السماح بتعديل كود المزرعة بعد بدء التاريخ التشغيلي
 
 **الحالة:** Deferred  
 **النوع:** Implementation Boundary  
-**الأولوية:** Medium / Before identity rules freeze  
-**القسم:** 2.1 بيانات المزرعة
+**الأولوية:** Medium  
+**القسم:** 2.1
 
-**Question Key:**
+**Question Key:** `farm.code_strategy`
+
+**القرار الحالي:** `automatic_editable`.
+
+**غير المحسوم:** هل التعديل فقط قبل أول عملية، أم لاحقًا مع Audit، أم دائمًا مع الحفاظ على Uniqueness.
+
+**المطلوب حسمه:** Lifecycle واضح لقابلية تعديل Farm Code بعد وجود تاريخ تشغيلي.
+
+---
+
+# القسم الثالث — بيانات الحيوان وتكوين القطيع
+
+## OD-018 — Requiredness حقول هوية الحيوان عند إنشاء السجل غير مكتمل
+
+**الحالة:** Open  
+**النوع:** Requirement Gap  
+**الأولوية:** High / Before Animal creation contract freeze  
+**القسم:** 3.1 بيانات وهوية الحيوان
+
+**Question Keys ذات الصلة:**
 
 ```text
-farm.code_strategy
+animal.identity_fields
+animal.temporary_unknown_sex
+animal.breed_requirement
+animal.birth_information_methods
+animal.external_identifier_cardinality
+animal.external_identifier_types
+```
+
+**القرارات الحالية:** تم حسم الحقول التي يدعمها Animal Record، وتم السماح بأن يكون الجنس والسلالة ومعلومات الميلاد غير محسومة مؤقتًا في حالات محددة.
+
+**المشكلة:** لا يوجد سؤال عام أو مجموعة قرارات تغلق بدقة الحد الأدنى الإلزامي عند إنشاء كل Animal Record، خصوصًا بالنسبة إلى:
+
+```text
+external_identifier
+photo
+distinguishing_marks
+sex when unknown is allowed
+breed when unknown is allowed
+birth_information when unknown is allowed
+```
+
+**المطلوب حسمه:** تحديد Minimum Creation Contract للحيوان، مع الحفاظ على السماح بالقيم غير المعروفة حيث تم اعتماده وعدم تحويل الحقول المدعومة تلقائيًا إلى Required Fields.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/01-animals.md
+questionnaire-export/answers/03-animal-herd/01-animals.md
+```
+
+**القرار النهائي:** لم يحسم بعد.
+
+---
+
+## OD-019 — Lifecycle رقم الحلقة / المعرف الخارجي غير محسوم
+
+**الحالة:** Open  
+**النوع:** Requirement Gap / Identity Integrity  
+**الأولوية:** High  
+**القسم:** 3.1
+
+**Question Keys:**
+
+```text
+animal.external_identifier_cardinality
+animal.external_identifier_types
 ```
 
 **القرار الحالي:**
 
 ```text
-automatic_editable
-
-→ النظام يولد الكود تلقائيًا
-→ المستخدم المخول يستطيع تعديله
+maximum one external identifier at the same time
+supported type = ring_number
 ```
 
 **غير المحسوم:**
 
-السؤال لا يحدد **متى تتوقف قابلية التعديل** أو هل تظل متاحة بعد وجود تاريخ تشغيلي وعلاقات كثيرة بالمزرعة.
-
-الاحتمالات غير المحسومة تشمل مثلًا:
-
 ```text
-- editable only during creation / before first operation
-- editable later with audit/history
-- editable دائمًا ما دام uniqueness محفوظًا
+- هل رقم الحلقة إلزامي أصلًا
+- نطاق Uniqueness لرقم الحلقة
+- هل يمكن استبداله أو تصحيحه بعد التشغيل
+- إذا استُبدل: هل تُحفظ الحلقة السابقة تاريخيًا
+- هل يمكن إعادة استخدام رقم حلقة قديم لحيوان آخر
 ```
 
-**المشكلة:**
+**المشكلة:** المعرف الخارجي قد يستخدم ميدانيًا للتعرف على الحيوان، لذلك ترك Lifecycle غير محسوم قد ينتج التباسًا أو فقدًا للتتبع رغم ثبات `internal_code`.
 
-Farm Code جزء من الهوية التشغيلية الظاهرة، وتغييرها بعد وجود تاريخ قد يؤثر على الروابط البشرية والتقارير والمراجع الخارجية، حتى لو ظلت الـPrimary Key الداخلية ثابتة.
-
-**المطلوب حسمه:**
-
-تحديد Lifecycle واضح لقابلية تعديل Farm Code بعد الإنشاء، مع الحفاظ على `farm.unique_rule` وعدم إعادة كتابة التاريخ بصورة مضللة.
+**المطلوب حسمه:** سياسة كاملة للـExternal Identifier تشمل Requiredness وUniqueness والتغيير والتاريخ وإعادة الاستخدام.
 
 **مصدر التفاصيل:**
 
 ```text
-questionnaire-export/guides/02-farm-structure/01-farms.md
+questionnaire-export/guides/03-animal-herd/01-animals.md
 ```
 
-**القرار النهائي:** مؤجل قبل تثبيت Identity / Audit Requirements.
+---
+
+## OD-020 — توقيت حسم وتصحيح الجنس والسلالة ومعلومات الميلاد بعد وجود تاريخ
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap / Data Correction Boundary  
+**الأولوية:** High / Before Workflow validation freeze  
+**الأقسام المتأثرة:** 3.1 + Workflow + Settings
+
+**Question Keys:**
+
+```text
+animal.temporary_unknown_sex
+animal.breed_requirement
+animal.birth_information_methods
+```
+
+**القرارات الحالية:** يسمح مؤقتًا بعدم معرفة الجنس والسلالة ومعلومات الميلاد.
+
+**غير المحسوم:**
+
+```text
+- متى يصبح حسم الجنس إلزاميًا
+- متى تصبح السلالة مطلوبة تشغيليًا
+- متى يحتاج تاريخ الميلاد إلى استكمال
+- ما قواعد تصحيح Sex/Breed/Birth Date بعد وجود أحداث تشغيلية
+- هل بعض التصحيحات تحتاج Audit أو مراجعة استثنائية
+```
+
+**المطلوب حسمه:** تحديد Boundaries التشغيلية التي تحول البيانات من `Unknown` إلى Required، وسياسة تصحيحها بعد وجود تاريخ، دون إعادة كتابة الماضي بصمت.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/01-animals.md
+```
+
+**القرار النهائي:** مؤجل لمراجعة التكامل مع Workflow/Settings.
+
+---
+
+## OD-021 — استكمال النسب يدويًا مقابل تصحيح علاقة نسب مشتقة من النظام
+
+**الحالة:** Open  
+**النوع:** Requirement Gap / Data Integrity  
+**الأولوية:** High  
+**القسم:** 3.3 النسب وشجرة العائلة
+
+**Question Key:**
+
+```text
+animal.internal_pedigree_derivation
+```
+
+**القرار الحالي:**
+
+```text
+automatic_when_available_manual_completion
+```
+
+أي أن النظام يشتق الأب/الأم/البطن من سجلات التكاثر والولادة عند توفرها، مع السماح باستكمال الناقص يدويًا.
+
+**المشكلة:** لم تُحسم قواعد التفرقة بين:
+
+```text
+Manual completion of missing pedigree
+```
+
+و:
+
+```text
+Correction / override of pedigree already derived from canonical system records
+```
+
+ولا توجد قاعدة لاعتماد التصحيح أو أثره على Birth/Litter/Reproductive History وشجرة العائلة.
+
+**المطلوب حسمه:** تحديد متى يسمح بالاستكمال فقط، ومتى يسمح بتصحيح Parentage موثقة، وما Audit/Review المطلوبة وكيف يعاد بناء الآثار دون تعديل التاريخ بصمت.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/03-animals.md
+```
+
+---
+
+## OD-022 — `Genetic Line` مطلوب كمفهوم لكن نموذجه غير معرف
+
+**الحالة:** Open  
+**النوع:** Requirement Gap  
+**الأولوية:** High / Before Final Data Model  
+**القسم:** 3.3
+
+**Question Key:**
+
+```text
+animal.genetic_line_usage = true
+```
+
+**المحسوم:** المشروع يحتاج مفهومًا مستقلاً باسم `Genetic Line` بجانب `Breed` و`Pedigree`.
+
+**غير المحسوم بالكامل تقريبًا:**
+
+```text
+- هل GeneticLine Master Data أم Entity من نوع آخر
+- الحقول
+- Lifecycle
+- Cardinality مع Animal
+- العلاقة مع Breed
+- هل يرثه النسل أم يحدد يدويًا
+- طريقة الإنشاء والتعطيل
+```
+
+**المشكلة:** لا يمكن تحويل `genetic_line_usage = true` إلى Schema نهائي موثوق دون مجموعة قرارات إضافية.
+
+**المطلوب حسمه:** تعريف نموذج `GeneticLine` وحدوده وعلاقاته قبل Final Requirements/Data Model.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/03-animals.md
+```
+
+---
+
+## OD-023 — كيف تتحول Opening Snapshot إلى المصادر التشغيلية Canonical بعد التفعيل
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap  
+**الأولوية:** High / Before Opening Herd implementation  
+**الأقسام المتأثرة:** 3.4 + Workflow 4.2/4.3/4.13 وغيرها
+
+**Question Keys:**
+
+```text
+animal.opening_snapshot_operational_fields
+animal.opening_activation_model
+animal.opening_baseline_snapshot
+```
+
+**القرار الحالي:** Opening Herd يسجل Snapshot للوضع الحالي تشمل الوزن والموقع والحالة الصحية والمرحلة والسياق التناسلي، ثم بعد بدء التشغيل يجب أن تأتي القيم الحالية من المصادر التشغيلية الصحيحة.
+
+**المشكلة:** لم يُحسم النموذج الذي يربط Baseline الافتتاحية بهذه المصادر دون اختراع تاريخ سابق:
+
+```text
+Current Weight → هل ينشئ Baseline Weight Record؟
+Current Housing → هل ينشئ Initial Occupancy/Housing Baseline؟
+Current Health → هل ينشئ Opening Health State أم Health Event؟
+Current Reproductive Context → كيف يصبح نقطة بداية Canonical للمسار؟
+```
+
+إذا بقيت Snapshot منفصلة فقط فقد يظهر مصدران للحالة الحالية، وإذا تم تحويلها إلى Events تاريخية قد نختلق أحداثًا لم تحدث داخل النظام.
+
+**المطلوب حسمه:** تعريف آلية `Opening Baseline → Canonical Current State` لكل مجال مع الحفاظ على قاعدة `current_snapshot_only` وعدم إنشاء تاريخ مزيف.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/04-animals.md
+```
+
+**القرار النهائي:** مؤجل لمراجعة Workflow المتخصص لكل مجال.
+
+---
+
+## OD-024 — الحد الأدنى للبيانات الزمنية في السياقات التناسلية الافتتاحية غير محدد
+
+**الحالة:** Deferred  
+**النوع:** Requirement Gap / Task Engine Integration  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 3.4 + Workflow التناسلي + Task Rules
+
+**Question Keys:**
+
+```text
+animal.opening_reproductive_contexts
+animal.opening_missing_data_policy
+animal.opening_task_evaluation_after_activation
+```
+
+**القرار الحالي:** يمكن بدء أنثى من منتصف دورة حقيقية، مثل `awaiting pregnancy check`, `confirmed pregnant`, `near kindling`, `lactating`, `lactating + remated`، وبعد Activation يتم تقييم المهام من الوضع الحالي.
+
+**المشكلة:** لم يحدد القسم Minimum Temporal Anchors المطلوبة لكل Context. بعض المهام تحتاج تاريخ تلقيح/ولادة أو Anchor زمني حتى تُحسب بصورة صحيحة، بينما السياسة تمنع اختراع تاريخ غير معروف.
+
+**المطلوب حسمه لاحقًا:** لكل Starting Context، تحديد الحد الأدنى من البيانات الزمنية اللازمة لكي يمكن:
+
+```text
+- اعتماد الحالة الافتتاحية
+- حساب Due Dates
+- إنشاء المهام الأولى بصورة صحيحة
+```
+
+مع السماح باستمرار البيانات الناقصة عندما لا تمنع التشغيل فعليًا.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/04-animals.md
+```
+
+---
+
+## OD-025 — الإدارة الفردية تتعارض مع إلزام كل أنثى إنتاجية بمجموعة نشطة
+
+**الحالة:** Open  
+**النوع:** Blocking Conflict  
+**الأولوية:** Blocking before Production Herd Requirements  
+**القسم:** 3.5 تكوين القطيع الإنتاجي وتنظيم المجموعات
+
+**Question Keys:**
+
+```text
+production_herd.organization_methods
+production_group.female_membership_model
+```
+
+**القرارات الحالية:**
+
+```text
+production_herd.organization_methods
+→ individual_management
+→ production_groups
+→ individual_management موصوف بأنه دون اشتراط مجموعة
+
+production_group.female_membership_model
+= required_exactly_one_active_group
+→ كل أنثى إنتاجية يجب أن تكون في مجموعة نشطة واحدة بالضبط
+```
+
+**المشكلة:** لا يمكن حسم هل أنثى إنتاجية يمكن تشغيلها خارج Production Group أم لا.
+
+**النماذج المحتملة غير المحسومة:**
+
+```text
+A) Individual Management وGroups نمطان بديلان على مستوى المزرعة
+B) الفردي لبعض الحيوانات فقط والإناث الإنتاجية دائمًا داخل Group
+C) كل Animal يدار فرديًا كسجل، لكن Group ما زالت إلزامية تنظيميًا للإناث
+D) Female Membership يجب أن تكون اختيارية لكي يعمل Individual Management فعلًا بلا Group
+```
+
+**المطلوب حسمه:** نطاق `individual_management` وعلاقته بإلزام عضوية الأنثى الإنتاجية.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/05-production-groups.md
+```
+
+**القرار النهائي:** لم يحسم بعد.
+
+---
+
+## OD-026 — التاريخ الكامل للمجموعة معتمد لكن Canonical Change Events غير محددة بعد
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap  
+**الأولوية:** High / Before group-change workflow freeze  
+**الأقسام المتأثرة:** 3.5 + Workflow
+
+**Question Keys:**
+
+```text
+production_group.history_policy
+production_group.primary_male_model
+production_group.alternate_male_model
+production_group.female_membership_model
+production_group.statuses
+```
+
+**القرار الحالي:**
+
+```text
+production_group.history_policy = full_effective_history
+```
+
+ويجب معرفة تاريخ تغير الذكر الأساسي، عضوية الإناث، وحالة المجموعة.
+
+**المشكلة:** 3.5 ينقل التغييرات الفعلية إلى Workflow، لكنه لا يحدد بنفسه Canonical Event Model لتغيرات مثل:
+
+```text
+Add/Remove Female
+Move Female Between Groups
+Change Primary Male
+Change Alternate Male
+Stop/Dissolve/Reactivate Group when applicable
+```
+
+**المطلوب حسمه لاحقًا:** تحديد مصدر الحقيقة التاريخي لكل تغيير، وهل توجد Membership/Assignment/Status Events مستقلة وكيف تحفظ effective_from/effective_to والسبب والمنفذ، مع منع تعديل Current Relations بصمت.
+
+**مصدر التفاصيل:**
+
+```text
+questionnaire-export/guides/03-animal-herd/05-production-groups.md
+```
+
+**القرار النهائي:** مؤجل لمراجعة Workflow؛ إذا كان Workflow الحالي يغطيها صراحة تُحدث هذه النقطة إلى Resolved أو تُضيق للنقص المتبقي.
 
 ---
 
