@@ -4,14 +4,14 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 11:56:30
+- وقت آخر تحديث: 2026-08-26 12:24:09
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
 - الأسئلة القابلة حاليًا: 826
-- الأسئلة المجاب عنها: 147
+- الأسئلة المجاب عنها: 239
 - ملفات الإجابات المصدرة: 75
-- ملفات الشرح الموجودة: 20
+- ملفات الشرح الموجودة: 21
 
 ### معنى الحالات
 
@@ -50,10 +50,10 @@
 
 | # | القسم الفرعي | ملف الإجابات | حالة التصدير | التقدم | ملف الشرح | حالة الشرح |
 |---|---|---|---|---|---|---|
-| 2.1 | بيانات المزرعة | [answers/02-farm-structure/01-farms.md](answers/02-farm-structure/01-farms.md) | ✅ تم التصدير | 10 / 10 | `guides/02-farm-structure/01-farms.md` | ❌ لم يتم الإنشاء |
-| 2.2 | بيانات العنبر | [answers/02-farm-structure/02-barns.md](answers/02-farm-structure/02-barns.md) | ✅ تم التصدير | 0 / 22 | `guides/02-farm-structure/02-barns.md` | ❌ لم يتم الإنشاء |
-| 2.3 | بيانات البطارية | [answers/02-farm-structure/03-batteries.md](answers/02-farm-structure/03-batteries.md) | ✅ تم التصدير | 0 / 45 | `guides/02-farm-structure/03-batteries.md` | ❌ لم يتم الإنشاء |
-| 2.4 | بيانات القفص / العين | [answers/02-farm-structure/04-cages.md](answers/02-farm-structure/04-cages.md) | ✅ تم التصدير | 0 / 25 | `guides/02-farm-structure/04-cages.md` | ❌ لم يتم الإنشاء |
+| 2.1 | بيانات المزرعة | [answers/02-farm-structure/01-farms.md](answers/02-farm-structure/01-farms.md) | ✅ تم التصدير | 10 / 10 | [guides/02-farm-structure/01-farms.md](guides/02-farm-structure/01-farms.md) | ✅ تم الإنشاء |
+| 2.2 | بيانات العنبر | [answers/02-farm-structure/02-barns.md](answers/02-farm-structure/02-barns.md) | ✅ تم التصدير | 22 / 22 | `guides/02-farm-structure/02-barns.md` | ❌ لم يتم الإنشاء |
+| 2.3 | بيانات البطارية | [answers/02-farm-structure/03-batteries.md](answers/02-farm-structure/03-batteries.md) | ✅ تم التصدير | 45 / 45 | `guides/02-farm-structure/03-batteries.md` | ❌ لم يتم الإنشاء |
+| 2.4 | بيانات القفص / العين | [answers/02-farm-structure/04-cages.md](answers/02-farm-structure/04-cages.md) | ✅ تم التصدير | 25 / 25 | `guides/02-farm-structure/04-cages.md` | ❌ لم يتم الإنشاء |
 
 ## 3. بيانات الحيوان وتكوين القطيع
 
