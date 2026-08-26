@@ -4,12 +4,12 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 10:51:50
+- وقت آخر تحديث: 2026-08-26 11:09:52
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
 - الأسئلة القابلة حاليًا: 822
-- الأسئلة المجاب عنها: 6
+- الأسئلة المجاب عنها: 24
 - ملفات الإجابات المصدرة: 75
 - ملفات الشرح الموجودة: 0
 
@@ -36,9 +36,9 @@
 | 1.10 | أسباب تغيير الذكر | [answers/01-master-data/10-male-change-reasons.md](answers/01-master-data/10-male-change-reasons.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/10-male-change-reasons.md` | ❌ لم يتم الإنشاء |
 | 1.11 | المحافظات | [answers/01-master-data/11-governorates.md](answers/01-master-data/11-governorates.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/11-governorates.md` | ❌ لم يتم الإنشاء |
 | 1.12 | المدن | [answers/01-master-data/12-cities.md](answers/01-master-data/12-cities.md) | ✅ تم التصدير | 0 / 7 | `guides/01-master-data/12-cities.md` | ❌ لم يتم الإنشاء |
-| 1.13 | أنظمة التهوية | [answers/01-master-data/13-ventilation-systems.md](answers/01-master-data/13-ventilation-systems.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/13-ventilation-systems.md` | ❌ لم يتم الإنشاء |
-| 1.14 | أنظمة التبريد | [answers/01-master-data/14-cooling-systems.md](answers/01-master-data/14-cooling-systems.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/14-cooling-systems.md` | ❌ لم يتم الإنشاء |
-| 1.15 | أنظمة التدفئة | [answers/01-master-data/15-heating-systems.md](answers/01-master-data/15-heating-systems.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/15-heating-systems.md` | ❌ لم يتم الإنشاء |
+| 1.13 | أنظمة التهوية | [answers/01-master-data/13-ventilation-systems.md](answers/01-master-data/13-ventilation-systems.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/13-ventilation-systems.md` | ❌ لم يتم الإنشاء |
+| 1.14 | أنظمة التبريد | [answers/01-master-data/14-cooling-systems.md](answers/01-master-data/14-cooling-systems.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/14-cooling-systems.md` | ❌ لم يتم الإنشاء |
+| 1.15 | أنظمة التدفئة | [answers/01-master-data/15-heating-systems.md](answers/01-master-data/15-heating-systems.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/15-heating-systems.md` | ❌ لم يتم الإنشاء |
 | 1.16 | أنواع الأقفاص الفيزيائية | [answers/01-master-data/16-cage-physical-types.md](answers/01-master-data/16-cage-physical-types.md) | ✅ تم التصدير | 0 / 5 | `guides/01-master-data/16-cage-physical-types.md` | ❌ لم يتم الإنشاء |
 | 1.17 | استخدامات الأقفاص | [answers/01-master-data/17-cage-usages.md](answers/01-master-data/17-cage-usages.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/17-cage-usages.md` | ❌ لم يتم الإنشاء |
 | 1.18 | الأنواع الفيزيائية للبطاريات | [answers/01-master-data/18-battery-types.md](answers/01-master-data/18-battery-types.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/18-battery-types.md` | ❌ لم يتم الإنشاء |
