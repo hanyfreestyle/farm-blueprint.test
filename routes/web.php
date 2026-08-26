@@ -1,6 +1,7 @@
 <?php
 
 use App\Http\Controllers\Questionnaire\QuestionnaireAnswerController;
+use App\Http\Controllers\Questionnaire\QuestionnaireExportBrowserController;
 use App\Http\Controllers\Questionnaire\QuestionnairePageController;
 use App\Http\Controllers\Questionnaire\QuestionnaireTechnicalReportController;
 use App\Http\Controllers\Questionnaire\QuestionnaireTreeExportController;
@@ -17,6 +18,7 @@ Route::get('/implementation-prep-report', [QuestionnaireTechnicalReportControlle
 Route::get('/implementation-prep-report/download', [QuestionnaireTechnicalReportController::class, 'implementationPrepDownload'])->name('implementation-prep-report.download');
 Route::get('/final-requirements-input', [QuestionnaireTechnicalReportController::class, 'finalRequirementsInputPreview'])->name('final-requirements-input.preview');
 Route::get('/final-requirements-input/download', [QuestionnaireTechnicalReportController::class, 'finalRequirementsInputDownload'])->name('final-requirements-input.download');
+Route::get('/questionnaire-export/browse', QuestionnaireExportBrowserController::class)->name('questionnaire-export.browse');
 Route::post('/questionnaire-export/tree', QuestionnaireTreeExportController::class)->name('questionnaire-export.tree');
 Route::post('/questionnaire/questions/{question}/answer', [QuestionnaireAnswerController::class, 'store'])->name('questionnaire.answers.store');
 Route::post('/questionnaire/questions/{question}/continue', [QuestionnaireAnswerController::class, 'continue'])->name('questionnaire.answers.continue');
