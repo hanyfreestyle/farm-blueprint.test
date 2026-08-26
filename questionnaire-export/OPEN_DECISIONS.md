@@ -57,11 +57,11 @@ Implementation Boundary
 | 1. إدارة البيانات الأساسية | Reviewed |
 | 2. هيكل المزرعة | Reviewed |
 | 3. بيانات الحيوان وتكوين القطيع | Reviewed |
-| 4. الحركات ودورة التشغيل الفعلية | Pending Review |
+| 4. الحركات ودورة التشغيل الفعلية | Reviewed |
 | 5. التقارير والتحليلات والتنبيهات ومؤشرات الأداء | Pending Review |
 | 6. الإعدادات وقواعد التشغيل | Pending Review |
 
-> تمت مراجعة الـGuides الحالية للأقسام 1 و2 و3. يتم دمج النقاط المتكررة، ولا تُحوّل حدود التفسير العامة إلى Open Decision إلا إذا كانت تؤثر على Requirement نهائي أو تمنع ربط الأقسام ببعضها بصورة واضحة.
+> تمت مراجعة الـGuides الحالية للأقسام 1 و2 و3 و4. يتم دمج النقاط المتكررة، ولا تُحوّل حدود التفسير العامة إلى Open Decision إلا إذا كانت تؤثر على Requirement نهائي أو تمنع ربط الأقسام ببعضها بصورة واضحة. النقاط التي مكان حسمها الطبيعي Settings تظل Deferred ولا يتم اختراع قيمها من Workflow.
 
 ---
 
@@ -172,14 +172,6 @@ breed.retirement_policy
 
 **المطلوب حسمه:** هل `inactive` حالة System-required، أم قيمة مبدئية في القائمة Managed، أم أن التعطيل يمثل بآلية منفصلة عن Status.
 
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/04-breeds.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
-
 ---
 
 ## OD-004 — طريقة إدارة قاموس الأنواع الفيزيائية للبطاريات
@@ -213,12 +205,6 @@ battery.physical_type_management = managed
 
 **المطلوب حسمه:** اعتماد قيم البداية أو اعتماد أن القاموس يبدأ فارغًا ويُملأ إداريًا.
 
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/18-battery-types.md
-```
-
 ---
 
 ## OD-006 — طريقة إدارة قاموس أنواع المهام التشغيلية
@@ -231,12 +217,6 @@ questionnaire-export/guides/01-master-data/18-battery-types.md
 **الوضع الحالي:** توجد 35 قيمة مبدئية، لكن لا يوجد Question Key يحسم هل `OperationalTaskType` Fixed أم Managed.
 
 **المطلوب حسمه:** Management Mode النهائي للقاموس.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/01-master-data/19-operational-task-types.md
-```
 
 ---
 
@@ -469,27 +449,9 @@ animal.external_identifier_types
 
 **القرارات الحالية:** تم حسم الحقول التي يدعمها Animal Record، وتم السماح بأن يكون الجنس والسلالة ومعلومات الميلاد غير محسومة مؤقتًا في حالات محددة.
 
-**المشكلة:** لا يوجد سؤال عام أو مجموعة قرارات تغلق بدقة الحد الأدنى الإلزامي عند إنشاء كل Animal Record، خصوصًا بالنسبة إلى:
+**المشكلة:** لا يوجد قرار يغلق بدقة Minimum Creation Contract لكل Animal Record، خصوصًا Requiredness المعرف الخارجي والصورة والعلامات المميزة والحقول التي تسمح بـUnknown.
 
-```text
-external_identifier
-photo
-distinguishing_marks
-sex when unknown is allowed
-breed when unknown is allowed
-birth_information when unknown is allowed
-```
-
-**المطلوب حسمه:** تحديد Minimum Creation Contract للحيوان، مع الحفاظ على السماح بالقيم غير المعروفة حيث تم اعتماده وعدم تحويل الحقول المدعومة تلقائيًا إلى Required Fields.
-
-**مصادر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/01-animals.md
-questionnaire-export/answers/03-animal-herd/01-animals.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
+**المطلوب حسمه:** تحديد الحد الأدنى المطلوب للإنشاء مع الحفاظ على السماح بالقيم غير المعروفة حيث تم اعتماده.
 
 ---
 
@@ -507,32 +469,11 @@ animal.external_identifier_cardinality
 animal.external_identifier_types
 ```
 
-**القرار الحالي:**
+**القرار الحالي:** معرف خارجي واحد كحد أقصى في نفس الوقت، والنوع المدعوم حاليًا `ring_number`.
 
-```text
-maximum one external identifier at the same time
-supported type = ring_number
-```
+**غير المحسوم:** Requiredness، Uniqueness، الاستبدال/التصحيح، حفظ التاريخ، وإعادة استخدام رقم حلقة قديم.
 
-**غير المحسوم:**
-
-```text
-- هل رقم الحلقة إلزامي أصلًا
-- نطاق Uniqueness لرقم الحلقة
-- هل يمكن استبداله أو تصحيحه بعد التشغيل
-- إذا استُبدل: هل تُحفظ الحلقة السابقة تاريخيًا
-- هل يمكن إعادة استخدام رقم حلقة قديم لحيوان آخر
-```
-
-**المشكلة:** المعرف الخارجي قد يستخدم ميدانيًا للتعرف على الحيوان، لذلك ترك Lifecycle غير محسوم قد ينتج التباسًا أو فقدًا للتتبع رغم ثبات `internal_code`.
-
-**المطلوب حسمه:** سياسة كاملة للـExternal Identifier تشمل Requiredness وUniqueness والتغيير والتاريخ وإعادة الاستخدام.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/01-animals.md
-```
+**المطلوب حسمه:** سياسة Lifecycle كاملة للمعرف الخارجي.
 
 ---
 
@@ -551,27 +492,9 @@ animal.breed_requirement
 animal.birth_information_methods
 ```
 
-**القرارات الحالية:** يسمح مؤقتًا بعدم معرفة الجنس والسلالة ومعلومات الميلاد.
+**غير المحسوم:** متى تتحول البيانات Unknown إلى Required، وكيف يتم تصحيح Sex/Breed/Birth Date بعد وجود تاريخ تشغيلي دون إعادة كتابة الماضي بصمت.
 
-**غير المحسوم:**
-
-```text
-- متى يصبح حسم الجنس إلزاميًا
-- متى تصبح السلالة مطلوبة تشغيليًا
-- متى يحتاج تاريخ الميلاد إلى استكمال
-- ما قواعد تصحيح Sex/Breed/Birth Date بعد وجود أحداث تشغيلية
-- هل بعض التصحيحات تحتاج Audit أو مراجعة استثنائية
-```
-
-**المطلوب حسمه:** تحديد Boundaries التشغيلية التي تحول البيانات من `Unknown` إلى Required، وسياسة تصحيحها بعد وجود تاريخ، دون إعادة كتابة الماضي بصمت.
-
-**مصادر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/01-animals.md
-```
-
-**القرار النهائي:** مؤجل لمراجعة التكامل مع Workflow/Settings.
+**المطلوب حسمه:** Boundaries تشغيلية وسياسة Audit/Correction مناسبة.
 
 ---
 
@@ -582,41 +505,13 @@ questionnaire-export/guides/03-animal-herd/01-animals.md
 **الأولوية:** High  
 **القسم:** 3.3 النسب وشجرة العائلة
 
-**Question Key:**
+**Question Key:** `animal.internal_pedigree_derivation`
 
-```text
-animal.internal_pedigree_derivation
-```
+**القرار الحالي:** `automatic_when_available_manual_completion`.
 
-**القرار الحالي:**
+**المشكلة:** لم تحسم الحدود بين استكمال Parentage مفقودة وبين Override لعلاقة مشتقة من Birth/Reproduction Canonical Records.
 
-```text
-automatic_when_available_manual_completion
-```
-
-أي أن النظام يشتق الأب/الأم/البطن من سجلات التكاثر والولادة عند توفرها، مع السماح باستكمال الناقص يدويًا.
-
-**المشكلة:** لم تُحسم قواعد التفرقة بين:
-
-```text
-Manual completion of missing pedigree
-```
-
-و:
-
-```text
-Correction / override of pedigree already derived from canonical system records
-```
-
-ولا توجد قاعدة لاعتماد التصحيح أو أثره على Birth/Litter/Reproductive History وشجرة العائلة.
-
-**المطلوب حسمه:** تحديد متى يسمح بالاستكمال فقط، ومتى يسمح بتصحيح Parentage موثقة، وما Audit/Review المطلوبة وكيف يعاد بناء الآثار دون تعديل التاريخ بصمت.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/03-animals.md
-```
+**المطلوب حسمه:** قواعد التصحيح والـAudit وآثار تعديل النسب على Birth/Litter/Reproductive History.
 
 ---
 
@@ -627,35 +522,11 @@ questionnaire-export/guides/03-animal-herd/03-animals.md
 **الأولوية:** High / Before Final Data Model  
 **القسم:** 3.3
 
-**Question Key:**
+**Question Key:** `animal.genetic_line_usage = true`
 
-```text
-animal.genetic_line_usage = true
-```
+**غير المحسوم:** نوع الكيان، الحقول، Lifecycle، Cardinality مع Animal، العلاقة مع Breed، طريقة التحديد/التوريث، والإدارة.
 
-**المحسوم:** المشروع يحتاج مفهومًا مستقلاً باسم `Genetic Line` بجانب `Breed` و`Pedigree`.
-
-**غير المحسوم بالكامل تقريبًا:**
-
-```text
-- هل GeneticLine Master Data أم Entity من نوع آخر
-- الحقول
-- Lifecycle
-- Cardinality مع Animal
-- العلاقة مع Breed
-- هل يرثه النسل أم يحدد يدويًا
-- طريقة الإنشاء والتعطيل
-```
-
-**المشكلة:** لا يمكن تحويل `genetic_line_usage = true` إلى Schema نهائي موثوق دون مجموعة قرارات إضافية.
-
-**المطلوب حسمه:** تعريف نموذج `GeneticLine` وحدوده وعلاقاته قبل Final Requirements/Data Model.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/03-animals.md
-```
+**المطلوب حسمه:** تعريف نموذج `GeneticLine` وحدوده وعلاقاته.
 
 ---
 
@@ -674,28 +545,11 @@ animal.opening_activation_model
 animal.opening_baseline_snapshot
 ```
 
-**القرار الحالي:** Opening Herd يسجل Snapshot للوضع الحالي تشمل الوزن والموقع والحالة الصحية والمرحلة والسياق التناسلي، ثم بعد بدء التشغيل يجب أن تأتي القيم الحالية من المصادر التشغيلية الصحيحة.
+**القرار الحالي:** Opening Herd يسجل Snapshot للوضع الحالي ثم تعتمد الحالة المستقبلية على المصادر التشغيلية Canonical.
 
-**المشكلة:** لم يُحسم النموذج الذي يربط Baseline الافتتاحية بهذه المصادر دون اختراع تاريخ سابق:
+**المشكلة:** Workflow 4.2/4.3/4.13 يحدد مصادر الحقيقة بعد التشغيل، لكنه لا يحسم آلية تهيئة أول Current Occupancy/Weight/Health/Reproductive Context من Opening Baseline دون تحويلها إلى أحداث ماضية مختلقة أو إبقاء مصدرين للحقيقة.
 
-```text
-Current Weight → هل ينشئ Baseline Weight Record؟
-Current Housing → هل ينشئ Initial Occupancy/Housing Baseline؟
-Current Health → هل ينشئ Opening Health State أم Health Event؟
-Current Reproductive Context → كيف يصبح نقطة بداية Canonical للمسار؟
-```
-
-إذا بقيت Snapshot منفصلة فقط فقد يظهر مصدران للحالة الحالية، وإذا تم تحويلها إلى Events تاريخية قد نختلق أحداثًا لم تحدث داخل النظام.
-
-**المطلوب حسمه:** تعريف آلية `Opening Baseline → Canonical Current State` لكل مجال مع الحفاظ على قاعدة `current_snapshot_only` وعدم إنشاء تاريخ مزيف.
-
-**مصادر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/04-animals.md
-```
-
-**القرار النهائي:** مؤجل لمراجعة Workflow المتخصص لكل مجال.
+**المطلوب حسمه:** نموذج `Opening Baseline → Canonical Current State` لكل مجال.
 
 ---
 
@@ -714,25 +568,9 @@ animal.opening_missing_data_policy
 animal.opening_task_evaluation_after_activation
 ```
 
-**القرار الحالي:** يمكن بدء أنثى من منتصف دورة حقيقية، مثل `awaiting pregnancy check`, `confirmed pregnant`, `near kindling`, `lactating`, `lactating + remated`، وبعد Activation يتم تقييم المهام من الوضع الحالي.
+**المشكلة:** يمكن بدء أنثى من منتصف دورة قائمة، لكن بعض المهام والحسابات تحتاج Temporal Anchor غير محدد لكل Starting Context.
 
-**المشكلة:** لم يحدد القسم Minimum Temporal Anchors المطلوبة لكل Context. بعض المهام تحتاج تاريخ تلقيح/ولادة أو Anchor زمني حتى تُحسب بصورة صحيحة، بينما السياسة تمنع اختراع تاريخ غير معروف.
-
-**المطلوب حسمه لاحقًا:** لكل Starting Context، تحديد الحد الأدنى من البيانات الزمنية اللازمة لكي يمكن:
-
-```text
-- اعتماد الحالة الافتتاحية
-- حساب Due Dates
-- إنشاء المهام الأولى بصورة صحيحة
-```
-
-مع السماح باستمرار البيانات الناقصة عندما لا تمنع التشغيل فعليًا.
-
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/04-animals.md
-```
+**المطلوب حسمه:** الحد الأدنى من البيانات الزمنية اللازمة لاعتماد كل Context ولتوليد أول Due Dates دون اختراع تاريخ.
 
 ---
 
@@ -750,48 +588,18 @@ production_herd.organization_methods
 production_group.female_membership_model
 ```
 
-**القرارات الحالية:**
-
-```text
-production_herd.organization_methods
-→ individual_management
-→ production_groups
-→ individual_management موصوف بأنه دون اشتراط مجموعة
-
-production_group.female_membership_model
-= required_exactly_one_active_group
-→ كل أنثى إنتاجية يجب أن تكون في مجموعة نشطة واحدة بالضبط
-```
-
-**المشكلة:** لا يمكن حسم هل أنثى إنتاجية يمكن تشغيلها خارج Production Group أم لا.
-
-**النماذج المحتملة غير المحسومة:**
-
-```text
-A) Individual Management وGroups نمطان بديلان على مستوى المزرعة
-B) الفردي لبعض الحيوانات فقط والإناث الإنتاجية دائمًا داخل Group
-C) كل Animal يدار فرديًا كسجل، لكن Group ما زالت إلزامية تنظيميًا للإناث
-D) Female Membership يجب أن تكون اختيارية لكي يعمل Individual Management فعلًا بلا Group
-```
+**التعارض:** `individual_management` موصوف بأنه دون اشتراط مجموعة، بينما كل أنثى إنتاجية مطلوبة في مجموعة نشطة واحدة بالضبط.
 
 **المطلوب حسمه:** نطاق `individual_management` وعلاقته بإلزام عضوية الأنثى الإنتاجية.
 
-**مصدر التفاصيل:**
-
-```text
-questionnaire-export/guides/03-animal-herd/05-production-groups.md
-```
-
-**القرار النهائي:** لم يحسم بعد.
-
 ---
 
-## OD-026 — التاريخ الكامل للمجموعة معتمد لكن Canonical Change Events غير محددة بعد
+## OD-026 — التاريخ الكامل للمجموعة معتمد لكن Canonical Change Events غير محددة بالكامل
 
 **الحالة:** Deferred  
 **النوع:** Integration Gap  
 **الأولوية:** High / Before group-change workflow freeze  
-**الأقسام المتأثرة:** 3.5 + Workflow
+**الأقسام المتأثرة:** 3.5 + Workflow 4.11 وما بعده
 
 **Question Keys:**
 
@@ -803,33 +611,793 @@ production_group.female_membership_model
 production_group.statuses
 ```
 
-**القرار الحالي:**
+**القرار الحالي:** `full_effective_history` مطلوب.
+
+**ما أضافته مراجعة Workflow:** 4.11 يؤكد أن Group Assignment عند اعتماد الإحلال يجب أن ينشئ **Membership Event تاريخي مستقل**، لكنه لا يغطي كل التغييرات العامة للمجموعة.
+
+**المتبقي غير المحسوم:** Canonical Events لإضافة/إزالة/نقل الإناث، تغيير Primary/Alternate Male، وإيقاف/حل/إعادة تفعيل المجموعة عند انطباقه.
+
+**المطلوب حسمه:** مصدر الحقيقة التاريخي الكامل لتغييرات Production Group دون تعديل العلاقات الحالية بصمت.
+
+---
+
+# القسم الرابع — الحركات ودورة التشغيل الفعلية
+
+## OD-027 — رفض النقل الجماعي العام مقابل دعم إخلاء هيكل مشغول جماعيًا
+
+**الحالة:** Open  
+**النوع:** Cross-section / Internal Workflow Conflict  
+**الأولوية:** High  
+**القسم:** 4.2 التسكين والنقل والإخلاء وإدارة الإشغال
+
+**Question Keys:**
 
 ```text
-production_group.history_policy = full_effective_history
+housing_movement.batch_transfer_support
+housing_movement.occupied_structure_relocation_support
 ```
 
-ويجب معرفة تاريخ تغير الذكر الأساسي، عضوية الإناث، وحالة المجموعة.
-
-**المشكلة:** 3.5 ينقل التغييرات الفعلية إلى Workflow، لكنه لا يحدد بنفسه Canonical Event Model لتغيرات مثل:
+**القرارات الحالية:**
 
 ```text
-Add/Remove Female
-Move Female Between Groups
-Change Primary Male
-Change Alternate Male
-Stop/Dissolve/Reactivate Group when applicable
+batch_transfer_support = false
+→ لا Generic Batch Transfer
+
+occupied_structure_relocation_support = true
+→ توجد عملية نقل جماعي مرتبطة بإخلاء موقع إيواء مشغول
 ```
 
-**المطلوب حسمه لاحقًا:** تحديد مصدر الحقيقة التاريخي لكل تغيير، وهل توجد Membership/Assignment/Status Events مستقلة وكيف تحفظ effective_from/effective_to والسبب والمنفذ، مع منع تعديل Current Relations بصمت.
+**المشكلة:** لم يحسم هل إخلاء الهيكل المشغول **استثناء متخصص مقصود** من رفض النقل الجماعي العام، أم أن رفض Batch Transfer كان مقصودًا به منع أي عملية جماعية.
 
-**مصدر التفاصيل:**
+**المطلوب حسمه:**
 
 ```text
-questionnaire-export/guides/03-animal-herd/05-production-groups.md
+A) لا Batch Tool عام، لكن Specialized Structural Relocation مسموحة
+أو
+B) لا توجد أي حركة جماعية، ويجب تعديل قرار occupied structure relocation
+أو
+C) اعتماد Batch Transfer عام بقواعد واضحة
 ```
 
-**القرار النهائي:** مؤجل لمراجعة Workflow؛ إذا كان Workflow الحالي يغطيها صراحة تُحدث هذه النقطة إلى Resolved أو تُضيق للنقص المتبقي.
+**مصدر التفاصيل:** `questionnaire-export/guides/04-workflow/02-housing-movements.md`
+
+---
+
+## OD-028 — مصدر أسباب `initial_housing` و`explicit_vacate` غير محدد
+
+**الحالة:** Open  
+**النوع:** Requirement Gap  
+**الأولوية:** Medium  
+**القسم:** 4.2
+
+**Question Keys:**
+
+```text
+housing_movement.reason_requirement_scope
+housing_movement.transfer_reason_reference
+```
+
+**القرار الحالي:** السبب مطلوب في `initial_housing` و`transfer` و`explicit_vacate`، لكن `TransferReason` حُسم فقط كمرجع لسبب النقل.
+
+**غير المحسوم:** هل Initial Housing وExplicit Vacate يستخدمان `TransferReason` أيضًا أم مصدر/قاموس مختلف أم تمثيلًا آخر.
+
+**المطلوب حسمه:** مصدر السبب Canonical لكل Movement Type دون إعادة استخدام قاموس في Scope لم يعتمد له.
+
+---
+
+## OD-029 — وحدة الوزن ثابتة لكن القيمة الفعلية للوحدة غير محددة
+
+**الحالة:** Open  
+**النوع:** Requirement Gap  
+**الأولوية:** Medium / Before measurement contract freeze  
+**القسم:** 4.3 الوزن والقياسات التشغيلية
+
+**Question Key:** `operational_measurement.weight_unit_policy`
+
+**القرار الحالي:** `single_fixed_unit` على مستوى النظام.
+
+**غير المحسوم:** هل الوحدة `g` أو `kg` أو غير ذلك، وأين يثبت هذا القرار إن كان قابلًا للضبط.
+
+**المطلوب حسمه:** الوحدة الفعلية الواحدة التي سيستخدمها Canonical Weight History أو مصدر ضبطها المعتمد.
+
+---
+
+## OD-030 — وزن المواليد قبل الفطام غير قابل للتمثيل بصورة محسومة
+
+**الحالة:** Open  
+**النوع:** Cross-section Conflict / Requirement Gap  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.3 الوزن + 4.7 الرضاعة
+
+**Question Keys:**
+
+```text
+operational_measurement.subject_types
+operational_measurement.preweaning_weight_model
+lactation.followup_event_types
+```
+
+**القرارات الحالية:**
+
+```text
+4.3 subject_types = individual_animal فقط
+preweaning_litter غير مختار
+→ سؤال preweaning_weight_model غير مطبق
+
+4.7 يدعم weight_measurement_reference داخل متابعة الرضاعة
+```
+
+**المشكلة:** إذا كان مرجع الوزن في الرضاعة يخص البطن أو مواليد لم تتحول بعد إلى Animal Records دائمة، فلا يوجد Canonical Subject Model معتمد لوزنها.
+
+**المطلوب حسمه:** هل وزن ما قبل الفطام غير مدعوم، أم يضاف Litter Subject، أم يستخدم Temporary Identified Offspring، وما النموذج Canonical للقيمة والمتوسط إن وجد.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/guides/04-workflow/03-operational-measurements.md
+questionnaire-export/guides/04-workflow/07-lactations.md
+```
+
+---
+
+## OD-031 — نقطة بدء Reproductive Cycle عند رفض/عدم اكتمال التلقيح غير محسومة
+
+**الحالة:** Open  
+**النوع:** Workflow Boundary Gap  
+**الأولوية:** High  
+**القسم:** 4.4 التلقيح وإدارة المحاولات
+
+**Question Keys:**
+
+```text
+mating.reproductive_cycle_start_model
+mating.event_result_categories
+```
+
+**القرارات الحالية:**
+
+```text
+reproductive_cycle_start_model = auto_on_first_mating
+results = mating_performed / female_refused / not_completed_other_reason
+```
+
+**المشكلة:** لم يحسم هل `auto_on_first_mating` يعني أول Record لمحاولة التنفيذ، أم أول Event بنتيجة `mating_performed` فعلًا. رفض الأنثى أو عدم اكتمال العملية لا يجب أن يولد حملًا أو توقيت فحص حمل وهميًا.
+
+**المطلوب حسمه:** Boundary دقيقة لإنشاء Reproductive Cycle وبدء Timeline التناسلي في حالات عدم حدوث تلقيح فعلي.
+
+---
+
+## OD-032 — حقلا First/Second Mating الثابتان مقابل عدد عمليات تلقيح قابل للضبط
+
+**الحالة:** Open  
+**النوع:** Blocking Conflict  
+**الأولوية:** Blocking before reproductive data model  
+**الأقسام المتأثرة:** 4.4 + Settings 6.5 + المرجع الوظيفي
+
+**Question Keys:**
+
+```text
+mating.attempt_event_cardinality
+mating_rules.mating_events_per_attempt
+```
+
+**القرار الحالي في 4.4:** `fixed_first_second_fields`، أي عمليتا تلقيح ثابتتان كحد عملي داخل Attempt.
+
+**المشكلة:** المرجع الوظيفي يرفض الحقول الثابتة ويفضل Ordered Mating Events، كما أن Settings تحتوي قرارًا لعدد عمليات التلقيح داخل المحاولة.
+
+**المطلوب حسمه:**
+
+```text
+A) حد ثابت = 2 ويصبح Settings متوافقًا معه
+أو
+B) variable_ordered_mating_events ويحدد Settings العدد الفعلي
+```
+
+**مصدر التفاصيل:** `questionnaire-export/guides/04-workflow/04-matings.md`
+
+---
+
+## OD-033 — الأبوة عند استخدام أكثر من ذكر داخل الفترة المؤدية للحمل
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict / Data Integrity  
+**الأولوية:** Critical before Pedigree finalization  
+**الأقسام المتأثرة:** 4.4 + 4.5 + 4.6 + 4.8 + 3.3
+
+**Question Key الرئيسي:** `mating.multiple_males_paternity_policy`
+
+**القرار الحالي:** الإجابة لم تعتمد جعل الأبوة Unknown/Uncertain تلقائيًا عند تعدد الذكور.
+
+**التعارض:** المرجع الوظيفي ينص على أن استخدام أكثر من ذكر في الفترة المؤدية لنفس الحمل يجعل الأب غير مؤكد ما لم توجد وسيلة إثبات أخرى. الأقسام 4.5 و4.6 و4.8 تحمل `paternity_reference` وتعتمد على نتيجة هذه السياسة.
+
+**المطلوب حسمه:** هل تعدد الذكور يجعل Paternity غير مؤكدة، وكيف يمثل `paternity_reference` عند عدم اليقين، وما أثر ذلك على Pedigree والنسل.
+
+**مصادر التفاصيل:**
+
+```text
+questionnaire-export/guides/04-workflow/04-matings.md
+questionnaire-export/guides/04-workflow/05-pregnancy-checks.md
+questionnaire-export/guides/04-workflow/06-births.md
+questionnaire-export/guides/04-workflow/08-weanings.md
+```
+
+---
+
+## OD-034 — بدء مسار النمو بعد الفطام: Explicit أم Automatic
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.8 + 4.9
+
+**Question Keys:**
+
+```text
+weaning.post_completion_transition_model
+growth_sorting.program_entry_model
+```
+
+**القرارات الحالية:**
+
+```text
+4.8 = explicit_growth_start_after_weaning
+4.9 = auto_start_after_successful_weaning
+```
+
+**المشكلة:** القرار الأول يطلب Transition/Event مستقل بعد الفطام، والثاني يجعل مسار النمو يبدأ تلقائيًا دون Start Action منفصلة.
+
+**المطلوب حسمه:** مصدر Boundary واحد لبدء Growth / Sorting Context.
+
+---
+
+## OD-035 — مصدر `breed_origin` عند إنشاء الحيوان في الفطام غير محسوم
+
+**الحالة:** Open  
+**النوع:** Integration Gap  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.8 + 3.3
+
+**Question Keys:**
+
+```text
+weaning.inherited_animal_fields
+animal.offspring_breed_derivation
+```
+
+**القرارات الحالية:** 4.8 ينسخ `breed_origin` إذا كانت معروفة، بينما 3.3 يمنع استنتاج Breed تلقائيًا من سلالتي الأب والأم ويطلب اختيارها من Master Data.
+
+**المشكلة:** الأقسام السابقة للفطام لا تحسم بوضوح أين تنشأ Breed approved للمولود قبل إنشاء Animal Record الدائم.
+
+**المطلوب حسمه:** مصدر Breed المعتمد قبل/أثناء الفطام دون Auto-Inference من الوالدين.
+
+---
+
+## OD-036 — Lifecycle قرار المصير المعلق بين 4.9 و4.10 غير معرف
+
+**الحالة:** Open  
+**النوع:** Integration Gap  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.9 + 4.10
+
+**Question Keys:**
+
+```text
+growth_sorting.result_to_fate_link_model
+fate_decision.*
+```
+
+**القرار الحالي:** 4.9 ينشئ `Pending Fate Decision` لبعض النتائج، بينما 4.10 يعرف القرار المعتمد وتاريخه وتسليم المسار التالي.
+
+**غير المحسوم:** State/Lifecycle بين Pending وApproved، وكيف يتم رفض/إلغاء/تعديل القرار المعلق، ومن يملك اعتماده، وهل يوجد Record واحد يتغير أم Event اعتماد منفصل.
+
+**المطلوب حسمه:** Lifecycle صريح دون اختراع `pending/approved/rejected` من الـBlueprint من تلقاء نفسه.
+
+---
+
+## OD-037 — `candidate_reference` في اعتماد الإحلال: اختياري في الصياغة لكنه منطقيًا إلزامي
+
+**الحالة:** Open  
+**النوع:** Semantic / Integration Gap  
+**الأولوية:** Medium  
+**القسم:** 4.11 الإحلال والاعتماد
+
+**Question Keys:**
+
+```text
+replacement.candidate_stage_policy
+replacement.approval_record_fields
+```
+
+**القرارات الحالية:**
+
+```text
+all_replacements_use_candidate_stage
+```
+
+لكن وصف `candidate_reference` في Approval Record يتعامل معه بصيغة «عند وجوده / when applicable».
+
+**المشكلة:** إذا كانت Candidate Stage إلزامية لكل Replacement، فيجب أن يكون كل Approval مرتبطًا Candidate Record؛ وإلا توجد حالة اعتماد لا يمكن تفسير أصلها رغم مخالفة Stage Policy.
+
+**المطلوب حسمه:** هل `candidate_reference` Required لكل Production Herd Approval الناتج من Replacement أم توجد استثناءات معتمدة لStage Policy.
+
+**ملاحظة عابرة:** Group Assignment في 4.11 لا يحسم تعارض `OD-025` الخاص بالإدارة الفردية.
+
+---
+
+## OD-038 — بداية التسمين: عند Fate Decision أم بعد Pending Transition
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict  
+**الأولوية:** Critical before Fattening state machine  
+**الأقسام المتأثرة:** 4.10 + 4.12
+
+**Question Keys:**
+
+```text
+fate_decision.downstream_transition_model
+fattening.entry_boundary_model
+```
+
+**القرارات الحالية:**
+
+```text
+4.10 = create_pending_downstream_transition
+→ Decision → Pending handoff → downstream execution later
+
+4.12 = start_on_fattening_fate_decision
+→ Fattening Period starts at approved Fate Decision timestamp
+```
+
+**المطلوب حسمه:** هل Fate Decision نفسها تبدأ Fattening Period، أم تنشئ Pending Transition فقط ويبدأ التسمين عند Execution Boundary لاحقة.
+
+---
+
+## OD-039 — معنى `housing_reference` عند بداية التسمين
+
+**الحالة:** Open  
+**النوع:** Integration Gap  
+**الأولوية:** High  
+**القسم:** 4.12
+
+**Question Keys:**
+
+```text
+fattening.entry_boundary_model
+fattening.start_record_fields
+```
+
+**المشكلة:** Fattening Period قد تبدأ قبل اكتمال حركة التسكين، بينما Start Record يحتوي `housing_reference = مرجع موقع التسكين عند البداية`.
+
+**المطلوب حسمه:** هل المرجع هو Current Housing عند القرار، Planned Fattening Housing، Nullable حتى الحركة، أم Reference ترتبط لاحقًا عند اكتمال Housing Movement. لا يعتمد أي نموذج دون قرار صريح.
+
+---
+
+## OD-040 — Sale Readiness المشتقة تلقائيًا مقابل Lifecycle الـPending Exit Transition
+
+**الحالة:** Open  
+**النوع:** Integration Gap / Automation Integrity  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.12 + 4.15
+
+**Question Keys:**
+
+```text
+fattening.readiness_evaluation_model
+fattening.sale_handoff_model
+```
+
+**القرارات الحالية:** Sale Readiness مشتقة تلقائيًا من القواعد والسجلات، وعند الجاهزية/اتجاه البيع ينشأ `Pending Exit Transition`.
+
+**غير المحسوم:**
+
+```text
+- هل Transition تنشأ تلقائيًا أول مرة تصبح readiness = ready_for_sale
+- منع التكرار / idempotency
+- ماذا يحدث إذا عادت readiness إلى not_ready قبل الخروج
+- هل Transition تلغى أو تعلق أو تبقى
+- الفرق بين readiness مشتقة وقرار بشري plan_sale_at_current_state
+```
+
+**المطلوب حسمه:** Lifecycle واضح للـPending Exit Transition دون تحويل الجاهزية المشتقة إلى Exit Event فعلي.
+
+---
+
+## OD-041 — `performed_by` عند بداية التسمين دون Start Event مستقل
+
+**الحالة:** Open  
+**النوع:** Implementation / Event Boundary Gap  
+**الأولوية:** Medium  
+**القسم:** 4.12
+
+**Question Keys:**
+
+```text
+fattening.entry_boundary_model
+fattening.start_record_fields
+```
+
+**المشكلة:** التسمين يبدأ عند Fate Decision نفسها ولا يوجد Start Action مستقل، بينما Start Record يطلب `performed_by`.
+
+**المطلوب حسمه:** هل Actor مشتق من `decided_by` في Fate Decision أم يوجد Event مستقل فعلًا أم تمثيل آخر، مع منع خلق واقعتين متنافستين لنفس البداية.
+
+---
+
+## OD-042 — مصدر الحقيقة لنفوق المواليد أثناء الرضاعة
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict  
+**الأولوية:** Critical / Data Integrity  
+**الأقسام المتأثرة:** 4.7 + 4.13 + 4.8 reconciliation
+
+**Question Keys:**
+
+```text
+lactation.mortality_recording_model
+mortality.subject_scopes
+```
+
+**القرارات الحالية:**
+
+```text
+4.7 = dedicated_lactation_mortality_event
+
+4.13 = general Mortality Event supports:
+individual_animal
+preweaning_litter_quantity
+identified_preweaning_offspring
+```
+
+**المشكلة:** نفس واقعة نفوق مولود بعد الولادة يمكن أن تصبح لها مصدران Canonical، ما قد يضاعف Current Alive Count أو Weaning Reconciliation أو يجزئ التاريخ.
+
+**المطلوب حسمه:** مصدر نفوق واحد بعد الولادة؛ إما 4.13 Canonical مع ربطه بالرضاعة، أو Event متخصص 4.7 مع تحديد دور 4.13، أو نموذج آخر لا يكرر الواقعة.
+
+---
+
+## OD-043 — مرحلة النفوق: Manual أم Derived تلقائيًا
+
+**الحالة:** Open  
+**النوع:** Conflict with Functional Source  
+**الأولوية:** High  
+**القسم:** 4.13
+
+**Question Key:** `mortality.stage_derivation_model`
+
+**القرار الحالي:** `manual_stage_per_mortality_event`.
+
+**التعارض:** المرجع الوظيفي يفضل استنتاج مرحلة النفوق تلقائيًا من Timeline/Current Operational Context لمنع الخطأ وتكرار الحقيقة.
+
+**المطلوب حسمه:** هل المرحلة Snapshot يختارها المستخدم يدويًا، أم قيمة Derived من السياق، أم Derived مع Override/Audit في حالات استثنائية.
+
+---
+
+## OD-044 — `operational_restriction_decision` مقابل القيود المشتقة من Health + Settings
+
+**الحالة:** Open  
+**النوع:** Internal Semantic Conflict  
+**الأولوية:** High  
+**القسم:** 4.13
+
+**Question Keys:**
+
+```text
+health.observation_record_fields
+health.operational_restriction_model
+```
+
+**القرارات الحالية:** Observation Record يتضمن `operational_restriction_decision`، بينما النموذج المتخصص هو `derive_restrictions_from_health_and_settings` دون Case-level restriction مستقل كمصدر حقيقة.
+
+**المطلوب حسمه:** هل الحقل Audit/Snapshot لسياق القرار وقت المراجعة فقط، أم قرار Authoritative مستقل، أم يجب إعادة صياغة دوره؛ مع منع وجود مصدرين للمنع التشغيلي.
+
+---
+
+## OD-045 — النموذج العام لإعادة البناء اليدوي يتعارض مع حالات تطلب Reconstruction صريحًا
+
+**الحالة:** Open  
+**النوع:** Blocking Internal Conflict  
+**الأولوية:** High  
+**القسم:** 4.14 الحالات الاستثنائية وإعادة بناء المسار
+
+**Question Keys:**
+
+```text
+workflow_reconstruction.action_plan_model
+workflow_reconstruction.maternal_death_with_litter_model
+event_correction.correction_model
+```
+
+**القرارات الحالية:**
+
+```text
+action_plan_model = exception_record_only_manual_rebuild
+→ لا Reconstruction Plan عام؛ إعادة البناء يدوية بالكامل
+
+لكن:
+maternal death with active litter
+→ urgent orphan-litter reconstruction
+
+wrong sensitive event correction
+→ preserve original + rebuild resulting effects
+```
+
+**المشكلة:** القاعدة العامة تقول لا Reconstruction منظم، بينما حالتان متخصصتان تتطلبان Reconstruction فعليًا.
+
+**المطلوب حسمه:** هل توجد Reconstruction Mechanism عامة تستخدمها الحالات المتخصصة، أم أن كل حالة تملك Orchestration خاصة، أم المقصود Manual Rebuild فقط ويجب تعديل الحالات المتخصصة.
+
+---
+
+## OD-046 — من يكتشف السياقات المتأثرة: المستخدم أم النظام
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.14 + 4.15 + المرجع الوظيفي
+
+**Question Keys:**
+
+```text
+workflow_reconstruction.context_detection_model
+farm_exit.active_context_handling_model
+```
+
+**القرارات الحالية:**
+
+```text
+4.14 = manual_affected_context_selection
+→ المستخدم يحدد السياقات المتأثرة
+
+4.15 = system detects active contexts before exit
+→ النظام يكتشفها ثم يحل/يعيد بناء ما يلزم
+```
+
+والمرجع الوظيفي أيضًا يميل إلى اكتشاف النظام للسياقات مثل Pregnancy/Litter/Tasks.
+
+**المطلوب حسمه:** نموذج موحد للمسؤولية: Detection آلي، يدوي، أو Hybrid (auto-detect + human confirmation) مع تعريف مصدر الحقيقة.
+
+---
+
+## OD-047 — معالجة المهام بعد الاستثناء يدوية رغم وجود Task Engine وتوقعات المرجع
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap  
+**الأولوية:** Medium / Before exception-task integration freeze  
+**الأقسام المتأثرة:** 4.14 + 4.17 + Settings 6.12
+
+**Question Key:** `workflow_reconstruction.task_integration_model`
+
+**القرار الحالي:** `manual_task_review_after_exception`، أي مراجعة المهام المتأثرة واحدة تلو الأخرى.
+
+**النقطة المفتوحة:** المرجع الوظيفي يتوقع في بعض الاستثناءات إلغاء المهام التي أصبحت غير صالحة وإنشاء الإجراء التالي المناسب، بينما 4.17 يملك Lifecycle تاريخي للإلغاء/الإكمال لكنه لا يحسم Orchestration تلقائية من الاستثناء.
+
+**المطلوب حسمه:** هل 4.14 يولد Task Review Actions فقط، أم يملك قواعد Auto-cancel/Regenerate من Settings، أم يبقى كل شيء يدويًا.
+
+---
+
+## OD-048 — أثر `Missing Event` على Active Occupancy والسعة
+
+**الحالة:** Open  
+**النوع:** Integration Gap / Presence Integrity  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.14 + 4.2 + 4.15
+
+**القرار الحالي:** Missing ليس Farm Exit ولا Mortality، ويمكن أن يتبعه Found Event على نفس Animal Record.
+
+**المشكلة:** موقع الحيوان الفعلي يصبح غير موثوق، لكن 4.2 يعتمد Active Occupancy كمصدر Current Location والسعة. لم يحسم هل Occupancy:
+
+```text
+- تبقى Active وتحجز السعة
+- تعلق كUnknown occupancy
+- تغلق مع إمكانية الاستعادة
+- أو نموذج Presence/Occupancy آخر
+```
+
+**المطلوب حسمه:** أثر Missing/Found على Current Location، Available Capacity، Cage Occupancy، وPresence State دون اختراع Exit.
+
+---
+
+## OD-049 — Presence عند إعادة الدخول: الوصول الفعلي أم اعتماد Intake النهائي
+
+**الحالة:** Open  
+**النوع:** Blocking Cross-section Conflict  
+**الأولوية:** Critical / Presence model  
+**الأقسام المتأثرة:** 4.1 + 4.15
+
+**Question Keys:**
+
+```text
+animal_intake.reentry_process_model
+animal_reentry.presence_transition_model
+```
+
+**القرارات الحالية:**
+
+```text
+4.1:
+Physical arrival ≠ Intake approval ≠ Production readiness
+والحيوان قد يكون موجودًا فعليًا داخل المزرعة تحت التقييم/الحجر
+
+4.15:
+present_after_intake_finalization
+→ Presence لا تعود إلا بعد اعتماد Intake النهائي
+```
+
+**المطلوب حسمه:** هل Presence Episode تبدأ عند Physical Arrival وتظل Operationally Restricted حتى Final Approval، أم لا تبدأ إلا بعد Finalization، وكيف يمثل الحيوان الموجود فعليًا أثناء فترة Intake قبل الاعتماد.
+
+---
+
+## OD-050 — خروج الحيوان فعليًا مع بقاء Occupancy مفتوحة حتى Post-exit Action
+
+**الحالة:** Open  
+**النوع:** Blocking Integration / State Integrity  
+**الأولوية:** Critical  
+**الأقسام المتأثرة:** 4.15 + 4.2
+
+**Question Keys:**
+
+```text
+farm_exit.post_event_transition_model
+housing_movement.single_active_occupancy
+```
+
+**القرار الحالي:** Actual Farm Exit يجعل الحيوان خارج المزرعة، لكن `create_pending_post_exit_actions` يؤجل إغلاق Occupancy/Paths/Tasks.
+
+**المشكلة:** قد تظهر فترة:
+
+```text
+Presence = outside
+Active Occupancy = still in Cage
+```
+
+فتصبح Current Location وAvailable Capacity غير متسقتين مع الواقع.
+
+**المطلوب حسمه:** هل إغلاق Active Occupancy أثر Atomic مع Exit Event، أم توجد Transition State تمنع اعتبارها Current، أم يجب أن يسبق Exit إخلاء 4.2، أم نموذج آخر يحافظ على Source of Truth.
+
+---
+
+## OD-051 — `explicit_readiness_confirmation_action` غير ممثلة ضمن Cage Actions وعلاقتها بـReturn to Service غير محسومة
+
+**الحالة:** Open  
+**النوع:** Cross-section Integration Gap  
+**الأولوية:** High  
+**الأقسام المتأثرة:** 4.16 + 2.4
+
+**Question Keys:**
+
+```text
+housing_site_sanitation.readiness_after_completion_model
+cage.supported_actions
+```
+
+**القرارات الحالية:**
+
+```text
+4.16 = explicit_readiness_confirmation_action
+
+2.4 Cage Actions include:
+activate / stop / return_to_service / start_maintenance /
+complete_maintenance / retire / start_sanitation / complete_sanitation
+
+ولا يوجد confirm_readiness
+```
+
+**المطلوب حسمه:** هل Readiness Confirmation Record/Action مستقل عن Cage Action History، أم Action جديدة، أم `return_to_service` تقوم بالدور؛ وكذلك ترتيب:
+
+```text
+Sanitation Complete
+→ Readiness Confirmation
+→ Return to Service
+```
+
+وهل الخطوتان الأخيرتان مطلوبتان دائمًا أم لكل منهما معنى مختلف.
+
+---
+
+## OD-052 — Child Actions المستقلة مقابل Parent→Descendant Effective Availability
+
+**الحالة:** Deferred  
+**النوع:** Integration Gap  
+**الأولوية:** High / Before Settings 6.3 freeze  
+**الأقسام المتأثرة:** 4.16 + Farm Structure + Settings 6.3
+
+**Question Key:** `housing_site_operation.parent_child_history_model`
+
+**القرار الحالي:** عملية Parent قد تنشئ Action مستقلة لكل Child متأثر.
+
+**النقطة المفتوحة:** Settings 6.3 ستحدد هل عدم إتاحة Barn/Battery ينتقل إلى الأبناء كـDerived Effective Availability. يجب منع وجود مصدرين متنافسين:
+
+```text
+Parent unavailable → Child unavailable derived
+```
+
+وفي الوقت نفسه:
+
+```text
+Parent operation → Child Action changes child operational state
+```
+
+**المطلوب حسمه:** الفرق بين Historical Child Action وبين Derived Parent Effect، ومتى يحتاج Child Transition فعليًا ومتى يكفي Effective Availability مشتقة.
+
+---
+
+## OD-053 — Common Fields لسجلات صيانة Barn/Battery غير محددة
+
+**الحالة:** Open  
+**النوع:** Requirement Gap  
+**الأولوية:** Medium  
+**القسم:** 4.16
+
+**Question Keys:**
+
+```text
+housing_site_maintenance.target_scopes
+housing_site_maintenance.record_model
+housing_site_maintenance.lifecycle_model
+```
+
+**القرار الحالي:** الصيانة مدعومة لـCage/Battery/Barn بسجلات منفصلة حسب نوع الموقع، وStart/Completion Events مترابطة.
+
+**المشكلة:** لا يوجد Question Key يحسم Common Record Fields لـBarn/Battery مثل reason, performed_by, notes, parent operation reference وغيرها، بينما Cage Actions لديها Audit Fields أكثر تحديدًا.
+
+**المطلوب حسمه:** الحد الأدنى الموحد لمعلومات Audit لكل Maintenance Event على كل Scope دون نسخ Cage Schema تلقائيًا.
+
+---
+
+## OD-054 — `current_status` للمهمة مقابل Schedule State المشتقة وExecution Enum غير المحسوم
+
+**الحالة:** Open  
+**النوع:** Semantic / State Model Gap  
+**الأولوية:** High  
+**القسم:** 4.17 تنفيذ وإدارة المهام
+
+**Question Keys:**
+
+```text
+operational_task.record_fields
+operational_task.lifecycle_model
+operational_task.schedule_state_model
+```
+
+**القرارات الحالية:** `Upcoming / Due / Overdue` مشتقة من `current_due_at + execution state + time` وليست Status يغيره المستخدم، بينما Task Record يحتوي `current_status`.
+
+**المطلوب حسمه:** تعريف `current_status` صراحة كـExecution Lifecycle State، واعتماد Enum/Transitions التنفيذية النهائية دون خلطها بالـSchedule State.
+
+---
+
+## OD-055 — العلاقة بين Start Task Execution وفتح الـCanonical Workflow Action
+
+**الحالة:** Open  
+**النوع:** Workflow Boundary Gap  
+**الأولوية:** Medium  
+**القسم:** 4.17
+
+**Question Keys:**
+
+```text
+operational_task.in_progress_model
+operational_task.execution_routing_model
+```
+
+**القرارات الحالية:** يوجد `explicit_in_progress_transition`، والضغط على تنفيذ المهمة يوجه إلى Canonical Workflow Action.
+
+**غير المحسوم:** هل زر Execute نفسه ينشئ Start/In-Progress Event تلقائيًا قبل فتح النموذج، أم يجب تنفيذ Start Action مستقلة، وماذا يحدث إذا فُتح النموذج ثم لم تُسجل العملية.
+
+**المطلوب حسمه:** مسار واحد غير متنافس لبداية التنفيذ وربطه بالعملية Canonical.
+
+---
+
+## OD-056 — عدم وجود اعتماد بعد تنفيذ المهمة يقيد Settings 6.12
+
+**الحالة:** Deferred  
+**النوع:** Cross-section Constraint  
+**الأولوية:** High / During Settings 6.12 review  
+**الأقسام المتأثرة:** 4.17 + Settings 6.12
+
+**Question Key:** `operational_task.post_execution_approval_model`
+
+**القرار الحالي:** `no_post_execution_approval`.
+
+**الأثر:** Settings لا يجوز أن تضيف Approval Step عامة بعد التنفيذ أو تجعل اكتمال المهمة معلقًا على Reviewer ثانٍ دون إعادة فتح قرار 4.17.
+
+**المطلوب عند مراجعة 6.12:** التحقق أن قواعد المهام والتصعيد والصلاحيات لا تعيد إدخال Post-execution Approval ضمنيًا.
 
 ---
 
