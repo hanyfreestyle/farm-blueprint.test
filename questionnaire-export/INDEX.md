@@ -4,12 +4,12 @@
 
 ## حالة التصدير
 
-- وقت آخر تحديث: 2026-08-26 11:09:52
+- وقت آخر تحديث: 2026-08-26 11:32:32
 - الأقسام الرئيسية: 6
 - الأقسام الفرعية: 76
 - إجمالي الأسئلة: 981
-- الأسئلة القابلة حاليًا: 822
-- الأسئلة المجاب عنها: 24
+- الأسئلة القابلة حاليًا: 826
+- الأسئلة المجاب عنها: 137
 - ملفات الإجابات المصدرة: 75
 - ملفات الشرح الموجودة: 0
 
@@ -25,26 +25,26 @@
 | # | القسم الفرعي | ملف الإجابات | حالة التصدير | التقدم | ملف الشرح | حالة الشرح |
 |---|---|---|---|---|---|---|
 | 1.1 | الأنشطة التشغيلية | [answers/01-master-data/01-operational-activities.md](answers/01-master-data/01-operational-activities.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/01-operational-activities.md` | ❌ لم يتم الإنشاء |
-| 1.2 | الأغراض الإنتاجية | [answers/01-master-data/02-production-purposes.md](answers/01-master-data/02-production-purposes.md) | ✅ تم التصدير | 0 / 7 | `guides/01-master-data/02-production-purposes.md` | ❌ لم يتم الإنشاء |
-| 1.3 | مؤشرات السلالات | [answers/01-master-data/03-breed-metrics.md](answers/01-master-data/03-breed-metrics.md) | ✅ تم التصدير | 0 / 8 | `guides/01-master-data/03-breed-metrics.md` | ❌ لم يتم الإنشاء |
-| 1.4 | بيانات السلالات | [answers/01-master-data/04-breeds.md](answers/01-master-data/04-breeds.md) | ✅ تم التصدير | 0 / 14 | `guides/01-master-data/04-breeds.md` | ❌ لم يتم الإنشاء |
+| 1.2 | الأغراض الإنتاجية | [answers/01-master-data/02-production-purposes.md](answers/01-master-data/02-production-purposes.md) | ✅ تم التصدير | 7 / 7 | `guides/01-master-data/02-production-purposes.md` | ❌ لم يتم الإنشاء |
+| 1.3 | مؤشرات السلالات | [answers/01-master-data/03-breed-metrics.md](answers/01-master-data/03-breed-metrics.md) | ✅ تم التصدير | 8 / 8 | `guides/01-master-data/03-breed-metrics.md` | ❌ لم يتم الإنشاء |
+| 1.4 | بيانات السلالات | [answers/01-master-data/04-breeds.md](answers/01-master-data/04-breeds.md) | ✅ تم التصدير | 18 / 18 | `guides/01-master-data/04-breeds.md` | ❌ لم يتم الإنشاء |
 | 1.5 | المستخدمون وفريق التشغيل | `answers/01-master-data/05-section.md` | ❌ لم يتم التصدير | 0 / 0 | `guides/01-master-data/05-section.md` | ❌ لم يتم الإنشاء |
-| 1.6 | أسباب النقل | [answers/01-master-data/06-transfer-reasons.md](answers/01-master-data/06-transfer-reasons.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/06-transfer-reasons.md` | ❌ لم يتم الإنشاء |
-| 1.7 | أسباب النفوق | [answers/01-master-data/07-mortality-reasons.md](answers/01-master-data/07-mortality-reasons.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/07-mortality-reasons.md` | ❌ لم يتم الإنشاء |
-| 1.8 | أسباب الاستبعاد | [answers/01-master-data/08-exclusion-reasons.md](answers/01-master-data/08-exclusion-reasons.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/08-exclusion-reasons.md` | ❌ لم يتم الإنشاء |
-| 1.9 | أسباب الخروج | [answers/01-master-data/09-exit-reasons.md](answers/01-master-data/09-exit-reasons.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/09-exit-reasons.md` | ❌ لم يتم الإنشاء |
-| 1.10 | أسباب تغيير الذكر | [answers/01-master-data/10-male-change-reasons.md](answers/01-master-data/10-male-change-reasons.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/10-male-change-reasons.md` | ❌ لم يتم الإنشاء |
-| 1.11 | المحافظات | [answers/01-master-data/11-governorates.md](answers/01-master-data/11-governorates.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/11-governorates.md` | ❌ لم يتم الإنشاء |
-| 1.12 | المدن | [answers/01-master-data/12-cities.md](answers/01-master-data/12-cities.md) | ✅ تم التصدير | 0 / 7 | `guides/01-master-data/12-cities.md` | ❌ لم يتم الإنشاء |
+| 1.6 | أسباب النقل | [answers/01-master-data/06-transfer-reasons.md](answers/01-master-data/06-transfer-reasons.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/06-transfer-reasons.md` | ❌ لم يتم الإنشاء |
+| 1.7 | أسباب النفوق | [answers/01-master-data/07-mortality-reasons.md](answers/01-master-data/07-mortality-reasons.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/07-mortality-reasons.md` | ❌ لم يتم الإنشاء |
+| 1.8 | أسباب الاستبعاد | [answers/01-master-data/08-exclusion-reasons.md](answers/01-master-data/08-exclusion-reasons.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/08-exclusion-reasons.md` | ❌ لم يتم الإنشاء |
+| 1.9 | أسباب الخروج | [answers/01-master-data/09-exit-reasons.md](answers/01-master-data/09-exit-reasons.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/09-exit-reasons.md` | ❌ لم يتم الإنشاء |
+| 1.10 | أسباب تغيير الذكر | [answers/01-master-data/10-male-change-reasons.md](answers/01-master-data/10-male-change-reasons.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/10-male-change-reasons.md` | ❌ لم يتم الإنشاء |
+| 1.11 | المحافظات | [answers/01-master-data/11-governorates.md](answers/01-master-data/11-governorates.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/11-governorates.md` | ❌ لم يتم الإنشاء |
+| 1.12 | المدن | [answers/01-master-data/12-cities.md](answers/01-master-data/12-cities.md) | ✅ تم التصدير | 7 / 7 | `guides/01-master-data/12-cities.md` | ❌ لم يتم الإنشاء |
 | 1.13 | أنظمة التهوية | [answers/01-master-data/13-ventilation-systems.md](answers/01-master-data/13-ventilation-systems.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/13-ventilation-systems.md` | ❌ لم يتم الإنشاء |
 | 1.14 | أنظمة التبريد | [answers/01-master-data/14-cooling-systems.md](answers/01-master-data/14-cooling-systems.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/14-cooling-systems.md` | ❌ لم يتم الإنشاء |
 | 1.15 | أنظمة التدفئة | [answers/01-master-data/15-heating-systems.md](answers/01-master-data/15-heating-systems.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/15-heating-systems.md` | ❌ لم يتم الإنشاء |
-| 1.16 | أنواع الأقفاص الفيزيائية | [answers/01-master-data/16-cage-physical-types.md](answers/01-master-data/16-cage-physical-types.md) | ✅ تم التصدير | 0 / 5 | `guides/01-master-data/16-cage-physical-types.md` | ❌ لم يتم الإنشاء |
-| 1.17 | استخدامات الأقفاص | [answers/01-master-data/17-cage-usages.md](answers/01-master-data/17-cage-usages.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/17-cage-usages.md` | ❌ لم يتم الإنشاء |
-| 1.18 | الأنواع الفيزيائية للبطاريات | [answers/01-master-data/18-battery-types.md](answers/01-master-data/18-battery-types.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/18-battery-types.md` | ❌ لم يتم الإنشاء |
-| 1.19 | أنواع المهام التشغيلية | [answers/01-master-data/19-operational-task-types.md](answers/01-master-data/19-operational-task-types.md) | ✅ تم التصدير | 0 / 6 | `guides/01-master-data/19-operational-task-types.md` | ❌ لم يتم الإنشاء |
-| 1.20 | أسباب العزل | [answers/01-master-data/20-isolation-reasons.md](answers/01-master-data/20-isolation-reasons.md) | ✅ تم التصدير | 0 / 7 | `guides/01-master-data/20-isolation-reasons.md` | ❌ لم يتم الإنشاء |
-| 1.21 | تصنيفات المشاكل / الملاحظات الصحية | [answers/01-master-data/21-health-problem-categories.md](answers/01-master-data/21-health-problem-categories.md) | ✅ تم التصدير | 0 / 7 | `guides/01-master-data/21-health-problem-categories.md` | ❌ لم يتم الإنشاء |
+| 1.16 | أنواع الأقفاص الفيزيائية | [answers/01-master-data/16-cage-physical-types.md](answers/01-master-data/16-cage-physical-types.md) | ✅ تم التصدير | 5 / 5 | `guides/01-master-data/16-cage-physical-types.md` | ❌ لم يتم الإنشاء |
+| 1.17 | استخدامات الأقفاص | [answers/01-master-data/17-cage-usages.md](answers/01-master-data/17-cage-usages.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/17-cage-usages.md` | ❌ لم يتم الإنشاء |
+| 1.18 | الأنواع الفيزيائية للبطاريات | [answers/01-master-data/18-battery-types.md](answers/01-master-data/18-battery-types.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/18-battery-types.md` | ❌ لم يتم الإنشاء |
+| 1.19 | أنواع المهام التشغيلية | [answers/01-master-data/19-operational-task-types.md](answers/01-master-data/19-operational-task-types.md) | ✅ تم التصدير | 6 / 6 | `guides/01-master-data/19-operational-task-types.md` | ❌ لم يتم الإنشاء |
+| 1.20 | أسباب العزل | [answers/01-master-data/20-isolation-reasons.md](answers/01-master-data/20-isolation-reasons.md) | ✅ تم التصدير | 7 / 7 | `guides/01-master-data/20-isolation-reasons.md` | ❌ لم يتم الإنشاء |
+| 1.21 | تصنيفات المشاكل / الملاحظات الصحية | [answers/01-master-data/21-health-problem-categories.md](answers/01-master-data/21-health-problem-categories.md) | ✅ تم التصدير | 7 / 7 | `guides/01-master-data/21-health-problem-categories.md` | ❌ لم يتم الإنشاء |
 
 ## 2. هيكل المزرعة
 
